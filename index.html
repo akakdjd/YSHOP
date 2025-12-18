@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yahia Shop | Royal Edition</title>
+    
+    <!-- External Assets -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --purple: #4c1d95;
+            --gold: #fbbf24;
+            --paper: #f5f5dc;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--paper);
+            background-image: radial-gradient(#d4b483 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+            color: #1f2937;
+        }
+        
+        .serif-bold { font-family: 'Playfair Display', serif; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(76, 29, 149, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-box {
+            aspect-ratio: 1/1;
+            background: #fffef0;
+            border: 8px double var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(212, 180, 131, 0.3);
+        }
+        
+        .preview-letter {
+            font-size: 8rem;
+            line-height: 1;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+            z-index: 10;
+        }
+
+        .wax-seal-bg {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 15rem;
+            transform: rotate(-15deg);
+            z-index: 1;
+        }
+
+        .btn-royal {
+            background-color: var(--purple);
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-royal:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 4px 12px rgba(76, 29, 149, 0.2);
+        }
+
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-[#4c1d95] text-white p-4 shadow-lg sticky top-0 z-50 border-b-2 border-[#fbbf24]">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="app.navigate('home')">
+                <i class="fa-solid fa-scroll text-[#fbbf24] text-2xl"></i>
+                <h1 class="text-xl font-bold tracking-wider uppercase">Yahia <span class="text-[#fbbf24]">Shop</span></h1>
+            </div>
+            <button id="adminTrigger" onclick="app.navigate('login')" class="text-sm text-purple-200 hover:text-[#fbbf24] transition flex items-center gap-2 px-3 py-1">
+                <i class="fa-solid fa-crown"></i> Admin Access
+            </button>
+        </div>
+    </nav>
+
+    <main id="app-container" class="flex-grow flex items-center justify-center p-4">
+        
+        <!-- VIEW: STUDENT ORDER FORM -->
+        <div id="view-home" class="hidden w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-panel p-8 rounded-2xl">
+                <div class="mb-6">
+                    <h2 class="text-3xl font-extrabold text-gray-900 serif-bold">Royal Engraving</h2>
+                    <p class="text-gray-500 text-sm italic">Place your request in the royal ledger.</p>
+                </div>
+
+                <form onsubmit="app.createOrder(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Full Name</label>
+                        <input type="text" id="studentName" required placeholder="Enter student name..." 
+                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4c1d95] focus:outline-none transition bg-white">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Select Letter</label>
+                            <select id="letterSelect" onchange="app.updatePreview()" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4c1d95] bg-white">
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Ink Color</label>
+                            <select id="colorSelect" onchange="app.updatePreview()" required class="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4c1d95] bg-white">
+                                <option value="#4c1d95">Royal Purple</option>
+                                <option value="#fbbf24">Imperial Gold</option>
+                                <option value="#000000">Classic Black</option>
+                                <option value="#7c2d12">Deep Brown</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full btn-royal font-bold py-4 rounded-xl shadow-lg flex justify-center items-center gap-2 uppercase tracking-widest text-sm">
+                        <span>Place Royal Order</span>
+                        <i class="fa-solid fa-feather-pointed"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Preview Side -->
+            <div class="glass-panel p-8 rounded-2xl flex flex-col items-center">
+                <h3 class="text-xs font-bold uppercase text-purple-900 mb-4 tracking-widest">Live Visual</h3>
+                <div class="preview-box w-full max-w-[300px] rounded-xl">
+                    <i class="fa-solid fa-crown wax-seal-bg"></i>
+                    <span id="letterPreview" class="preview-letter serif-bold text-[#4c1d95]">A</span>
+                </div>
+                <p class="mt-4 text-center text-xs text-gray-400 italic">"Quality fit for the finest parchment"</p>
+            </div>
+        </div>
+
+        <!-- VIEW: ORDER SUCCESS -->
+        <div id="view-success" class="hidden w-full max-w-md glass-panel p-8 rounded-2xl text-center">
+            <i class="fa-solid fa-circle-check text-6xl text-green-500 mb-4"></i>
+            <h2 class="text-2xl font-bold text-gray-900 serif-bold">Order Registered</h2>
+            <p class="text-gray-500 text-sm mt-2">Bring this code to pick up your letter.</p>
+            <div class="my-6 bg-[#4c1d95] text-[#fbbf24] p-6 rounded-xl border-2 border-dashed border-[#fbbf24]">
+                <p class="text-[10px] text-purple-200 uppercase tracking-widest mb-1">Your ID Code</p>
+                <h1 id="displayCode" class="text-5xl font-black tracking-widest">#0000</h1>
+            </div>
+            <button onclick="app.navigate('home')" class="text-[#4c1d95] font-bold hover:underline">New Order</button>
+        </div>
+
+        <!-- VIEW: ADMIN LOGIN -->
+        <div id="view-login" class="hidden w-full max-w-sm glass-panel p-8 rounded-2xl relative">
+            <button onclick="app.navigate('home')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-times"></i></button>
+            <div class="text-center mb-6">
+                <i class="fa-solid fa-lock text-4xl text-[#4c1d95]"></i>
+                <h2 class="text-2xl font-bold mt-2 uppercase serif-bold">Admin Portal</h2>
+            </div>
+            <form onsubmit="app.adminLogin(event)" class="space-y-4">
+                <input type="password" id="adminPass" placeholder="Enter Admin Secret" class="w-full p-3 rounded-lg border border-gray-300 text-center text-xl tracking-widest focus:ring-2 focus:ring-[#4c1d95]">
+                <button type="submit" class="w-full btn-royal font-bold py-3 rounded-lg uppercase text-xs">Unlock Archives</button>
+            </form>
+        </div>
+
+        <!-- VIEW: ADMIN DASHBOARD -->
+        <div id="view-dashboard" class="hidden w-full max-w-5xl glass-panel p-6 rounded-2xl h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#4c1d95] serif-bold">Imperial Archives</h2>
+                    <p class="text-xs text-gray-500" id="orderCount">Syncing cloud storage...</p>
+                </div>
+                <button onclick="app.logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-xs">EXIT SYSTEM</button>
+            </div>
+            <div class="overflow-y-auto flex-grow custom-scroll">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-purple-50 sticky top-0 z-10">
+                        <tr>
+                            <th class="p-4 text-[10px] font-bold text-purple-900 uppercase">Code</th>
+                            <th class="p-4 text-[10px] font-bold text-purple-900 uppercase">Student</th>
+                            <th class="p-4 text-[10px] font-bold text-purple-900 uppercase">Selection</th>
+                            <th class="p-4 text-[10px] font-bold text-purple-900 uppercase">Timestamp</th>
+                            <th class="p-4 text-[10px] font-bold text-purple-900 uppercase text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody" class="divide-y divide-gray-100">
+                        <!-- Data flows here -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="hidden text-center p-20 text-gray-400 italic">No orders currently saved in the cloud.</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FIREBASE & APP SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global State & Firebase Config
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-royal-shop';
+        const fApp = initializeApp(firebaseConfig);
+        const auth = getAuth(fApp);
+        const db = getFirestore(fApp);
+        
+        const DB_PATH = `artifacts/${appId}/public/data/orders`;
+        let user = null;
+        let unsubscribeLogs = null;
+
+        // Rule 3: Auth Before Operations
+        const authSync = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        };
+
+        onAuthStateChanged(auth, (u) => { 
+            user = u; 
+            console.log("Authenticated as:", u?.uid);
+            // Handle specific hash access if needed
+            if (u && window.location.hash.toUpperCase() === '#MADMIN') app.navigate('dashboard');
+        });
+
+        authSync();
+
+        // Main App Logic
+        window.app = {
+            navigate: (viewId) => {
+                document.querySelectorAll('[id^="view-"]').forEach(el => {
+                    el.classList.add('hidden');
+                    el.classList.remove('fade-in');
+                });
+                
+                const target = document.getElementById(`view-${viewId}`);
+                if (target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('fade-in');
+                }
+
+                if (viewId === 'dashboard') {
+                    app.syncData();
+                } else if (unsubscribeLogs) {
+                    unsubscribeLogs();
+                    unsubscribeLogs = null;
+                }
+            },
+
+            init: () => {
+                const select = document.getElementById('letterSelect');
+                if (select) {
+                    select.innerHTML = '';
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+                        const opt = document.createElement('option');
+                        opt.value = l;
+                        opt.innerText = `Letter ${l}`;
+                        select.appendChild(opt);
+                    });
+                }
+                app.updatePreview();
+                app.navigate('home');
+            },
+
+            updatePreview: () => {
+                const letter = document.getElementById('letterSelect').value || 'A';
+                const color = document.getElementById('colorSelect').value;
+                const previewText = document.getElementById('letterPreview');
+                if (previewText) {
+                    previewText.innerText = letter;
+                    previewText.style.color = color;
+                }
+            },
+
+            createOrder: async (e) => {
+                e.preventDefault();
+                if (!user) return;
+
+                const name = document.getElementById('studentName').value;
+                const letter = document.getElementById('letterSelect').value;
+                const colorHex = document.getElementById('colorSelect').value;
+                const colorText = document.getElementById('colorSelect').selectedOptions[0].text;
+                const code = "Y-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.innerText = "Processing...";
+
+                try {
+                    // PERSISTENT CLOUD SAVE
+                    await addDoc(collection(db, DB_PATH), {
+                        code,
+                        studentName: name,
+                        letter,
+                        colorText,
+                        colorHex,
+                        timestamp: new Date().toISOString()
+                    });
+
+                    document.getElementById('displayCode').innerText = code;
+                    app.navigate('success');
+                    document.getElementById('studentName').value = '';
+                } catch (err) {
+                    console.error("Cloud Error:", err);
+                    alert("Order failed. Please check connection.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span>Place Royal Order</span><i class="fa-solid fa-feather-pointed"></i>`;
+                }
+            },
+
+            adminLogin: (e) => {
+                e.preventDefault();
+                const input = document.getElementById('adminPass').value;
+                // MADMIN Logic
+                if (input === 'MADMIN') {
+                    app.navigate('dashboard');
+                    document.getElementById('adminPass').value = '';
+                } else {
+                    alert('Access Denied: Incorrect Master Password');
+                }
+            },
+
+            logout: () => {
+                window.location.hash = '';
+                app.navigate('home');
+            },
+
+            syncData: () => {
+                if (!user) return;
+                const tbody = document.getElementById('ordersTableBody');
+                const countText = document.getElementById('orderCount');
+                
+                if (unsubscribeLogs) unsubscribeLogs();
+
+                const q = query(collection(db, DB_PATH));
+                unsubscribeLogs = onSnapshot(q, (snapshot) => {
+                    let orders = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                    
+                    // Sort locally as per Rule 2
+                    orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    tbody.innerHTML = '';
+                    countText.innerText = `${orders.length} orders retrieved from cloud`;
+
+                    if (orders.length === 0) {
+                        document.getElementById('emptyState').classList.remove('hidden');
+                    } else {
+                        document.getElementById('emptyState').classList.add('hidden');
+                    }
+
+                    orders.forEach(ord => {
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-purple-50 transition border-b border-gray-100";
+                        tr.innerHTML = `
+                            <td class="p-4 font-mono font-bold text-purple-900">${ord.code}</td>
+                            <td class="p-4 font-semibold text-sm">${ord.studentName}</td>
+                            <td class="p-4 text-xs font-bold" style="color: ${ord.colorHex}">${ord.colorText} ${ord.letter}</td>
+                            <td class="p-4 text-[10px] text-gray-400">${new Date(ord.timestamp).toLocaleString()}</td>
+                            <td class="p-4 text-right">
+                                <button onclick="app.archive('${ord.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold uppercase px-2 py-1">
+                                    Done
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }, (err) => console.error("Snapshot Error:", err));
+            },
+
+            archive: async (docId) => {
+                if (confirm("Remove this order from the archives?")) {
+                    try {
+                        await deleteDoc(doc(db, DB_PATH, docId));
+                    } catch (err) {
+                        console.error("Archive Failed:", err);
+                    }
+                }
+            }
+        };
+
+        // Boot
+        window.addEventListener('load', () => app.init());
+    </script>
+</body>
+</html>
+
