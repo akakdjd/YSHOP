@@ -3,404 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yahia Shop | Royal Edition</title>
+    <title>YAHIA | The Royal Scriptorium</title>
     
-    <!-- External Dependencies -->
+    <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,900;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        :root { --purple: #4c1d95; --gold: #fbbf24; --paper: #f5f5dc; }
+        :root { 
+            --royal-purple: #2d1b4e; 
+            --accent-gold: #c5a059; 
+            --canvas-bg: #faf9f6;
+        }
+
         body { 
-            font-family: 'Poppins', sans-serif; 
-            background-color: var(--paper);
-            background-image: radial-gradient(#d4b483 0.8px, transparent 0.8px);
-            background-size: 24px 24px;
-            margin: 0;
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--canvas-bg);
+            color: var(--royal-purple);
             overflow-x: hidden;
         }
-        .serif-bold { font-family: 'Playfair Display', serif; }
-        .glass { 
-            background: rgba(255, 255, 255, 0.98); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(76, 29, 149, 0.15); 
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+        .serif { font-family: 'Bodoni Moda', serif; }
+
+        /* Glassmorphism & Depth */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 30px 60px -12px rgba(45, 27, 78, 0.12);
         }
-        .preview-box {
-            aspect-ratio: 1/1;
-            background: #fffef0;
-            border: 10px double var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border-radius: 1rem;
+
+        /* Gold Gradient Button */
+        .btn-gold {
+            background: linear-gradient(135deg, #c5a059 0%, #a37e3d 100%);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            letter-spacing: 0.1em;
         }
-        .btn-royal {
-            background-color: var(--purple);
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(163, 126, 61, 0.5);
+            filter: brightness(1.1);
         }
-        .btn-royal:hover { 
-            transform: translateY(-3px); 
-            filter: brightness(1.2);
-            box-shadow: 0 10px 15px -3px rgba(76, 29, 149, 0.4);
+
+        /* Custom Input Styling */
+        input, select {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(45, 27, 78, 0.1);
+            transition: all 0.3s ease;
         }
+        input:focus, select:focus {
+            border-color: var(--accent-gold);
+            background: white;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
+        }
+
         .hidden { display: none !important; }
-        .view-anim { animation: slideUp 0.4s ease-out forwards; }
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(20px); } 
-            to { opacity: 1; transform: translateY(0); } 
+
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
+        .animate-view { animation: fadeInScale 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--canvas-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Sticky Navigation -->
-    <header class="bg-[#4c1d95] text-white p-4 shadow-2xl border-b-2 border-[#fbbf24] flex justify-between items-center sticky top-0 z-[100]">
-        <div class="flex items-center gap-3 cursor-pointer group" id="nav-logo">
-            <div class="bg-[#fbbf24] p-2 rounded-lg group-hover:rotate-12 transition-transform">
-                <i class="fa-solid fa-scroll text-[#4c1d95] text-xl"></i>
-            </div>
-            <h1 class="text-xl font-black tracking-widest uppercase">Yahia <span class="text-[#fbbf24]">Shop</span></h1>
+    <!-- Global Navigation -->
+    <nav class="sticky top-0 z-50 w-full px-8 py-6 flex justify-between items-center backdrop-blur-md border-b border-black/5">
+        <div class="flex items-center gap-4 cursor-pointer group" onclick="router.goto('home')">
+            <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black italic serif text-xl group-hover:bg-[#c5a059] transition-colors">Y</div>
+            <span class="font-black uppercase tracking-[0.3em] text-sm">Yahia <span class="text-[#c5a059]">Collection</span></span>
         </div>
-        <button id="nav-admin-trigger" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full border border-purple-400 text-[10px] font-bold tracking-[0.2em] uppercase transition-all flex items-center gap-2">
-            <i class="fa-solid fa-crown text-[#fbbf24]"></i> Admin Portal
-        </button>
-    </header>
-
-    <!-- Main Viewport -->
-    <main class="flex-grow flex items-center justify-center p-6 relative">
         
-        <!-- VIEW: HOME (The Shop) -->
-        <div id="view-home" class="view-anim w-full max-w-5xl grid grid-cols-1 lg:grid-cols-5 gap-8">
-            <!-- Form Section -->
-            <div class="lg:col-span-3 glass p-10 rounded-3xl">
-                <div class="mb-8">
-                    <h2 class="text-4xl font-black text-gray-900 serif-bold leading-tight">Imperial Letter <br><span class="text-purple-800">Customization</span></h2>
-                    <p class="text-gray-500 mt-2 text-sm">Every stroke is a testament to your academic legacy.</p>
+        <button id="admin-gate-btn" class="text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-transparent hover:border-[#c5a059] transition-all pb-1">
+            Portal Access
+        </button>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-12">
+        
+        <!-- VIEW: HOME (The Atelier) -->
+        <div id="view-home" class="animate-view w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Customizer Side -->
+            <div class="lg:col-span-7 space-y-10">
+                <div class="space-y-2">
+                    <h1 class="text-6xl md:text-8xl serif font-black tracking-tight leading-none">The Luxury <br><span class="italic text-[#c5a059]">Manuscript</span></h1>
+                    <p class="text-gray-400 font-light max-w-md uppercase text-[10px] tracking-widest pt-4">Bespoke identity crafting for the modern academic elite.</p>
                 </div>
 
-                <div class="space-y-6">
-                    <div class="group">
-                        <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Master Student Name</label>
-                        <input type="text" id="order-name" placeholder="Enter your full name..." 
-                            class="w-full px-5 py-4 rounded-xl border-2 border-gray-100 outline-none focus:border-purple-500 transition-colors text-lg font-medium">
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Select Initial</label>
-                            <select id="order-letter" class="w-full p-4 rounded-xl border-2 border-gray-100 bg-white cursor-pointer font-bold text-gray-700 focus:border-purple-500 outline-none">
-                                <!-- Populated by JS -->
-                            </select>
+                <div class="glass-card p-8 md:p-10 rounded-[2rem] space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Patron Name</label>
+                            <input type="text" id="order-name" placeholder="Full legal name" class="w-full p-4 rounded-xl text-lg font-medium">
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Royal Ink Shade</label>
-                            <select id="order-color" class="w-full p-4 rounded-xl border-2 border-gray-100 bg-white cursor-pointer font-bold text-gray-700 focus:border-purple-500 outline-none">
-                                <option value="#4c1d95">Royal Purple</option>
-                                <option value="#fbbf24">Imperial Gold</option>
-                                <option value="#000000">Midnight Black</option>
-                                <option value="#7c2d12">Ancient Bronze</option>
-                                <option value="#1e3a8a">Deep Sapphire</option>
-                            </select>
+                        <div class="space-y-2">
+                            <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Sigil Character</label>
+                            <select id="order-letter" class="w-full p-4 rounded-xl text-lg font-bold appearance-none cursor-pointer"></select>
                         </div>
                     </div>
 
-                    <button id="order-submit-btn" class="w-full btn-royal font-black py-5 rounded-2xl shadow-xl uppercase text-sm tracking-[0.3em] flex justify-center items-center gap-3 mt-8 group">
-                        <span>Authenticate & Place Order</span> 
-                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    <div class="space-y-2">
+                        <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Imperial Palette</label>
+                        <div class="flex gap-4" id="color-picker">
+                            <button data-color="#2d1b4e" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#2d1b4e] border-2 border-white transition-all"></button>
+                            <button data-color="#c5a059" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#c5a059] border-2 border-white transition-all"></button>
+                            <button data-color="#1a1a1a" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#1a1a1a] border-2 border-white transition-all"></button>
+                            <button data-color="#721c24" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#721c24] border-2 border-white transition-all"></button>
+                        </div>
+                    </div>
+
+                    <button id="order-submit-btn" class="w-full btn-gold py-6 rounded-2xl font-black uppercase text-xs shadow-2xl">
+                        Authorize Order & Archive
                     </button>
                 </div>
             </div>
 
-            <!-- Preview Section -->
-            <div class="lg:col-span-2 glass p-10 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#fbbf24] to-transparent"></div>
-                <h3 class="text-[11px] font-black uppercase text-purple-900 mb-8 tracking-[0.4em]">Visual Manuscript</h3>
-                
-                <div class="preview-box w-full max-w-[320px] shadow-inner">
-                    <span id="preview-text" class="text-[10rem] serif-bold text-[#4c1d95] transition-all duration-500 drop-shadow-2xl">A</span>
-                    <div class="absolute bottom-4 right-4 text-[40px] opacity-10 rotate-12">
-                        <i class="fa-solid fa-crown"></i>
+            <!-- Preview Side -->
+            <div class="lg:col-span-5 flex flex-col items-center">
+                <div class="relative w-full aspect-[4/5] glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12">
+                    <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png')"></div>
+                    <div id="preview-box" class="text-[18rem] md:text-[22rem] serif font-black leading-none drop-shadow-2xl transition-all duration-700" style="color: #2d1b4e">A</div>
+                    <div class="absolute bottom-10 flex flex-col items-center opacity-30">
+                        <div class="w-12 h-[1px] bg-black mb-4"></div>
+                        <span class="text-[9px] uppercase tracking-[0.5em] font-bold">Authenticated Ed.</span>
                     </div>
                 </div>
-                
-                <p class="mt-8 text-[11px] text-gray-400 uppercase tracking-[0.2em] font-bold">Authorized Edition № 001</p>
             </div>
         </div>
 
-        <!-- VIEW: SUCCESS (Order Receipt) -->
-        <div id="view-success" class="view-anim hidden w-full max-w-lg glass p-12 rounded-3xl text-center shadow-2xl border-t-8 border-green-500">
-            <div class="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
-                <i class="fa-solid fa-check-double text-5xl"></i>
+        <!-- VIEW: SUCCESS -->
+        <div id="view-success" class="animate-view hidden w-full max-w-xl text-center space-y-8">
+            <div class="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                <i class="fa-solid fa-feather-pointed text-4xl"></i>
             </div>
-            <h2 class="text-3xl font-black serif-bold text-gray-900 mb-4">Imperial Order Received</h2>
-            <p class="text-gray-500 mb-8 font-medium">Your request has been permanently inscribed in our digital archives.</p>
-            
-            <div class="bg-[#4c1d95] text-[#fbbf24] p-8 rounded-2xl border-4 border-double border-[#fbbf24] mb-8 shadow-2xl">
-                <span class="text-[11px] uppercase font-black tracking-[0.5em] opacity-70">Manifest Tracking ID</span>
-                <h1 id="success-code" class="text-6xl font-black mt-2 tracking-tighter">#Y-PRO</h1>
+            <div class="space-y-2">
+                <h2 class="text-4xl font-black serif">Inscribed Successfully</h2>
+                <p class="text-gray-400 text-sm">Your order has been logged into the Imperial Ledger.</p>
             </div>
-            
-            <button id="success-home-btn" class="text-purple-700 font-black uppercase text-xs tracking-widest hover:bg-purple-50 px-6 py-3 rounded-xl transition-colors">
-                Back to Scriptorium
-            </button>
+            <div class="glass-card p-10 rounded-[2.5rem] border-2 border-dashed border-[#c5a059]">
+                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Tracking Reference</span>
+                <h1 id="success-code" class="text-6xl font-black serif text-[#c5a059] mt-2">#Y-000</h1>
+            </div>
+            <button onclick="router.goto('home')" class="text-[10px] font-black uppercase tracking-[0.3em] hover:text-[#c5a059] transition-colors">Start New Commission</button>
         </div>
 
-        <!-- VIEW: LOGIN (Gatekeeper) -->
-        <div id="view-login" class="view-anim hidden w-full max-w-md glass p-12 rounded-3xl text-center shadow-2xl">
-            <div class="mb-8">
-                <div class="w-16 h-16 bg-purple-100 text-purple-900 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-3">
-                    <i class="fa-solid fa-vault text-3xl"></i>
-                </div>
-                <h2 class="text-3xl font-black serif-bold">Archive Access</h2>
-                <p class="text-gray-400 text-xs mt-2 uppercase tracking-widest">Personnel Only</p>
+        <!-- VIEW: LOGIN -->
+        <div id="view-login" class="animate-view hidden w-full max-w-md glass-card p-12 rounded-[2.5rem] text-center shadow-2xl">
+            <div class="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-key text-xl"></i>
             </div>
-            <div class="space-y-6">
-                <input type="password" id="login-input" placeholder="••••••••" 
-                    class="w-full p-5 rounded-2xl border-2 border-gray-100 text-center tracking-[1em] text-2xl outline-none focus:border-purple-500 font-black">
-                <button id="login-confirm-btn" class="w-full btn-royal py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em]">Unlock Records</button>
-                <button onclick="router.goto('home')" class="text-gray-400 text-[10px] uppercase font-bold hover:text-gray-600">Cancel Request</button>
-            </div>
+            <h2 class="text-2xl font-black uppercase tracking-widest mb-2">Gatekeeper</h2>
+            <p class="text-gray-400 text-[10px] uppercase tracking-widest mb-8">Authorised Personnel Only</p>
+            <input type="password" id="login-input" placeholder="ACCESS KEY" class="w-full p-5 rounded-2xl text-center tracking-[1em] text-xl font-bold mb-6">
+            <button id="login-confirm-btn" class="w-full btn-gold py-5 rounded-2xl font-black uppercase text-xs">Unlock Ledger</button>
         </div>
 
-        <!-- VIEW: DASHBOARD (Admin Console) -->
-        <div id="view-dashboard" class="view-anim hidden w-full max-w-6xl glass p-8 rounded-3xl h-[85vh] flex flex-col shadow-2xl border-t-8 border-[#fbbf24]">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b pb-6">
+        <!-- VIEW: DASHBOARD -->
+        <div id="view-dashboard" class="animate-view hidden w-full max-w-7xl h-[85vh] flex flex-col space-y-6">
+            <div class="flex justify-between items-end px-4">
                 <div>
-                    <h2 class="text-3xl font-black text-purple-900 serif-bold">Digital Ledger</h2>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1" id="dash-stats">Syncing with global clusters...</p>
+                    <h2 class="text-5xl font-black serif">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
+                    <p id="dash-stats" class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-2">Connecting to secure vault...</p>
                 </div>
-                <button id="dash-logout-btn" class="bg-red-50 hover:bg-red-100 text-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">
-                    Secure Logout
-                </button>
+                <button onclick="router.goto('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#c5a059] transition-colors">Sign Out</button>
             </div>
             
-            <div class="overflow-auto flex-grow rounded-2xl border-2 border-gray-50 bg-gray-50/30">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-purple-900 text-[#fbbf24] sticky top-0 z-[10]">
-                        <tr>
-                            <th class="p-5 text-[10px] uppercase font-black tracking-widest">Order ID</th>
-                            <th class="p-5 text-[10px] uppercase font-black tracking-widest">Student Identity</th>
-                            <th class="p-5 text-[10px] uppercase font-black tracking-widest text-center">Manuscript</th>
-                            <th class="p-5 text-[10px] uppercase font-black tracking-widest text-right">Fulfillment</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dash-order-list" class="divide-y divide-gray-100">
-                        <!-- Real-time data injection -->
-                    </tbody>
-                </table>
-                <div id="dash-empty" class="text-center py-32 text-gray-300 flex flex-col items-center gap-4">
-                    <i class="fa-solid fa-inbox text-5xl"></i>
-                    <p class="italic font-medium">The ledger is currently empty.</p>
+            <div class="flex-grow glass-card rounded-[3rem] overflow-hidden border border-black/5 flex flex-col">
+                <div class="overflow-auto flex-grow">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-black/5">
+                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400">Ref</th>
+                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400">Identity</th>
+                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400 text-center">Sigil</th>
+                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400 text-right">Operation</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dash-order-list" class="divide-y divide-black/5">
+                            <!-- Injected -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Console Log -->
-    <div id="sys-console" class="bg-black/90 text-[#00ff41] p-3 text-[9px] font-mono h-24 overflow-auto border-t-2 border-purple-900/50 backdrop-blur-md">
-        <div class="opacity-50 tracking-widest mb-1 border-b border-white/10 pb-1 uppercase">Yahia OS v4.0.2 Status</div>
-        <div id="console-inner">Initializing Secure Handshake...</div>
+    <!-- Dev Console -->
+    <div id="sys-console" class="fixed bottom-0 left-0 w-full bg-black text-[#00ff41] p-2 text-[8px] font-mono opacity-0 hover:opacity-100 transition-opacity z-[100] h-8 overflow-hidden">
+        <div id="console-inner">> System Ready.</div>
     </div>
 
-    <!-- System Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global State & Logger
-        const sysLog = (msg) => {
-            const inner = document.getElementById('console-inner');
-            const time = new Date().toLocaleTimeString();
-            inner.innerHTML += `<div class="mb-0.5"><span class="opacity-30">[${time}]</span> ${msg}</div>`;
-            document.getElementById('sys-console').scrollTop = inner.scrollHeight;
+        // CONFIGURATION
+        const manualConfig = {
+            apiKey: "AIzaSyDdtTa-kYLwkWdqw79w0M6Xm93OtBGWRWM",
+            authDomain: "yahiashop.firebaseapp.com",
+            projectId: "yahiashop",
+            storageBucket: "yahiashop.firebasestorage.app",
+            messagingSenderId: "776328811720",
+            appId: "1:776328811720:web:e69431d24c8c0d81c081fd",
+            measurementId: "G-V6VBBH14RY"
         };
 
-        // Firebase Configuration
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-shop-pro-v2';
-        const fApp = initializeApp(firebaseConfig);
+        const config = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : manualConfig;
+        const appIDStr = typeof __app_id !== 'undefined' ? __app_id : 'yahiashop-prod';
+        
+        const fApp = initializeApp(config);
         const auth = getAuth(fApp);
         const db = getFirestore(fApp);
-        const COLLECTION_REF = `artifacts/${appId}/public/data/orders`;
+        
+        // Path adjusted for standard security compliance
+        const COLLECTION_REF = `artifacts/${appIDStr}/public/data/orders`;
 
         let activeUser = null;
         let realtimeUnsubscribe = null;
+        let selectedColor = "#2d1b4e";
 
-        // AUTH INITIALIZATION
-        signInAnonymously(auth)
-            .then(() => sysLog("Handshake Complete. Anonymous session established."))
-            .catch(err => sysLog("Handshake Failed: " + err.message));
+        // Auth
+        signInAnonymously(auth).catch((e) => console.error("Cloud Access Denied:", e.message));
+        onAuthStateChanged(auth, u => { activeUser = u; });
 
-        onAuthStateChanged(auth, (user) => {
-            activeUser = user;
-            if(user) sysLog(`Cloud Connected: Session ID ${user.uid.substr(0,8)}...`);
-        });
-
-        // APP ROUTER
+        // Router
         window.router = {
             goto: (viewId) => {
-                sysLog(`Routing to interface: ${viewId}`);
                 document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-                const target = document.getElementById('view-' + viewId);
-                if(target) target.classList.remove('hidden');
-
-                if (viewId === 'dashboard') {
-                    router.syncLedger();
-                } else if (realtimeUnsubscribe) {
-                    realtimeUnsubscribe();
-                    realtimeUnsubscribe = null;
-                }
+                document.getElementById('view-' + viewId).classList.remove('hidden');
+                if (viewId === 'dashboard') router.syncLedger();
+                else if (realtimeUnsubscribe) { realtimeUnsubscribe(); realtimeUnsubscribe = null; }
             },
-            
             syncLedger: () => {
-                if (!activeUser) return sysLog("Sync Aborted: Authentication Required.");
                 const listEl = document.getElementById('dash-order-list');
-                const emptyEl = document.getElementById('dash-empty');
                 const statsEl = document.getElementById('dash-stats');
-
                 if (realtimeUnsubscribe) realtimeUnsubscribe();
-
                 realtimeUnsubscribe = onSnapshot(collection(db, COLLECTION_REF), (snap) => {
-                    sysLog(`Cloud Sync Success. Stream contains ${snap.size} objects.`);
-                    statsEl.innerText = `${snap.size} ACTIVE RECORDS IN CLOUD`;
                     listEl.innerHTML = '';
-                    
-                    if (snap.empty) {
-                        emptyEl.classList.remove('hidden');
-                    } else {
-                        emptyEl.classList.add('hidden');
-                        
-                        // Sort locally as per instructions
-                        let orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                        orders.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                        orders.forEach(item => {
-                            const tr = document.createElement('tr');
-                            tr.className = "hover:bg-white transition-colors group";
-                            tr.innerHTML = `
-                                <td class="p-5 font-mono font-black text-purple-900 tracking-tighter">${item.code}</td>
-                                <td class="p-5">
-                                    <div class="font-black text-gray-800 text-sm">${item.name}</div>
-                                    <div class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">${new Date(item.timestamp).toLocaleString()}</div>
-                                </td>
-                                <td class="p-5 text-center">
-                                    <span class="inline-block w-10 h-10 leading-10 rounded-lg text-lg serif-bold border-2" style="color:${item.color}; border-color:${item.color}">
-                                        ${item.letter}
-                                    </span>
-                                </td>
-                                <td class="p-5 text-right">
-                                    <button onclick="window.fulfillOrder('${item.id}')" class="bg-green-50 text-green-600 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all">
-                                        FULFILL
-                                    </button>
-                                </td>
-                            `;
-                            listEl.appendChild(tr);
-                        });
-                    }
-                }, (err) => sysLog("Sync Error: " + err.message));
+                    statsEl.innerText = `${snap.size} ARCHIVED ENTRIES`;
+                    snap.forEach(d => {
+                        const item = d.data();
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-white/50 transition-colors";
+                        tr.innerHTML = `
+                            <td class="p-8 font-mono font-bold text-xs">#${item.code}</td>
+                            <td class="p-8">
+                                <div class="font-black serif text-xl">${item.name}</div>
+                                <div class="text-[9px] uppercase tracking-widest text-gray-400 mt-1">${new Date(item.timestamp).toDateString()}</div>
+                            </td>
+                            <td class="p-8 text-center">
+                                <span class="serif font-black text-4xl" style="color:${item.color}">${item.letter}</span>
+                            </td>
+                            <td class="p-8 text-right">
+                                <button onclick="window.fulfillOrder('${d.id}')" class="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600">Archive</button>
+                            </td>
+                        `;
+                        listEl.appendChild(tr);
+                    });
+                }, (err) => {
+                    console.error("Firestore error:", err);
+                    statsEl.innerText = "Error syncing with vault.";
+                });
             }
         };
 
-        // EXPOSED DYNAMIC HANDLERS
-        window.fulfillOrder = async (docId) => {
-            try {
-                await deleteDoc(doc(db, COLLECTION_REF, docId));
-                sysLog("Order Fulfilled. Database Updated.");
-            } catch (err) {
-                sysLog("Fulfillment Error: " + err.message);
-            }
+        window.fulfillOrder = async (id) => { 
+            if(confirm("Permanently archive this commission?")) await deleteDoc(doc(db, COLLECTION_REF, id)); 
         };
 
-        // UI ELEMENT BINDING
-        const setupUI = () => {
+        const init = () => {
             const letterInput = document.getElementById('order-letter');
-            const colorInput = document.getElementById('order-color');
             const nameInput = document.getElementById('order-name');
-            const previewText = document.getElementById('preview-text');
+            const previewText = document.getElementById('preview-box');
+            const colorButtons = document.querySelectorAll('#color-picker button');
 
-            // Populate Letter Select
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
                 const opt = document.createElement('option');
-                opt.value = l; opt.innerText = "Initial " + l;
+                opt.value = l; opt.innerText = "Manuscript " + l;
                 letterInput.appendChild(opt);
             });
 
-            // Preview Listeners (LIVE UPDATES)
-            letterInput.addEventListener('change', () => {
-                previewText.innerText = letterInput.value;
-                sysLog(`Preview Alpha: ${letterInput.value}`);
+            letterInput.onchange = () => { previewText.innerText = letterInput.value; };
+            
+            colorButtons.forEach(btn => {
+                btn.onclick = () => {
+                    colorButtons.forEach(b => b.classList.remove('ring-black', 'scale-110'));
+                    btn.classList.add('ring-black', 'scale-110');
+                    selectedColor = btn.dataset.color;
+                    previewText.style.color = selectedColor;
+                };
             });
+            colorButtons[0].click();
 
-            colorInput.addEventListener('change', () => {
-                previewText.style.color = colorInput.value;
-                sysLog(`Preview Color: ${colorInput.value}`);
-            });
-
-            // Global Clicks
-            document.getElementById('nav-logo').onclick = () => router.goto('home');
-            document.getElementById('nav-admin-trigger').onclick = () => router.goto('login');
-            document.getElementById('success-home-btn').onclick = () => router.goto('home');
-            document.getElementById('dash-logout-btn').onclick = () => router.goto('home');
-
-            // Order Submission
+            document.getElementById('admin-gate-btn').onclick = () => router.goto('login');
+            
             document.getElementById('order-submit-btn').onclick = async () => {
-                if (!nameInput.value.trim()) return alert("Identity required for Imperial Order.");
-                if (!activeUser) return alert("System still warming up. Wait 2 seconds.");
-
-                const code = "Y-" + Math.random().toString(36).substr(2, 4).toUpperCase();
-                sysLog(`Constructing Manifest ${code}...`);
-
+                if (!nameInput.value.trim()) return alert("Provide a patron identity.");
+                const code = Math.random().toString(36).substr(2, 5).toUpperCase();
                 try {
                     await addDoc(collection(db, COLLECTION_REF), {
-                        code,
-                        name: nameInput.value,
-                        letter: letterInput.value,
-                        color: colorInput.value,
-                        timestamp: Date.now()
+                        code, name: nameInput.value, letter: letterInput.value, color: selectedColor, timestamp: Date.now()
                     });
-                    
                     document.getElementById('success-code').innerText = "#" + code;
                     router.goto('success');
-                    
-                    // Reset
                     nameInput.value = '';
-                    sysLog("Manifest Published to Cloud.");
-                } catch (err) {
-                    sysLog("Publish Error: " + err.message);
+                } catch (e) { 
+                    console.error(e);
+                    alert("Vault Connection Error. Check your internet or Firebase Rules."); 
                 }
             };
 
-            // Login Logic
             document.getElementById('login-confirm-btn').onclick = () => {
-                const pass = document.getElementById('login-input').value;
-                if (pass === 'MADMIN') {
+                if (document.getElementById('login-input').value === 'MADMIN') {
                     router.goto('dashboard');
                     document.getElementById('login-input').value = '';
-                } else {
-                    sysLog("Unauthorized Access Attempt Blocked.");
-                    alert("INVALID CREDENTIALS.");
-                }
+                } else { alert("ACCESS DENIED"); }
             };
 
             router.goto('home');
-            sysLog("UI Interaction Layer Ready.");
         };
 
-        // Start App
-        window.addEventListener('load', setupUI);
-
+        window.onload = init;
     </script>
 </body>
 </html>
