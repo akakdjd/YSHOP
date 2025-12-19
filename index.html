@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,303 +5,402 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yahia Shop | Royal Edition</title>
     
-    <!-- Scripts -->
+    <!-- External Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --purple: #4c1d95;
-            --gold: #fbbf24;
-            --paper: #f5f5dc;
-        }
-
+        :root { --purple: #4c1d95; --gold: #fbbf24; --paper: #f5f5dc; }
         body { 
             font-family: 'Poppins', sans-serif; 
             background-color: var(--paper);
-            background-image: radial-gradient(#d4b483 0.5px, transparent 0.5px);
-            background-size: 20px 20px;
+            background-image: radial-gradient(#d4b483 0.8px, transparent 0.8px);
+            background-size: 24px 24px;
+            margin: 0;
+            overflow-x: hidden;
         }
-        
         .serif-bold { font-family: 'Playfair Display', serif; }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(76, 29, 149, 0.15);
+        .glass { 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(76, 29, 149, 0.15); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-
         .preview-box {
             aspect-ratio: 1/1;
             background: #fffef0;
-            border: 8px double var(--gold);
+            border: 10px double var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            box-shadow: inset 0 0 40px rgba(212, 180, 131, 0.2);
+            border-radius: 1rem;
         }
-        
-        .preview-letter {
-            font-size: 8rem;
-            line-height: 1;
-            z-index: 10;
-        }
-
         .btn-royal {
             background-color: var(--purple);
             color: var(--gold);
             border: 2px solid var(--gold);
-            transition: all 0.2s;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .btn-royal:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
+        .btn-royal:hover { 
+            transform: translateY(-3px); 
+            filter: brightness(1.2);
+            box-shadow: 0 10px 15px -3px rgba(76, 29, 149, 0.4);
         }
-
         .hidden { display: none !important; }
+        .view-anim { animation: slideUp 0.4s ease-out forwards; }
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
         
-        .fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Navigation -->
-    <nav class="bg-[#4c1d95] text-white p-4 shadow-lg border-b-2 border-[#fbbf24] flex justify-between items-center">
-        <div class="flex items-center gap-2 cursor-pointer" id="logo">
-            <i class="fa-solid fa-scroll text-[#fbbf24] text-2xl"></i>
-            <h1 class="text-xl font-bold tracking-wider uppercase">Yahia <span class="text-[#fbbf24]">Shop</span></h1>
+    <!-- Sticky Navigation -->
+    <header class="bg-[#4c1d95] text-white p-4 shadow-2xl border-b-2 border-[#fbbf24] flex justify-between items-center sticky top-0 z-[100]">
+        <div class="flex items-center gap-3 cursor-pointer group" id="nav-logo">
+            <div class="bg-[#fbbf24] p-2 rounded-lg group-hover:rotate-12 transition-transform">
+                <i class="fa-solid fa-scroll text-[#4c1d95] text-xl"></i>
+            </div>
+            <h1 class="text-xl font-black tracking-widest uppercase">Yahia <span class="text-[#fbbf24]">Shop</span></h1>
         </div>
-        <button id="navAdminBtn" class="text-xs text-purple-200 hover:text-[#fbbf24] flex items-center gap-2 px-3 py-1 border border-purple-400 rounded">
-            <i class="fa-solid fa-crown"></i> Admin Access
+        <button id="nav-admin-trigger" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full border border-purple-400 text-[10px] font-bold tracking-[0.2em] uppercase transition-all flex items-center gap-2">
+            <i class="fa-solid fa-crown text-[#fbbf24]"></i> Admin Portal
         </button>
-    </nav>
+    </header>
 
-    <!-- App Container -->
-    <main id="main-content" class="flex-grow flex items-center justify-center p-4">
+    <!-- Main Viewport -->
+    <main class="flex-grow flex items-center justify-center p-6 relative">
         
-        <!-- VIEW: HOME (FORM + PREVIEW) -->
-        <div id="view-home" class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 fade-in">
-            <!-- Left: Order Form -->
-            <div class="glass-panel p-8 rounded-2xl shadow-xl">
-                <h2 class="text-3xl font-extrabold text-gray-900 serif-bold mb-2">Order Your Letter</h2>
-                <p class="text-gray-500 text-sm mb-6 italic">Handcrafted with royal precision.</p>
+        <!-- VIEW: HOME (The Shop) -->
+        <div id="view-home" class="view-anim w-full max-w-5xl grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <!-- Form Section -->
+            <div class="lg:col-span-3 glass p-10 rounded-3xl">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-black text-gray-900 serif-bold leading-tight">Imperial Letter <br><span class="text-purple-800">Customization</span></h2>
+                    <p class="text-gray-500 mt-2 text-sm">Every stroke is a testament to your academic legacy.</p>
+                </div>
 
-                <form id="orderForm" class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Student Name</label>
-                        <input type="text" id="inputName" required placeholder="Ex: Ahmed Mohamed" 
-                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#4c1d95] outline-none">
+                <div class="space-y-6">
+                    <div class="group">
+                        <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Master Student Name</label>
+                        <input type="text" id="order-name" placeholder="Enter your full name..." 
+                            class="w-full px-5 py-4 rounded-xl border-2 border-gray-100 outline-none focus:border-purple-500 transition-colors text-lg font-medium">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Letter</label>
-                            <select id="inputLetter" class="w-full p-3 rounded-lg border border-gray-300 bg-white">
-                                <!-- A-Z populated via JS -->
+                            <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Select Initial</label>
+                            <select id="order-letter" class="w-full p-4 rounded-xl border-2 border-gray-100 bg-white cursor-pointer font-bold text-gray-700 focus:border-purple-500 outline-none">
+                                <!-- Populated by JS -->
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase text-purple-900 mb-1">Ink Color</label>
-                            <select id="inputColor" class="w-full p-3 rounded-lg border border-gray-300 bg-white">
+                            <label class="block text-[11px] font-extrabold uppercase text-purple-900 mb-2 tracking-widest">Royal Ink Shade</label>
+                            <select id="order-color" class="w-full p-4 rounded-xl border-2 border-gray-100 bg-white cursor-pointer font-bold text-gray-700 focus:border-purple-500 outline-none">
                                 <option value="#4c1d95">Royal Purple</option>
                                 <option value="#fbbf24">Imperial Gold</option>
-                                <option value="#000000">Classic Black</option>
-                                <option value="#7c2d12">Rich Brown</option>
+                                <option value="#000000">Midnight Black</option>
+                                <option value="#7c2d12">Ancient Bronze</option>
+                                <option value="#1e3a8a">Deep Sapphire</option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full btn-royal font-bold py-4 rounded-xl shadow-lg uppercase text-sm flex justify-center items-center gap-2">
-                        <span>Place Order</span>
-                        <i class="fa-solid fa-feather-pointed"></i>
+                    <button id="order-submit-btn" class="w-full btn-royal font-black py-5 rounded-2xl shadow-xl uppercase text-sm tracking-[0.3em] flex justify-center items-center gap-3 mt-8 group">
+                        <span>Authenticate & Place Order</span> 
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                </form>
-            </div>
-
-            <!-- Right: Preview Window -->
-            <div class="glass-panel p-8 rounded-2xl flex flex-col items-center justify-center">
-                <h3 class="text-xs font-bold uppercase text-purple-900 mb-4 tracking-widest">Live Preview</h3>
-                <div class="preview-box w-full max-w-[280px] rounded-lg">
-                    <span id="previewText" class="preview-letter serif-bold text-[#4c1d95]">A</span>
                 </div>
-                <p class="mt-4 text-xs text-gray-400 italic">"The mark of a scholar"</p>
+            </div>
+
+            <!-- Preview Section -->
+            <div class="lg:col-span-2 glass p-10 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#fbbf24] to-transparent"></div>
+                <h3 class="text-[11px] font-black uppercase text-purple-900 mb-8 tracking-[0.4em]">Visual Manuscript</h3>
+                
+                <div class="preview-box w-full max-w-[320px] shadow-inner">
+                    <span id="preview-text" class="text-[10rem] serif-bold text-[#4c1d95] transition-all duration-500 drop-shadow-2xl">A</span>
+                    <div class="absolute bottom-4 right-4 text-[40px] opacity-10 rotate-12">
+                        <i class="fa-solid fa-crown"></i>
+                    </div>
+                </div>
+                
+                <p class="mt-8 text-[11px] text-gray-400 uppercase tracking-[0.2em] font-bold">Authorized Edition № 001</p>
             </div>
         </div>
 
-        <!-- VIEW: SUCCESS -->
-        <div id="view-success" class="hidden w-full max-w-md glass-panel p-8 rounded-2xl text-center fade-in">
-            <i class="fa-solid fa-circle-check text-6xl text-green-500 mb-4"></i>
-            <h2 class="text-2xl font-bold text-gray-900 serif-bold">Order Received</h2>
-            <div class="my-6 bg-[#4c1d95] text-[#fbbf24] p-6 rounded-xl border-2 border-dashed border-[#fbbf24]">
-                <p class="text-[10px] text-purple-200 uppercase mb-1">Your Tracking ID</p>
-                <h1 id="orderCode" class="text-5xl font-black tracking-widest">#0000</h1>
+        <!-- VIEW: SUCCESS (Order Receipt) -->
+        <div id="view-success" class="view-anim hidden w-full max-w-lg glass p-12 rounded-3xl text-center shadow-2xl border-t-8 border-green-500">
+            <div class="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce">
+                <i class="fa-solid fa-check-double text-5xl"></i>
             </div>
-            <button id="backToHome" class="text-[#4c1d95] font-bold hover:underline">New Order</button>
+            <h2 class="text-3xl font-black serif-bold text-gray-900 mb-4">Imperial Order Received</h2>
+            <p class="text-gray-500 mb-8 font-medium">Your request has been permanently inscribed in our digital archives.</p>
+            
+            <div class="bg-[#4c1d95] text-[#fbbf24] p-8 rounded-2xl border-4 border-double border-[#fbbf24] mb-8 shadow-2xl">
+                <span class="text-[11px] uppercase font-black tracking-[0.5em] opacity-70">Manifest Tracking ID</span>
+                <h1 id="success-code" class="text-6xl font-black mt-2 tracking-tighter">#Y-PRO</h1>
+            </div>
+            
+            <button id="success-home-btn" class="text-purple-700 font-black uppercase text-xs tracking-widest hover:bg-purple-50 px-6 py-3 rounded-xl transition-colors">
+                Back to Scriptorium
+            </button>
         </div>
 
-        <!-- VIEW: LOGIN -->
-        <div id="view-login" class="hidden w-full max-w-sm glass-panel p-8 rounded-2xl text-center fade-in">
-            <h2 class="text-2xl font-bold mb-6 serif-bold uppercase">Admin Vault</h2>
-            <form id="loginForm" class="space-y-4">
-                <input type="password" id="passInput" placeholder="Enter Password" 
-                    class="w-full p-3 rounded-lg border border-gray-300 text-center tracking-widest text-xl">
-                <button type="submit" class="w-full btn-royal py-3 rounded-lg font-bold">Login</button>
-            </form>
-            <button onclick="router.navigate('home')" class="mt-4 text-xs text-gray-400">Cancel</button>
+        <!-- VIEW: LOGIN (Gatekeeper) -->
+        <div id="view-login" class="view-anim hidden w-full max-w-md glass p-12 rounded-3xl text-center shadow-2xl">
+            <div class="mb-8">
+                <div class="w-16 h-16 bg-purple-100 text-purple-900 rounded-2xl flex items-center justify-center mx-auto mb-4 rotate-3">
+                    <i class="fa-solid fa-vault text-3xl"></i>
+                </div>
+                <h2 class="text-3xl font-black serif-bold">Archive Access</h2>
+                <p class="text-gray-400 text-xs mt-2 uppercase tracking-widest">Personnel Only</p>
+            </div>
+            <div class="space-y-6">
+                <input type="password" id="login-input" placeholder="••••••••" 
+                    class="w-full p-5 rounded-2xl border-2 border-gray-100 text-center tracking-[1em] text-2xl outline-none focus:border-purple-500 font-black">
+                <button id="login-confirm-btn" class="w-full btn-royal py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em]">Unlock Records</button>
+                <button onclick="router.goto('home')" class="text-gray-400 text-[10px] uppercase font-bold hover:text-gray-600">Cancel Request</button>
+            </div>
         </div>
 
-        <!-- VIEW: DASHBOARD -->
-        <div id="view-dashboard" class="hidden w-full max-w-5xl glass-panel p-6 rounded-2xl h-[80vh] flex flex-col fade-in">
-            <div class="flex justify-between items-center mb-6 border-b pb-4">
-                <h2 class="text-2xl font-bold text-[#4c1d95] serif-bold">Royal Ledger</h2>
-                <button onclick="router.logout()" class="bg-red-500 text-white px-4 py-2 rounded font-bold text-xs">LOGOUT</button>
+        <!-- VIEW: DASHBOARD (Admin Console) -->
+        <div id="view-dashboard" class="view-anim hidden w-full max-w-6xl glass p-8 rounded-3xl h-[85vh] flex flex-col shadow-2xl border-t-8 border-[#fbbf24]">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b pb-6">
+                <div>
+                    <h2 class="text-3xl font-black text-purple-900 serif-bold">Digital Ledger</h2>
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1" id="dash-stats">Syncing with global clusters...</p>
+                </div>
+                <button id="dash-logout-btn" class="bg-red-50 hover:bg-red-100 text-red-600 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all">
+                    Secure Logout
+                </button>
             </div>
-            <div class="overflow-auto flex-grow">
-                <table class="w-full text-left">
-                    <thead class="bg-purple-100 text-purple-900 sticky top-0">
+            
+            <div class="overflow-auto flex-grow rounded-2xl border-2 border-gray-50 bg-gray-50/30">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-purple-900 text-[#fbbf24] sticky top-0 z-[10]">
                         <tr>
-                            <th class="p-3 text-xs uppercase">Code</th>
-                            <th class="p-3 text-xs uppercase">Student</th>
-                            <th class="p-3 text-xs uppercase">Item</th>
-                            <th class="p-3 text-xs uppercase">Action</th>
+                            <th class="p-5 text-[10px] uppercase font-black tracking-widest">Order ID</th>
+                            <th class="p-5 text-[10px] uppercase font-black tracking-widest">Student Identity</th>
+                            <th class="p-5 text-[10px] uppercase font-black tracking-widest text-center">Manuscript</th>
+                            <th class="p-5 text-[10px] uppercase font-black tracking-widest text-right">Fulfillment</th>
                         </tr>
                     </thead>
-                    <tbody id="orderList" class="divide-y divide-gray-100"></tbody>
+                    <tbody id="dash-order-list" class="divide-y divide-gray-100">
+                        <!-- Real-time data injection -->
+                    </tbody>
                 </table>
+                <div id="dash-empty" class="text-center py-32 text-gray-300 flex flex-col items-center gap-4">
+                    <i class="fa-solid fa-inbox text-5xl"></i>
+                    <p class="italic font-medium">The ledger is currently empty.</p>
+                </div>
             </div>
         </div>
-
     </main>
 
-    <!-- Firebase SDK -->
+    <!-- Console Log -->
+    <div id="sys-console" class="bg-black/90 text-[#00ff41] p-3 text-[9px] font-mono h-24 overflow-auto border-t-2 border-purple-900/50 backdrop-blur-md">
+        <div class="opacity-50 tracking-widest mb-1 border-b border-white/10 pb-1 uppercase">Yahia OS v4.0.2 Status</div>
+        <div id="console-inner">Initializing Secure Handshake...</div>
+    </div>
+
+    <!-- System Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, deleteDoc, doc, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Setup
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-shop-default';
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const COLL_PATH = `artifacts/${appId}/public/data/orders`;
-
-        let user = null;
-        let unsub = null;
-
-        // Initialize Auth
-        signInAnonymously(auth);
-        onAuthStateChanged(auth, u => { user = u; });
-
-        // App Router & Functions
-        window.router = {
-            navigate: (id) => {
-                document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-                document.getElementById(`view-${id}`).classList.remove('hidden');
-                if (id === 'dashboard') router.loadOrders();
-            },
-            logout: () => router.navigate('home')
+        // Global State & Logger
+        const sysLog = (msg) => {
+            const inner = document.getElementById('console-inner');
+            const time = new Date().toLocaleTimeString();
+            inner.innerHTML += `<div class="mb-0.5"><span class="opacity-30">[${time}]</span> ${msg}</div>`;
+            document.getElementById('sys-console').scrollTop = inner.scrollHeight;
         };
 
-        // UI Interactions
-        const logo = document.getElementById('logo');
-        const adminBtn = document.getElementById('navAdminBtn');
-        const orderForm = document.getElementById('orderForm');
-        const loginForm = document.getElementById('loginForm');
-        const inputLetter = document.getElementById('inputLetter');
-        const inputColor = document.getElementById('inputColor');
-        const previewText = document.getElementById('previewText');
-        const backHome = document.getElementById('backToHome');
+        // Firebase Configuration
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-shop-pro-v2';
+        const fApp = initializeApp(firebaseConfig);
+        const auth = getAuth(fApp);
+        const db = getFirestore(fApp);
+        const COLLECTION_REF = `artifacts/${appId}/public/data/orders`;
 
-        // Populate Letters
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
-            const op = document.createElement('option');
-            op.value = l; op.innerText = `Letter ${l}`;
-            inputLetter.appendChild(op);
+        let activeUser = null;
+        let realtimeUnsubscribe = null;
+
+        // AUTH INITIALIZATION
+        signInAnonymously(auth)
+            .then(() => sysLog("Handshake Complete. Anonymous session established."))
+            .catch(err => sysLog("Handshake Failed: " + err.message));
+
+        onAuthStateChanged(auth, (user) => {
+            activeUser = user;
+            if(user) sysLog(`Cloud Connected: Session ID ${user.uid.substr(0,8)}...`);
         });
 
-        // Event Listeners
-        logo.onclick = () => router.navigate('home');
-        adminBtn.onclick = () => router.navigate('login');
-        backHome.onclick = () => router.navigate('home');
-        
-        inputLetter.onchange = () => previewText.innerText = inputLetter.value;
-        inputColor.onchange = () => previewText.style.color = inputColor.value;
+        // APP ROUTER
+        window.router = {
+            goto: (viewId) => {
+                sysLog(`Routing to interface: ${viewId}`);
+                document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+                const target = document.getElementById('view-' + viewId);
+                if(target) target.classList.remove('hidden');
 
-        // Submit Order
-        orderForm.onsubmit = async (e) => {
-            e.preventDefault();
-            if (!user) return;
-            const code = "Y-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+                if (viewId === 'dashboard') {
+                    router.syncLedger();
+                } else if (realtimeUnsubscribe) {
+                    realtimeUnsubscribe();
+                    realtimeUnsubscribe = null;
+                }
+            },
             
+            syncLedger: () => {
+                if (!activeUser) return sysLog("Sync Aborted: Authentication Required.");
+                const listEl = document.getElementById('dash-order-list');
+                const emptyEl = document.getElementById('dash-empty');
+                const statsEl = document.getElementById('dash-stats');
+
+                if (realtimeUnsubscribe) realtimeUnsubscribe();
+
+                realtimeUnsubscribe = onSnapshot(collection(db, COLLECTION_REF), (snap) => {
+                    sysLog(`Cloud Sync Success. Stream contains ${snap.size} objects.`);
+                    statsEl.innerText = `${snap.size} ACTIVE RECORDS IN CLOUD`;
+                    listEl.innerHTML = '';
+                    
+                    if (snap.empty) {
+                        emptyEl.classList.remove('hidden');
+                    } else {
+                        emptyEl.classList.add('hidden');
+                        
+                        // Sort locally as per instructions
+                        let orders = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                        orders.sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                        orders.forEach(item => {
+                            const tr = document.createElement('tr');
+                            tr.className = "hover:bg-white transition-colors group";
+                            tr.innerHTML = `
+                                <td class="p-5 font-mono font-black text-purple-900 tracking-tighter">${item.code}</td>
+                                <td class="p-5">
+                                    <div class="font-black text-gray-800 text-sm">${item.name}</div>
+                                    <div class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">${new Date(item.timestamp).toLocaleString()}</div>
+                                </td>
+                                <td class="p-5 text-center">
+                                    <span class="inline-block w-10 h-10 leading-10 rounded-lg text-lg serif-bold border-2" style="color:${item.color}; border-color:${item.color}">
+                                        ${item.letter}
+                                    </span>
+                                </td>
+                                <td class="p-5 text-right">
+                                    <button onclick="window.fulfillOrder('${item.id}')" class="bg-green-50 text-green-600 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-600 hover:text-white transition-all">
+                                        FULFILL
+                                    </button>
+                                </td>
+                            `;
+                            listEl.appendChild(tr);
+                        });
+                    }
+                }, (err) => sysLog("Sync Error: " + err.message));
+            }
+        };
+
+        // EXPOSED DYNAMIC HANDLERS
+        window.fulfillOrder = async (docId) => {
             try {
-                await addDoc(collection(db, COLL_PATH), {
-                    code,
-                    name: document.getElementById('inputName').value,
-                    letter: inputLetter.value,
-                    color: inputColor.value,
-                    time: new Date().toISOString()
-                });
-                document.getElementById('orderCode').innerText = code;
-                router.navigate('success');
-                orderForm.reset();
-                previewText.innerText = 'A';
-                previewText.style.color = '#4c1d95';
-            } catch (err) { alert("Error saving order"); }
-        };
-
-        // Admin Login
-        loginForm.onsubmit = (e) => {
-            e.preventDefault();
-            if (document.getElementById('passInput').value === 'MADMIN') {
-                router.navigate('dashboard');
-                document.getElementById('passInput').value = '';
-            } else {
-                alert("Incorrect Admin Password");
+                await deleteDoc(doc(db, COLLECTION_REF, docId));
+                sysLog("Order Fulfilled. Database Updated.");
+            } catch (err) {
+                sysLog("Fulfillment Error: " + err.message);
             }
         };
 
-        // Dashboard Sync
-        router.loadOrders = () => {
-            if (!user) return;
-            const list = document.getElementById('orderList');
-            if (unsub) unsub();
-            
-            unsub = onSnapshot(query(collection(db, COLL_PATH)), (snap) => {
-                let items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                items.sort((a,b) => new Date(b.time) - new Date(a.time));
-                
-                list.innerHTML = '';
-                items.forEach(it => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="p-3 font-mono font-bold text-purple-900">${it.code}</td>
-                        <td class="p-3 font-semibold text-sm">${it.name}</td>
-                        <td class="p-3 text-xs font-bold" style="color: ${it.color}">Letter ${it.letter}</td>
-                        <td class="p-3">
-                            <button onclick="router.deleteOrder('${it.id}')" class="text-red-500 text-xs font-bold">DONE</button>
-                        </td>
-                    `;
-                    list.appendChild(row);
-                });
+        // UI ELEMENT BINDING
+        const setupUI = () => {
+            const letterInput = document.getElementById('order-letter');
+            const colorInput = document.getElementById('order-color');
+            const nameInput = document.getElementById('order-name');
+            const previewText = document.getElementById('preview-text');
+
+            // Populate Letter Select
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l; opt.innerText = "Initial " + l;
+                letterInput.appendChild(opt);
             });
+
+            // Preview Listeners (LIVE UPDATES)
+            letterInput.addEventListener('change', () => {
+                previewText.innerText = letterInput.value;
+                sysLog(`Preview Alpha: ${letterInput.value}`);
+            });
+
+            colorInput.addEventListener('change', () => {
+                previewText.style.color = colorInput.value;
+                sysLog(`Preview Color: ${colorInput.value}`);
+            });
+
+            // Global Clicks
+            document.getElementById('nav-logo').onclick = () => router.goto('home');
+            document.getElementById('nav-admin-trigger').onclick = () => router.goto('login');
+            document.getElementById('success-home-btn').onclick = () => router.goto('home');
+            document.getElementById('dash-logout-btn').onclick = () => router.goto('home');
+
+            // Order Submission
+            document.getElementById('order-submit-btn').onclick = async () => {
+                if (!nameInput.value.trim()) return alert("Identity required for Imperial Order.");
+                if (!activeUser) return alert("System still warming up. Wait 2 seconds.");
+
+                const code = "Y-" + Math.random().toString(36).substr(2, 4).toUpperCase();
+                sysLog(`Constructing Manifest ${code}...`);
+
+                try {
+                    await addDoc(collection(db, COLLECTION_REF), {
+                        code,
+                        name: nameInput.value,
+                        letter: letterInput.value,
+                        color: colorInput.value,
+                        timestamp: Date.now()
+                    });
+                    
+                    document.getElementById('success-code').innerText = "#" + code;
+                    router.goto('success');
+                    
+                    // Reset
+                    nameInput.value = '';
+                    sysLog("Manifest Published to Cloud.");
+                } catch (err) {
+                    sysLog("Publish Error: " + err.message);
+                }
+            };
+
+            // Login Logic
+            document.getElementById('login-confirm-btn').onclick = () => {
+                const pass = document.getElementById('login-input').value;
+                if (pass === 'MADMIN') {
+                    router.goto('dashboard');
+                    document.getElementById('login-input').value = '';
+                } else {
+                    sysLog("Unauthorized Access Attempt Blocked.");
+                    alert("INVALID CREDENTIALS.");
+                }
+            };
+
+            router.goto('home');
+            sysLog("UI Interaction Layer Ready.");
         };
 
-        router.deleteOrder = async (id) => {
-            if (confirm("Complete this order?")) {
-                await deleteDoc(doc(db, COLL_PATH, id));
-            }
-        };
-
-        // Start
-        window.onload = () => router.navigate('home');
+        // Start App
+        window.addEventListener('load', setupUI);
 
     </script>
 </body>
 </html>
-
