@@ -266,9 +266,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global Variable Fallbacks
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyDdtTa-kYLwkWdqw79w0M6Xm93OtBGWRWM",
             authDomain: "yahiashop.firebaseapp.com",
@@ -283,7 +282,6 @@
         const auth = getAuth(fApp);
         const db = getFirestore(fApp);
         
-        // Correct Firestore Pathing per Rule 1
         const ORDERS_COL = `artifacts/${appId}/public/data/orders`;
         const SYSTEM_DOC_PATH = `artifacts/${appId}/public/data/system/broadcast`;
 
@@ -291,7 +289,6 @@
         let selectedColor = "#2d1b4e";
         let currentUser = null;
 
-        // Auth Logic - Combined Rule 3
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -304,17 +301,22 @@
             }
         };
 
-        // Global Ticker Listener - Ensures real-time sync across devices
-        const initSystemListeners = () => {
+        const initSystemListeners = async () => {
             const tickerEl = document.getElementById('global-ticker-text');
-            // Using correct document reference
-            onSnapshot(doc(db, SYSTEM_DOC_PATH), (snap) => {
+            const docRef = doc(db, SYSTEM_DOC_PATH);
+
+            // Ensure the document exists so the listener has something to attach to immediately
+            const initialCheck = await getDoc(docRef);
+            if (!initialCheck.exists()) {
+                await setDoc(docRef, { message: "Welcome to Yahia Shop — Bespoke Luxury Hand-crafted for you.", timestamp: Date.now() });
+            }
+
+            onSnapshot(docRef, (snap) => {
                 if (snap.exists()) {
-                    tickerEl.innerText = snap.data().message || "Welcome to the Imperial Scriptorium.";
-                } else {
-                    tickerEl.innerText = "Welcome to the Imperial Scriptorium.";
+                    const data = snap.data();
+                    tickerEl.innerText = data.message || "Welcome to Yahia Shop.";
                 }
-            }, (err) => console.error("Ticker sync error:", err));
+            }, (err) => console.error("Global Message Sync Error:", err));
         };
 
         window.router = {
@@ -447,7 +449,6 @@
                 const msg = document.getElementById('broadcast-input').value;
                 if(!msg.trim()) return;
                 try {
-                    // Updating specifically the broadcast document
                     await setDoc(doc(db, SYSTEM_DOC_PATH), {
                         message: msg,
                         timestamp: Date.now()
