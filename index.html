@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAHIA | The Royal Scriptorium</title>
+    <title>YAHIA SHOP</title>
     
     <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,6 +26,33 @@
 
         .serif { font-family: 'Bodoni Moda', serif; }
 
+        /* Global Broadcast Ticker */
+        .broadcast-ticker {
+            background: var(--royal-purple);
+            color: var(--accent-gold);
+            overflow: hidden;
+            white-space: nowrap;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+        }
+
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 25s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
         /* Glassmorphism & Depth */
         .glass-card {
             background: rgba(255, 255, 255, 0.7);
@@ -47,13 +74,23 @@
             filter: brightness(1.1);
         }
 
+        /* Special Gold Paper Style for PLATE */
+        .gold-paper-plate {
+            background: #d4af37 !important;
+            background-image: 
+                linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.1) 100%),
+                url('https://www.transparenttextures.com/patterns/handmade-paper.png') !important;
+            border: 12px double #8b6508 !important;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.2), 0 25px 50px -12px rgba(0,0,0,0.3) !important;
+        }
+
         /* Custom Input Styling */
-        input, select {
+        input, select, textarea {
             background: rgba(255, 255, 255, 0.5);
             border: 1px solid rgba(45, 27, 78, 0.1);
             transition: all 0.3s ease;
         }
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: var(--accent-gold);
             background: white;
             outline: none;
@@ -76,6 +113,13 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
+
+    <!-- Global Broadcast Ticker -->
+    <div class="broadcast-ticker">
+        <div id="global-ticker-text" class="ticker-content">
+            Welcome to the Imperial Scriptorium — Establishing secure connection to the Royal Ledger...
+        </div>
+    </div>
 
     <!-- Global Navigation -->
     <nav class="sticky top-0 z-50 w-full px-8 py-6 flex justify-between items-center backdrop-blur-md border-b border-black/5">
@@ -110,7 +154,12 @@
                         </div>
                         <div class="space-y-2">
                             <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Sigil Character</label>
-                            <select id="order-letter" class="w-full p-4 rounded-xl text-lg font-bold appearance-none cursor-pointer"></select>
+                            <select id="order-letter" class="w-full p-4 rounded-xl text-lg font-bold appearance-none cursor-pointer">
+                                <optgroup label="Classical Letters" id="letters-group"></optgroup>
+                                <optgroup label="Special Editions">
+                                    <option value="PLATE">Imperial Golden Plate</option>
+                                </optgroup>
+                            </select>
                         </div>
                     </div>
 
@@ -132,12 +181,12 @@
 
             <!-- Preview Side -->
             <div class="lg:col-span-5 flex flex-col items-center">
-                <div class="relative w-full aspect-[4/5] glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12">
+                <div id="preview-container" class="relative w-full aspect-[4/5] glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12 transition-all duration-700">
                     <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png')"></div>
                     <div id="preview-box" class="text-[18rem] md:text-[22rem] serif font-black leading-none drop-shadow-2xl transition-all duration-700" style="color: #2d1b4e">A</div>
                     <div class="absolute bottom-10 flex flex-col items-center opacity-30">
                         <div class="w-12 h-[1px] bg-black mb-4"></div>
-                        <span class="text-[9px] uppercase tracking-[0.5em] font-bold">Authenticated Ed.</span>
+                        <span id="preview-label" class="text-[9px] uppercase tracking-[0.5em] font-bold">Authenticated Ed.</span>
                     </div>
                 </div>
             </div>
@@ -177,7 +226,10 @@
                     <h2 class="text-5xl font-black serif">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
                     <p id="dash-stats" class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-2">Connecting to secure vault...</p>
                 </div>
-                <button onclick="router.goto('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#c5a059] transition-colors">Sign Out</button>
+                <div class="flex gap-4">
+                    <button onclick="document.getElementById('broadcast-modal').classList.remove('hidden')" class="bg-[#c5a059] text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all">Broadcast Msg</button>
+                    <button onclick="router.goto('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#c5a059] transition-colors">Sign Out</button>
+                </div>
             </div>
             
             <div class="flex-grow glass-card rounded-[3rem] overflow-hidden border border-black/5 flex flex-col">
@@ -191,67 +243,94 @@
                                 <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400 text-right">Operation</th>
                             </tr>
                         </thead>
-                        <tbody id="dash-order-list" class="divide-y divide-black/5">
-                            <!-- Injected -->
-                        </tbody>
+                        <tbody id="dash-order-list" class="divide-y divide-black/5"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Dev Console -->
-    <div id="sys-console" class="fixed bottom-0 left-0 w-full bg-black text-[#00ff41] p-2 text-[8px] font-mono opacity-0 hover:opacity-100 transition-opacity z-[100] h-8 overflow-hidden">
-        <div id="console-inner">> System Ready.</div>
+    <!-- Broadcast Modal (Admin Only) -->
+    <div id="broadcast-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-6">
+        <div class="w-full max-w-lg glass-card p-10 rounded-[2.5rem] space-y-6">
+            <h3 class="text-2xl font-black serif uppercase tracking-widest">Global Broadcast</h3>
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Update the ticker for all patrons.</p>
+            <textarea id="broadcast-input" rows="3" placeholder="Enter royal proclamation..." class="w-full p-6 rounded-2xl font-medium text-lg"></textarea>
+            <div class="flex gap-4">
+                <button onclick="document.getElementById('broadcast-modal').classList.add('hidden')" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-200 rounded-xl">Cancel</button>
+                <button id="broadcast-send-btn" class="flex-1 btn-gold py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">Deploy Message</button>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURATION
-        const manualConfig = {
+        // Global Variable Fallbacks
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyDdtTa-kYLwkWdqw79w0M6Xm93OtBGWRWM",
             authDomain: "yahiashop.firebaseapp.com",
             projectId: "yahiashop",
             storageBucket: "yahiashop.firebasestorage.app",
             messagingSenderId: "776328811720",
-            appId: "1:776328811720:web:e69431d24c8c0d81c081fd",
-            measurementId: "G-V6VBBH14RY"
+            appId: "1:776328811720:web:e69431d24c8c0d81c081fd"
         };
-
-        const config = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : manualConfig;
-        const appIDStr = typeof __app_id !== 'undefined' ? __app_id : 'yahiashop-prod';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahiashop-main';
         
-        const fApp = initializeApp(config);
+        const fApp = initializeApp(firebaseConfig);
         const auth = getAuth(fApp);
         const db = getFirestore(fApp);
         
-        // Path adjusted for standard security compliance
-        const COLLECTION_REF = `artifacts/${appIDStr}/public/data/orders`;
+        const ORDERS_REF = `artifacts/${appId}/public/data/orders`;
+        const SYSTEM_REF = `artifacts/${appId}/public/data/system`;
 
-        let activeUser = null;
         let realtimeUnsubscribe = null;
         let selectedColor = "#2d1b4e";
 
-        // Auth
-        signInAnonymously(auth).catch((e) => console.error("Cloud Access Denied:", e.message));
-        onAuthStateChanged(auth, u => { activeUser = u; });
+        // Auth Logic
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (e) {
+                console.error("Auth Failure:", e);
+            }
+        };
 
-        // Router
+        // Global Ticker Listener
+        const initSystemListeners = () => {
+            const tickerEl = document.getElementById('global-ticker-text');
+            onSnapshot(doc(db, SYSTEM_REF, 'broadcast'), (snap) => {
+                if (snap.exists()) {
+                    tickerEl.innerText = snap.data().message || "Welcome to the Imperial Scriptorium.";
+                }
+            }, (err) => console.error("Ticker sync error:", err));
+        };
+
         window.router = {
             goto: (viewId) => {
                 document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-                document.getElementById('view-' + viewId).classList.remove('hidden');
-                if (viewId === 'dashboard') router.syncLedger();
-                else if (realtimeUnsubscribe) { realtimeUnsubscribe(); realtimeUnsubscribe = null; }
+                const target = document.getElementById('view-' + viewId);
+                if (target) target.classList.remove('hidden');
+                
+                if (viewId === 'dashboard') {
+                    router.syncLedger();
+                } else if (realtimeUnsubscribe) {
+                    realtimeUnsubscribe();
+                    realtimeUnsubscribe = null;
+                }
             },
             syncLedger: () => {
                 const listEl = document.getElementById('dash-order-list');
                 const statsEl = document.getElementById('dash-stats');
                 if (realtimeUnsubscribe) realtimeUnsubscribe();
-                realtimeUnsubscribe = onSnapshot(collection(db, COLLECTION_REF), (snap) => {
+                
+                realtimeUnsubscribe = onSnapshot(collection(db, ORDERS_REF), (snap) => {
                     listEl.innerHTML = '';
                     statsEl.innerText = `${snap.size} ARCHIVED ENTRIES`;
                     snap.forEach(d => {
@@ -265,7 +344,7 @@
                                 <div class="text-[9px] uppercase tracking-widest text-gray-400 mt-1">${new Date(item.timestamp).toDateString()}</div>
                             </td>
                             <td class="p-8 text-center">
-                                <span class="serif font-black text-4xl" style="color:${item.color}">${item.letter}</span>
+                                <span class="serif font-black text-4xl" style="color:${item.color}">${item.letter === 'PLATE' ? '★' : item.letter}</span>
                             </td>
                             <td class="p-8 text-right">
                                 <button onclick="window.fulfillOrder('${d.id}')" class="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600">Archive</button>
@@ -274,29 +353,45 @@
                         listEl.appendChild(tr);
                     });
                 }, (err) => {
-                    console.error("Firestore error:", err);
                     statsEl.innerText = "Error syncing with vault.";
                 });
             }
         };
 
         window.fulfillOrder = async (id) => { 
-            if(confirm("Permanently archive this commission?")) await deleteDoc(doc(db, COLLECTION_REF, id)); 
+            if(confirm("Permanently archive this commission?")) await deleteDoc(doc(db, ORDERS_REF, id)); 
         };
 
-        const init = () => {
+        const init = async () => {
+            await initAuth();
+            initSystemListeners();
+
             const letterInput = document.getElementById('order-letter');
+            const lettersGroup = document.getElementById('letters-group');
             const nameInput = document.getElementById('order-name');
             const previewText = document.getElementById('preview-box');
+            const previewCont = document.getElementById('preview-container');
+            const previewLabel = document.getElementById('preview-label');
             const colorButtons = document.querySelectorAll('#color-picker button');
 
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
                 const opt = document.createElement('option');
-                opt.value = l; opt.innerText = "Manuscript " + l;
-                letterInput.appendChild(opt);
+                opt.value = l; opt.innerText = "Letter " + l;
+                lettersGroup.appendChild(opt);
             });
 
-            letterInput.onchange = () => { previewText.innerText = letterInput.value; };
+            letterInput.onchange = () => { 
+                const val = letterInput.value;
+                if(val === 'PLATE') {
+                    previewText.innerText = "Y";
+                    previewCont.classList.add('gold-paper-plate');
+                    previewLabel.innerText = "Imperial Edition";
+                } else {
+                    previewText.innerText = val;
+                    previewCont.classList.remove('gold-paper-plate');
+                    previewLabel.innerText = "Authenticated Ed.";
+                }
+            };
             
             colorButtons.forEach(btn => {
                 btn.onclick = () => {
@@ -311,10 +406,10 @@
             document.getElementById('admin-gate-btn').onclick = () => router.goto('login');
             
             document.getElementById('order-submit-btn').onclick = async () => {
-                if (!nameInput.value.trim()) return alert("Provide a patron identity.");
+                if (!nameInput.value.trim()) return;
                 const code = Math.random().toString(36).substr(2, 5).toUpperCase();
                 try {
-                    await addDoc(collection(db, COLLECTION_REF), {
+                    await addDoc(collection(db, ORDERS_REF), {
                         code, name: nameInput.value, letter: letterInput.value, color: selectedColor, timestamp: Date.now()
                     });
                     document.getElementById('success-code').innerText = "#" + code;
@@ -322,7 +417,6 @@
                     nameInput.value = '';
                 } catch (e) { 
                     console.error(e);
-                    alert("Vault Connection Error. Check your internet or Firebase Rules."); 
                 }
             };
 
@@ -330,7 +424,22 @@
                 if (document.getElementById('login-input').value === 'MADMIN') {
                     router.goto('dashboard');
                     document.getElementById('login-input').value = '';
-                } else { alert("ACCESS DENIED"); }
+                }
+            };
+
+            document.getElementById('broadcast-send-btn').onclick = async () => {
+                const msg = document.getElementById('broadcast-input').value;
+                if(!msg.trim()) return;
+                try {
+                    await setDoc(doc(db, SYSTEM_REF, 'broadcast'), {
+                        message: msg,
+                        timestamp: Date.now()
+                    });
+                    document.getElementById('broadcast-modal').classList.add('hidden');
+                    document.getElementById('broadcast-input').value = '';
+                } catch(e) {
+                    console.error(e);
+                }
             };
 
             router.goto('home');
