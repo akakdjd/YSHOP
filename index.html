@@ -265,7 +265,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global Variable Fallbacks
@@ -283,13 +283,15 @@
         const auth = getAuth(fApp);
         const db = getFirestore(fApp);
         
-        const ORDERS_REF = `artifacts/${appId}/public/data/orders`;
-        const SYSTEM_REF = `artifacts/${appId}/public/data/system`;
+        // Correct Firestore Pathing per Rule 1
+        const ORDERS_COL = `artifacts/${appId}/public/data/orders`;
+        const SYSTEM_DOC_PATH = `artifacts/${appId}/public/data/system/broadcast`;
 
         let realtimeUnsubscribe = null;
         let selectedColor = "#2d1b4e";
+        let currentUser = null;
 
-        // Auth Logic
+        // Auth Logic - Combined Rule 3
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -302,12 +304,15 @@
             }
         };
 
-        // Global Ticker Listener
+        // Global Ticker Listener - Ensures real-time sync across devices
         const initSystemListeners = () => {
             const tickerEl = document.getElementById('global-ticker-text');
-            onSnapshot(doc(db, SYSTEM_REF, 'broadcast'), (snap) => {
+            // Using correct document reference
+            onSnapshot(doc(db, SYSTEM_DOC_PATH), (snap) => {
                 if (snap.exists()) {
                     tickerEl.innerText = snap.data().message || "Welcome to the Imperial Scriptorium.";
+                } else {
+                    tickerEl.innerText = "Welcome to the Imperial Scriptorium.";
                 }
             }, (err) => console.error("Ticker sync error:", err));
         };
@@ -326,11 +331,12 @@
                 }
             },
             syncLedger: () => {
+                if (!currentUser) return;
                 const listEl = document.getElementById('dash-order-list');
                 const statsEl = document.getElementById('dash-stats');
                 if (realtimeUnsubscribe) realtimeUnsubscribe();
                 
-                realtimeUnsubscribe = onSnapshot(collection(db, ORDERS_REF), (snap) => {
+                realtimeUnsubscribe = onSnapshot(collection(db, ORDERS_COL), (snap) => {
                     listEl.innerHTML = '';
                     statsEl.innerText = `${snap.size} ARCHIVED ENTRIES`;
                     snap.forEach(d => {
@@ -359,12 +365,21 @@
         };
 
         window.fulfillOrder = async (id) => { 
-            if(confirm("Permanently archive this commission?")) await deleteDoc(doc(db, ORDERS_REF, id)); 
+            if (!currentUser) return;
+            if(confirm("Permanently archive this commission?")) {
+                await deleteDoc(doc(db, ORDERS_COL, id)); 
+            }
         };
 
         const init = async () => {
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user;
+                if (user) {
+                    initSystemListeners();
+                }
+            });
+            
             await initAuth();
-            initSystemListeners();
 
             const letterInput = document.getElementById('order-letter');
             const lettersGroup = document.getElementById('letters-group');
@@ -406,10 +421,10 @@
             document.getElementById('admin-gate-btn').onclick = () => router.goto('login');
             
             document.getElementById('order-submit-btn').onclick = async () => {
-                if (!nameInput.value.trim()) return;
+                if (!currentUser || !nameInput.value.trim()) return;
                 const code = Math.random().toString(36).substr(2, 5).toUpperCase();
                 try {
-                    await addDoc(collection(db, ORDERS_REF), {
+                    await addDoc(collection(db, ORDERS_COL), {
                         code, name: nameInput.value, letter: letterInput.value, color: selectedColor, timestamp: Date.now()
                     });
                     document.getElementById('success-code').innerText = "#" + code;
@@ -428,10 +443,12 @@
             };
 
             document.getElementById('broadcast-send-btn').onclick = async () => {
+                if (!currentUser) return;
                 const msg = document.getElementById('broadcast-input').value;
                 if(!msg.trim()) return;
                 try {
-                    await setDoc(doc(db, SYSTEM_REF, 'broadcast'), {
+                    // Updating specifically the broadcast document
+                    await setDoc(doc(db, SYSTEM_DOC_PATH), {
                         message: msg,
                         timestamp: Date.now()
                     });
