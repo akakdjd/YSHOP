@@ -5,98 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAHIA SHOP | LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,900&family=Inter:wght@400;900&display=swap" rel="stylesheet">
     <style>
-        :root { --accent-gold: #c5a059; --canvas-bg: #faf9f6; }
-        body { font-family: 'Inter', sans-serif; background: var(--canvas-bg); color: #1a1a1a; overflow-x: hidden; }
+        :root { --gold: #c5a059; --bg: #faf9f6; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: #1a1a1a; }
         .serif { font-family: 'Bodoni Moda', serif; }
-        
-        #preview-box {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 1px 0 #ccc, 0 2px 0 #c5c5c5, 0 3px 0 #bbb, 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .gold-plate {
-            background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important;
-            border: 10px double #8a6d3b !important;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.1), 0 20px 40px rgba(0,0,0,0.2) !important;
-        }
-
-        .ticker { background: #000; color: var(--accent-gold); height: 30px; display: flex; align-items: center; font-size: 10px; font-weight: 900; overflow: hidden; }
-        .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: scroll 25s linear infinite; }
+        #preview-box { transition: 0.4s; text-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .gold-plate { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important; border: 8px double #8a6d3b !important; }
+        .ticker { background: #000; color: var(--gold); height: 30px; display: flex; align-items: center; font-size: 10px; font-weight: 900; overflow: hidden; }
+        .ticker-move { display: inline-block; white-space: nowrap; padding-left: 100%; animation: scroll 20s linear infinite; }
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        
-        .glass { background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .glass { background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-radius: 2rem; }
         .hidden { display: none !important; }
-        
-        .dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid white; }
         .dot.active { border-color: black; transform: scale(1.1); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
     <div class="ticker">
-        <div class="ticker-move uppercase">GLOBAL CLOUD SYNC ACTIVE • ALL ORDERS SENT TO YAHIA • CHOOSE YOUR 3D SIGIL • PAY AT SCHOOL</div>
+        <div class="ticker-move uppercase">CLOUD CONNECTION ACTIVE • ORDER FROM ANY DEVICE • PAY CASH AT SCHOOL • YAHIA'S OFFICIAL 3D STORE</div>
     </div>
 
-    <nav class="p-8 flex justify-between items-center">
-        <div class="flex items-center gap-4 cursor-pointer" onclick="go('home')">
-            <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center serif font-black text-2xl">Y</div>
-            <span class="font-black uppercase tracking-widest text-sm">Yahia <span class="text-[#c5a059]">Cloud</span></span>
+    <nav class="p-6 flex justify-between items-center">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="go('home')">
+            <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center serif font-black">Y</div>
+            <span class="font-black uppercase tracking-tighter">Yahia <span class="text-[#c5a059]">Live</span></span>
         </div>
-        <button onclick="go('login')" class="text-[10px] font-black uppercase tracking-widest border-b-2 border-black">Portal Access</button>
+        <button onclick="go('login')" class="text-[10px] font-black uppercase border-b-2 border-black">Admin Access</button>
     </nav>
 
-    <main class="flex-grow flex items-center justify-center p-6">
-        <div id="home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <div class="space-y-10">
-                <h1 class="text-8xl serif font-black leading-none uppercase tracking-tighter">Live<br><span class="text-[#c5a059]">Order</span></h1>
-                <div class="glass p-10 rounded-[2.5rem] space-y-8">
-                    <input type="text" id="cust-name" placeholder="Enter Your Name" class="w-full p-5 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-100 text-lg">
-                    <div class="grid grid-cols-2 gap-6">
-                        <select id="letter" class="p-5 rounded-2xl bg-gray-50 ring-1 ring-gray-100 font-bold uppercase text-sm"></select>
-                        <div class="flex gap-4 items-center justify-center bg-gray-50 rounded-2xl p-2">
-                            <div id="dot-yellow" class="dot bg-yellow-400 active" onclick="setCol('#facc15', 'Yellow')"></div>
-                            <div id="dot-brown" class="dot bg-amber-800" onclick="setCol('#92400e', 'Light Brown')"></div>
-                        </div>
+    <main class="p-4 flex flex-col items-center">
+        <div id="home" class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="glass p-8 space-y-6">
+                <h2 class="text-5xl serif font-black uppercase italic text-[#c5a059]">Order</h2>
+                <input type="text" id="cust-name" placeholder="Student Name" class="w-full p-4 bg-gray-100 rounded-xl border-none outline-none">
+                <div class="flex gap-4">
+                    <select id="letter" class="flex-grow p-4 bg-gray-100 rounded-xl font-bold uppercase"></select>
+                    <div class="flex gap-2 p-2 bg-gray-100 rounded-xl">
+                        <div id="dot-yellow" class="dot bg-yellow-400 active" onclick="setCol('#facc15', 'Yellow')"></div>
+                        <div id="dot-brown" class="dot bg-amber-800" onclick="setCol('#92400e', 'Light Brown')"></div>
                     </div>
-                    <div class="flex items-center gap-4 p-5 bg-black/5 rounded-2xl cursor-pointer" onclick="toggleR()">
-                        <div id="rBox" class="w-6 h-6 border-2 border-black rounded flex items-center justify-center text-[10px] font-bold"></div>
-                        <span class="font-black serif text-[#c5a059] italic uppercase text-sm tracking-widest">Imperial Gold Plate</span>
-                    </div>
-                    <button id="submit-btn" onclick="placeOrder()" class="w-full bg-black text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em]">Submit Commission</button>
                 </div>
+                <div class="p-4 bg-black/5 rounded-xl flex items-center gap-3 cursor-pointer" onclick="toggleR()">
+                    <div id="rBox" class="w-6 h-6 border-2 border-black rounded flex items-center justify-center"></div>
+                    <span class="font-black serif text-sm italic">IMPERIAL GOLD PLATE</span>
+                </div>
+                <button onclick="placeOrder()" id="btn-text" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase tracking-widest">Send to Yahia</button>
             </div>
-            <div id="preview-cont" class="w-full max-w-md aspect-[4/5] glass rounded-[4rem] flex items-center justify-center relative transition-all duration-700">
-                <div id="preview-box" class="text-[18rem] serif font-black">Y</div>
+            <div id="preview-cont" class="glass h-[400px] flex items-center justify-center relative">
+                <div id="preview-box" class="text-[12rem] serif font-black">Y</div>
             </div>
         </div>
 
-        <div id="login" class="hidden w-full max-w-sm glass p-12 rounded-[3rem] text-center">
-            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Security Check</h2>
-            <input type="password" id="pass" placeholder="KEY" class="w-full p-5 rounded-2xl text-center tracking-[1em] mb-6 border-none ring-1 ring-gray-200">
-            <button onclick="auth()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs">Unlock Ledger</button>
+        <div id="login" class="hidden glass p-10 w-full max-w-sm text-center">
+            <h2 class="font-black uppercase mb-6">Enter Password</h2>
+            <input type="password" id="pass" class="w-full p-4 mb-4 text-center border rounded-xl" placeholder="MADMIN">
+            <button onclick="auth()" class="w-full bg-black text-white py-4 rounded-xl font-black uppercase">Unlock Ledger</button>
         </div>
 
-        <div id="admin" class="hidden w-full max-w-4xl space-y-8">
-            <div class="flex justify-between items-end">
-                <h2 class="text-5xl serif font-black">Global <span class="text-[#c5a059]">Ledger</span></h2>
-                <button onclick="go('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase">Close</button>
+        <div id="admin" class="hidden w-full max-w-4xl">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl serif font-black uppercase">Merchant Ledger</h2>
+                <button onclick="go('home')" class="bg-black text-white px-6 py-2 rounded-lg text-xs font-bold">Close</button>
             </div>
-            <div class="glass rounded-[2rem] overflow-hidden">
+            <div class="glass overflow-hidden">
                 <table class="w-full text-left">
-                    <thead><tr class="border-b"><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Patron</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Sigil</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Style</th><th class="p-8"></th></tr></thead>
-                    <tbody id="admin-list" class="divide-y divide-gray-50"></tbody>
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="p-6 text-[10px] uppercase font-black">Patron</th>
+                            <th class="p-6 text-[10px] uppercase font-black">Sigil</th>
+                            <th class="p-6 text-[10px] uppercase font-black">Style</th>
+                            <th class="p-6 text-right"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-list"></tbody>
                 </table>
             </div>
         </div>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // YOUR ACTUAL FIREBASE CONFIG
+    <script>
+        // --- 1. CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyBiSjTQ0lRDwccIxzVb24V8j5ThR8boqJA",
             authDomain: "yahuashopcloud.firebaseapp.com",
@@ -106,97 +98,101 @@
             appId: "1:439516384242:web:77a3f41653c8d01988b96b"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const colRef = collection(db, "orders");
+        // --- 2. INITIALIZATION ---
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // GLOBAL HELPERS
-        window.go = (id) => {
-            ['home', 'login', 'admin'].forEach(v => document.getElementById(v).classList.add('hidden'));
-            document.getElementById(id).classList.remove('hidden');
-        };
-
+        // --- 3. UI LOGIC ---
         let curCol = '#facc15';
         let curColName = 'Yellow';
         let isR = false;
 
-        // UI ACTIONS
-        window.setCol = (hex, name) => {
-            curCol = hex; curColName = name;
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-            document.getElementById('dot-' + (name === 'Yellow' ? 'yellow' : 'brown')).classList.add('active');
-            update();
-        };
-
-        window.toggleR = () => {
-            isR = !isR;
-            document.getElementById('rBox').innerHTML = isR ? '✓' : '';
-            update();
-        };
-
-        function update() {
-            const b = document.getElementById('preview-box');
-            const c = document.getElementById('preview-cont');
-            b.innerText = document.getElementById('letter').value;
-            if(isR) { c.classList.add('gold-plate'); b.style.color = "#8a6d3b"; }
-            else { c.classList.remove('gold-plate'); b.style.color = curCol; }
-        }
-
-        // FIREBASE ACTIONS
-        window.placeOrder = async () => {
-            const name = document.getElementById('cust-name').value;
-            if(!name) return alert("Please enter your name!");
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "SENDING TO YAHIA...";
-            btn.disabled = true;
-
-            await addDoc(colRef, {
-                name: name,
-                item: isR ? "ROYAL " + document.getElementById('letter').value : document.getElementById('letter').value,
-                style: isR ? "Imperial Gold" : curColName,
-                created: Date.now()
-            });
-
-            btn.innerText = "SUBMIT COMMISSION";
-            btn.disabled = false;
-            document.getElementById('cust-name').value = '';
-            alert("Order Locked In! Pay at school.");
-        };
-
-        window.auth = () => {
-            if(document.getElementById('pass').value === 'MADMIN') {
-                go('admin');
-                document.getElementById('pass').value = '';
-            } else alert("Invalid Access Key");
-        };
-
-        // REAL-TIME LEDGER SYNC
-        onSnapshot(colRef, (snap) => {
-            const list = document.getElementById('admin-list');
-            list.innerHTML = '';
-            snap.docs.forEach(d => {
-                const data = d.data();
-                list.innerHTML += `<tr>
-                    <td class="p-8 font-black serif text-xl">${data.name}</td>
-                    <td class="p-8 font-black text-[#c5a059] text-2xl">${data.item}</td>
-                    <td class="p-8 text-[10px] font-black uppercase tracking-widest">${data.style}</td>
-                    <td class="p-8 text-right"><button onclick="deleteOrder('${d.id}')" class="text-red-500 font-black text-[10px] uppercase underline">Mark Paid</button></td>
-                </tr>`;
-            });
-        });
-
-        window.deleteOrder = async (id) => {
-            await deleteDoc(doc(db, "orders", id));
-        };
-
-        // SETUP
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         const sel = document.getElementById('letter');
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+        alphabet.forEach(l => {
             const opt = document.createElement('option');
             opt.value = l; opt.innerText = "Letter " + l;
             sel.appendChild(opt);
         });
+
+        function go(id) {
+            ['home', 'login', 'admin'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function setCol(hex, name) {
+            curCol = hex; curColName = name;
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            document.getElementById(name === 'Yellow' ? 'dot-yellow' : 'dot-brown').classList.add('active');
+            update();
+        }
+
+        function toggleR() {
+            isR = !isR;
+            document.getElementById('rBox').innerHTML = isR ? '✓' : '';
+            update();
+        }
+
+        function update() {
+            const b = document.getElementById('preview-box');
+            const c = document.getElementById('preview-cont');
+            b.innerText = sel.value;
+            if(isR) { c.classList.add('gold-plate'); b.style.color = "#8a6d3b"; }
+            else { c.classList.remove('gold-plate'); b.style.color = curCol; }
+        }
         sel.onchange = update;
+
+        // --- 4. DATA LOGIC (The Live Part) ---
+        async function placeOrder() {
+            const name = document.getElementById('cust-name').value;
+            if(!name) return alert("Enter Student Name");
+            
+            document.getElementById('btn-text').innerText = "SENDING...";
+            
+            try {
+                await db.collection("orders").add({
+                    name: name,
+                    item: isR ? "ROYAL " + sel.value : sel.value,
+                    style: isR ? "Gold" : curColName,
+                    time: Date.now()
+                });
+                alert("Order Successful! Yahia will see it now.");
+                document.getElementById('cust-name').value = '';
+            } catch (e) {
+                alert("Error: Check your Firebase Database Rules!");
+            }
+            document.getElementById('btn-text').innerText = "Send to Yahia";
+        }
+
+        function auth() {
+            if(document.getElementById('pass').value === 'MADMIN') {
+                go('admin');
+                document.getElementById('pass').value = '';
+            } else alert("Wrong Password");
+        }
+
+        // AUTO-UPDATE THE LIST
+        db.collection("orders").orderBy("time", "desc").onSnapshot((snap) => {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            snap.forEach(doc => {
+                const o = doc.data();
+                list.innerHTML += `
+                <tr class="border-b">
+                    <td class="p-6 font-bold uppercase text-sm">${o.name}</td>
+                    <td class="p-6 font-black text-[#c5a059]">${o.item}</td>
+                    <td class="p-6 text-[10px] font-black uppercase text-gray-500">${o.style}</td>
+                    <td class="p-6 text-right">
+                        <button onclick="deleteDoc('${doc.id}')" class="text-red-500 text-[10px] font-black uppercase underline">Paid</button>
+                    </td>
+                </tr>`;
+            });
+        });
+
+        async function deleteDoc(id) {
+            if(confirm("Mark as paid?")) await db.collection("orders").doc(id).delete();
+        }
+
         update();
     </script>
 </body>
