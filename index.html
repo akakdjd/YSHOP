@@ -3,467 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAHIA SHOP</title>
+    <title>YAHIA SHOP | 3D ALPHABETS</title>
     
-    <!-- External Resources -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,900;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
         :root { 
-            --royal-purple: #2d1b4e; 
+            --royal-purple: #1a1a1a; 
             --accent-gold: #c5a059; 
-            --canvas-bg: #faf9f6;
+            --canvas-bg: #f3f4f6;
         }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--canvas-bg);
-            color: var(--royal-purple);
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: var(--canvas-bg); color: var(--royal-purple); overflow-x: hidden; }
         .serif { font-family: 'Bodoni Moda', serif; }
 
-        /* Global Broadcast Ticker */
-        .broadcast-ticker {
-            background: var(--royal-purple);
-            color: var(--accent-gold);
-            overflow: hidden;
-            white-space: nowrap;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            font-size: 10px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+        /* 3D EFFECT */
+        #preview-box {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 1px 0 #bbb, 0 2px 0 #b9b9b9, 0 3px 0 #aaa, 0 4px 0 #a9a9a9, 0 5px 10px rgba(0,0,0,.25);
         }
 
-        .ticker-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: ticker 25s linear infinite;
-        }
-
-        @keyframes ticker {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
-
-        /* Glassmorphism & Depth */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 30px 60px -12px rgba(45, 27, 78, 0.12);
-        }
-
-        /* Gold Gradient Button */
-        .btn-gold {
-            background: linear-gradient(135deg, #c5a059 0%, #a37e3d 100%);
-            color: white;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            letter-spacing: 0.1em;
-        }
-        .btn-gold:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(163, 126, 61, 0.5);
-            filter: brightness(1.1);
-        }
-
-        /* Special Gold Paper Style for PLATE */
         .gold-paper-plate {
-            background: #d4af37 !important;
-            background-image: 
-                linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%, rgba(0,0,0,0.1) 100%),
-                url('https://www.transparenttextures.com/patterns/handmade-paper.png') !important;
-            border: 12px double #8b6508 !important;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.2), 0 25px 50px -12px rgba(0,0,0,0.3) !important;
+            background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important;
+            border: 8px double #8a6d3b !important;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.2), 0 20px 40px rgba(0,0,0,0.3) !important;
         }
 
-        /* Custom Input Styling */
-        input, select, textarea {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(45, 27, 78, 0.1);
-            transition: all 0.3s ease;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: var(--accent-gold);
-            background: white;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.1);
-        }
+        .broadcast-ticker { background: #000; color: var(--accent-gold); height: 32px; display: flex; align-items: center; font-size: 10px; font-weight: 900; overflow: hidden; }
+        .ticker-content { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 20s linear infinite; }
+        @keyframes ticker { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .hidden { display: none !important; }
-
-        /* Animations */
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.98) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        .animate-view { animation: fadeInScale 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--canvas-bg); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Global Broadcast Ticker -->
     <div class="broadcast-ticker">
-        <div id="global-ticker-text" class="ticker-content">
-            Welcome to the Imperial Scriptorium — Establishing secure connection to the Royal Ledger...
+        <div class="ticker-content uppercase tracking-widest">
+            Welcome to Yahia Shop — Order 3D Letters Online — Pay Cash at School — Imperial Editions Available Now
         </div>
     </div>
 
-    <!-- Global Navigation -->
-    <nav class="sticky top-0 z-50 w-full px-8 py-6 flex justify-between items-center backdrop-blur-md border-b border-black/5">
-        <div class="flex items-center gap-4 cursor-pointer group" onclick="router.goto('home')">
-            <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black italic serif text-xl group-hover:bg-[#c5a059] transition-colors">Y</div>
-            <span class="font-black uppercase tracking-[0.3em] text-sm">Yahia <span class="text-[#c5a059]">Collection</span></span>
+    <nav class="p-6 flex justify-between items-center bg-white/50 backdrop-blur-md border-b">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showView('home')">
+            <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center serif font-bold text-xl">Y</div>
+            <span class="font-black uppercase tracking-tighter">Yahia <span class="text-[#c5a059]">Shop</span></span>
         </div>
-        
-        <button id="admin-gate-btn" class="text-[10px] font-bold uppercase tracking-[0.2em] border-b-2 border-transparent hover:border-[#c5a059] transition-all pb-1">
-            Portal Access
-        </button>
+        <button onclick="showView('login')" class="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent hover:border-[#c5a059] transition-all">Portal Access</button>
     </nav>
 
-    <!-- Main Workspace -->
-    <main class="flex-grow flex items-center justify-center p-4 md:p-12">
+    <main class="flex-grow flex items-center justify-center p-6">
         
-        <!-- VIEW: HOME (The Atelier) -->
-        <div id="view-home" class="animate-view w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <!-- Customizer Side -->
-            <div class="lg:col-span-7 space-y-10">
-                <div class="space-y-2">
-                    <h1 class="text-6xl md:text-8xl serif font-black tracking-tight leading-none">The Luxury <br><span class="italic text-[#c5a059]">Manuscript</span></h1>
-                    <p class="text-gray-400 font-light max-w-md uppercase text-[10px] tracking-widest pt-4">Bespoke identity crafting for the modern academic elite.</p>
-                </div>
-
-                <div class="glass-card p-8 md:p-10 rounded-[2rem] space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Patron Name</label>
-                            <input type="text" id="order-name" placeholder="Full legal name" class="w-full p-4 rounded-xl text-lg font-medium">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Sigil Character</label>
-                            <select id="order-letter" class="w-full p-4 rounded-xl text-lg font-bold appearance-none cursor-pointer">
-                                <optgroup label="Classical Letters" id="letters-group"></optgroup>
-                                <optgroup label="Special Editions">
-                                    <option value="PLATE">Imperial Golden Plate</option>
-                                </optgroup>
-                            </select>
-                        </div>
+        <div id="view-home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <h1 class="text-7xl serif font-black leading-none">The 3D <br><span class="text-[#c5a059]">Sigil</span></h1>
+                <div class="glass-card p-8 rounded-3xl shadow-xl space-y-6">
+                    <div class="space-y-4">
+                        <input type="text" id="cust-name" placeholder="Student Name" class="w-full p-4 rounded-xl ring-1 ring-gray-200">
+                        <select id="char-select" class="w-full p-4 rounded-xl ring-1 ring-gray-200 font-bold">
+                            <option value="Y">Letter Y</option>
+                            <option value="A">Letter A</option>
+                            <option value="B">Letter B</option>
+                            <option value="C">Letter C</option>
+                            <option value="PLATE">THE ROYAL PLATE (GOLD)</option>
+                        </select>
                     </div>
-
-                    <div class="space-y-2">
-                        <label class="text-[10px] uppercase font-black tracking-tighter text-gray-400">Imperial Palette</label>
-                        <div class="flex gap-4" id="color-picker">
-                            <button data-color="#2d1b4e" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#2d1b4e] border-2 border-white transition-all"></button>
-                            <button data-color="#c5a059" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#c5a059] border-2 border-white transition-all"></button>
-                            <button data-color="#1a1a1a" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#1a1a1a] border-2 border-white transition-all"></button>
-                            <button data-color="#721c24" class="w-12 h-12 rounded-full ring-2 ring-offset-2 ring-transparent bg-[#721c24] border-2 border-white transition-all"></button>
-                        </div>
-                    </div>
-
-                    <button id="order-submit-btn" class="w-full btn-gold py-6 rounded-2xl font-black uppercase text-xs shadow-2xl">
-                        Authorize Order & Archive
-                    </button>
+                    <button onclick="placeOrder()" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#c5a059] transition-all">Submit Commission</button>
+                    <p class="text-[10px] text-center text-red-500 font-bold uppercase mt-4">⚠️ PAY AT SCHOOL TO COLLECT</p>
                 </div>
             </div>
 
-            <!-- Preview Side -->
-            <div class="lg:col-span-5 flex flex-col items-center">
-                <div id="preview-container" class="relative w-full aspect-[4/5] glass-card rounded-[3rem] overflow-hidden flex items-center justify-center p-12 transition-all duration-700">
-                    <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png')"></div>
-                    <div id="preview-box" class="text-[18rem] md:text-[22rem] serif font-black leading-none drop-shadow-2xl transition-all duration-700" style="color: #2d1b4e">A</div>
-                    <div class="absolute bottom-10 flex flex-col items-center opacity-30">
-                        <div class="w-12 h-[1px] bg-black mb-4"></div>
-                        <span id="preview-label" class="text-[9px] uppercase tracking-[0.5em] font-bold">Authenticated Ed.</span>
-                    </div>
-                </div>
+            <div id="preview-container" class="w-full max-w-sm aspect-[3/4] glass-card rounded-[3rem] shadow-2xl flex items-center justify-center relative transition-all duration-500">
+                <div id="preview-box" class="text-[15rem] serif font-black">Y</div>
             </div>
         </div>
 
-        <!-- VIEW: SUCCESS -->
-        <div id="view-success" class="animate-view hidden w-full max-w-xl text-center space-y-8">
-            <div class="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                <i class="fa-solid fa-feather-pointed text-4xl"></i>
-            </div>
-            <div class="space-y-2">
-                <h2 class="text-4xl font-black serif">Inscribed Successfully</h2>
-                <p class="text-gray-400 text-sm">Your order has been logged into the Imperial Ledger.</p>
-            </div>
-            <div class="glass-card p-10 rounded-[2.5rem] border-2 border-dashed border-[#c5a059]">
-                <span class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Tracking Reference</span>
-                <h1 id="success-code" class="text-6xl font-black serif text-[#c5a059] mt-2">#Y-000</h1>
-            </div>
-            <button onclick="router.goto('home')" class="text-[10px] font-black uppercase tracking-[0.3em] hover:text-[#c5a059] transition-colors">Start New Commission</button>
+        <div id="view-login" class="hidden w-full max-w-md glass-card p-10 rounded-[2rem] text-center">
+            <h2 class="text-2xl font-black serif uppercase mb-6">Gatekeeper</h2>
+            <input type="password" id="admin-pass" placeholder="ENTER KEY" class="w-full p-4 rounded-xl text-center tracking-[1em] mb-4 border">
+            <button onclick="checkAdmin()" class="w-full bg-black text-white py-4 rounded-xl font-bold uppercase text-xs">Unlock Ledger</button>
         </div>
 
-        <!-- VIEW: LOGIN -->
-        <div id="view-login" class="animate-view hidden w-full max-w-md glass-card p-12 rounded-[2.5rem] text-center shadow-2xl">
-            <div class="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fa-solid fa-key text-xl"></i>
+        <div id="view-admin" class="hidden w-full max-w-4xl space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-4xl serif font-black">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
+                <button onclick="showView('home')" class="bg-black text-white px-6 py-2 rounded-lg text-xs font-bold uppercase">Logout</button>
             </div>
-            <h2 class="text-2xl font-black uppercase tracking-widest mb-2">Gatekeeper</h2>
-            <p class="text-gray-400 text-[10px] uppercase tracking-widest mb-8">Authorised Personnel Only</p>
-            <input type="password" id="login-input" placeholder="ACCESS KEY" class="w-full p-5 rounded-2xl text-center tracking-[1em] text-xl font-bold mb-6">
-            <button id="login-confirm-btn" class="w-full btn-gold py-5 rounded-2xl font-black uppercase text-xs">Unlock Ledger</button>
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Name</th>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Selection</th>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-list"></tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- VIEW: DASHBOARD -->
-        <div id="view-dashboard" class="animate-view hidden w-full max-w-7xl h-[85vh] flex flex-col space-y-6">
-            <div class="flex justify-between items-end px-4">
-                <div>
-                    <h2 class="text-5xl font-black serif">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
-                    <p id="dash-stats" class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mt-2">Connecting to secure vault...</p>
-                </div>
-                <div class="flex gap-4">
-                    <button onclick="document.getElementById('broadcast-modal').classList.remove('hidden')" class="bg-[#c5a059] text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:brightness-110 transition-all">Broadcast Msg</button>
-                    <button onclick="router.goto('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#c5a059] transition-colors">Sign Out</button>
-                </div>
-            </div>
-            
-            <div class="flex-grow glass-card rounded-[3rem] overflow-hidden border border-black/5 flex flex-col">
-                <div class="overflow-auto flex-grow">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="border-b border-black/5">
-                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400">Ref</th>
-                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400">Identity</th>
-                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400 text-center">Sigil</th>
-                                <th class="p-8 text-[10px] uppercase font-black tracking-widest text-gray-400 text-right">Operation</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dash-order-list" class="divide-y divide-black/5"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </main>
 
-    <!-- Broadcast Modal (Admin Only) -->
-    <div id="broadcast-modal" class="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center hidden p-6">
-        <div class="w-full max-w-lg glass-card p-10 rounded-[2.5rem] space-y-6">
-            <h3 class="text-2xl font-black serif uppercase tracking-widest">Global Broadcast</h3>
-            <p class="text-xs text-gray-400 font-bold uppercase tracking-widest">Update the ticker for all patrons.</p>
-            <textarea id="broadcast-input" rows="3" placeholder="Enter royal proclamation..." class="w-full p-6 rounded-2xl font-medium text-lg"></textarea>
-            <div class="flex gap-4">
-                <button onclick="document.getElementById('broadcast-modal').classList.add('hidden')" class="flex-1 py-4 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-gray-200 rounded-xl">Cancel</button>
-                <button id="broadcast-send-btn" class="flex-1 btn-gold py-4 rounded-xl text-[10px] font-black uppercase tracking-widest">Deploy Message</button>
-            </div>
-        </div>
-    </div>
+    <script>
+        const views = ['home', 'login', 'admin'];
+        const orders = JSON.parse(localStorage.getItem('yahia_orders') || '[]');
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        function showView(id) {
+            views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
+            document.getElementById('view-' + id).classList.remove('hidden');
+            if(id === 'admin') renderAdmin();
+        }
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyDdtTa-kYLwkWdqw79w0M6Xm93OtBGWRWM",
-            authDomain: "yahiashop.firebaseapp.com",
-            projectId: "yahiashop",
-            storageBucket: "yahiashop.firebasestorage.app",
-            messagingSenderId: "776328811720",
-            appId: "1:776328811720:web:e69431d24c8c0d81c081fd"
-        };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahiashop-main';
-        
-        const fApp = initializeApp(firebaseConfig);
-        const auth = getAuth(fApp);
-        const db = getFirestore(fApp);
-        
-        const ORDERS_COL = `artifacts/${appId}/public/data/orders`;
-        const SYSTEM_DOC_PATH = `artifacts/${appId}/public/data/system/broadcast`;
-
-        let realtimeUnsubscribe = null;
-        let selectedColor = "#2d1b4e";
-        let currentUser = null;
-
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (e) {
-                console.error("Auth Failure:", e);
+        // PREVIEW LOGIC
+        document.getElementById('char-select').onchange = (e) => {
+            const pBox = document.getElementById('preview-box');
+            const pCont = document.getElementById('preview-container');
+            if(e.target.value === 'PLATE') {
+                pBox.innerText = "★";
+                pBox.style.color = "#8a6d3b";
+                pCont.classList.add('gold-paper-plate');
+            } else {
+                pBox.innerText = e.target.value;
+                pBox.style.color = "#1a1a1a";
+                pCont.classList.remove('gold-paper-plate');
             }
         };
 
-        const initSystemListeners = async () => {
-            const tickerEl = document.getElementById('global-ticker-text');
-            const docRef = doc(db, SYSTEM_DOC_PATH);
-
-            // Ensure the document exists so the listener has something to attach to immediately
-            const initialCheck = await getDoc(docRef);
-            if (!initialCheck.exists()) {
-                await setDoc(docRef, { message: "Welcome to Yahia Shop — Bespoke Luxury Hand-crafted for you.", timestamp: Date.now() });
+        // ADMIN LOGIC
+        function checkAdmin() {
+            const pass = document.getElementById('admin-pass').value;
+            if(pass === 'MADMIN') {
+                showView('admin');
+                document.getElementById('admin-pass').value = '';
+            } else {
+                alert("Incorrect Access Key");
             }
+        }
 
-            onSnapshot(docRef, (snap) => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    tickerEl.innerText = data.message || "Welcome to Yahia Shop.";
-                }
-            }, (err) => console.error("Global Message Sync Error:", err));
-        };
-
-        window.router = {
-            goto: (viewId) => {
-                document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
-                const target = document.getElementById('view-' + viewId);
-                if (target) target.classList.remove('hidden');
-                
-                if (viewId === 'dashboard') {
-                    router.syncLedger();
-                } else if (realtimeUnsubscribe) {
-                    realtimeUnsubscribe();
-                    realtimeUnsubscribe = null;
-                }
-            },
-            syncLedger: () => {
-                if (!currentUser) return;
-                const listEl = document.getElementById('dash-order-list');
-                const statsEl = document.getElementById('dash-stats');
-                if (realtimeUnsubscribe) realtimeUnsubscribe();
-                
-                realtimeUnsubscribe = onSnapshot(collection(db, ORDERS_COL), (snap) => {
-                    listEl.innerHTML = '';
-                    statsEl.innerText = `${snap.size} ARCHIVED ENTRIES`;
-                    snap.forEach(d => {
-                        const item = d.data();
-                        const tr = document.createElement('tr');
-                        tr.className = "hover:bg-white/50 transition-colors";
-                        tr.innerHTML = `
-                            <td class="p-8 font-mono font-bold text-xs">#${item.code}</td>
-                            <td class="p-8">
-                                <div class="font-black serif text-xl">${item.name}</div>
-                                <div class="text-[9px] uppercase tracking-widest text-gray-400 mt-1">${new Date(item.timestamp).toDateString()}</div>
-                            </td>
-                            <td class="p-8 text-center">
-                                <span class="serif font-black text-4xl" style="color:${item.color}">${item.letter === 'PLATE' ? '★' : item.letter}</span>
-                            </td>
-                            <td class="p-8 text-right">
-                                <button onclick="window.fulfillOrder('${d.id}')" class="text-[10px] font-black uppercase tracking-widest text-red-400 hover:text-red-600">Archive</button>
-                            </td>
-                        `;
-                        listEl.appendChild(tr);
-                    });
-                }, (err) => {
-                    statsEl.innerText = "Error syncing with vault.";
-                });
-            }
-        };
-
-        window.fulfillOrder = async (id) => { 
-            if (!currentUser) return;
-            if(confirm("Permanently archive this commission?")) {
-                await deleteDoc(doc(db, ORDERS_COL, id)); 
-            }
-        };
-
-        const init = async () => {
-            onAuthStateChanged(auth, (user) => {
-                currentUser = user;
-                if (user) {
-                    initSystemListeners();
-                }
-            });
+        // ORDER LOGIC
+        function placeOrder() {
+            const name = document.getElementById('cust-name').value;
+            const item = document.getElementById('char-select').value;
+            if(!name) return alert("Enter Student Name");
             
-            await initAuth();
+            orders.push({ name, item, date: new Date().toLocaleTimeString() });
+            localStorage.setItem('yahia_orders', JSON.stringify(orders));
+            alert("Order Logged! Pay at school.");
+            document.getElementById('cust-name').value = '';
+        }
 
-            const letterInput = document.getElementById('order-letter');
-            const lettersGroup = document.getElementById('letters-group');
-            const nameInput = document.getElementById('order-name');
-            const previewText = document.getElementById('preview-box');
-            const previewCont = document.getElementById('preview-container');
-            const previewLabel = document.getElementById('preview-label');
-            const colorButtons = document.querySelectorAll('#color-picker button');
+        function renderAdmin() {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = orders.map((o, i) => `
+                <tr class="border-b">
+                    <td class="p-6 font-bold serif">${o.name}</td>
+                    <td class="p-6 text-[#c5a059] font-black">${o.item}</td>
+                    <td class="p-6"><button onclick="deleteOrder(${i})" class="text-red-500 font-bold text-[10px] uppercase">Mark Paid</button></td>
+                </tr>
+            `).join('') || '<tr><td colspan="3" class="p-10 text-center text-gray-400 uppercase text-xs">Ledger is Empty</td></tr>';
+        }
 
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
-                const opt = document.createElement('option');
-                opt.value = l; opt.innerText = "Letter " + l;
-                lettersGroup.appendChild(opt);
-            });
-
-            letterInput.onchange = () => { 
-                const val = letterInput.value;
-                if(val === 'PLATE') {
-                    previewText.innerText = "Y";
-                    previewCont.classList.add('gold-paper-plate');
-                    previewLabel.innerText = "Imperial Edition";
-                } else {
-                    previewText.innerText = val;
-                    previewCont.classList.remove('gold-paper-plate');
-                    previewLabel.innerText = "Authenticated Ed.";
-                }
-            };
-            
-            colorButtons.forEach(btn => {
-                btn.onclick = () => {
-                    colorButtons.forEach(b => b.classList.remove('ring-black', 'scale-110'));
-                    btn.classList.add('ring-black', 'scale-110');
-                    selectedColor = btn.dataset.color;
-                    previewText.style.color = selectedColor;
-                };
-            });
-            colorButtons[0].click();
-
-            document.getElementById('admin-gate-btn').onclick = () => router.goto('login');
-            
-            document.getElementById('order-submit-btn').onclick = async () => {
-                if (!currentUser || !nameInput.value.trim()) return;
-                const code = Math.random().toString(36).substr(2, 5).toUpperCase();
-                try {
-                    await addDoc(collection(db, ORDERS_COL), {
-                        code, name: nameInput.value, letter: letterInput.value, color: selectedColor, timestamp: Date.now()
-                    });
-                    document.getElementById('success-code').innerText = "#" + code;
-                    router.goto('success');
-                    nameInput.value = '';
-                } catch (e) { 
-                    console.error(e);
-                }
-            };
-
-            document.getElementById('login-confirm-btn').onclick = () => {
-                if (document.getElementById('login-input').value === 'MADMIN') {
-                    router.goto('dashboard');
-                    document.getElementById('login-input').value = '';
-                }
-            };
-
-            document.getElementById('broadcast-send-btn').onclick = async () => {
-                if (!currentUser) return;
-                const msg = document.getElementById('broadcast-input').value;
-                if(!msg.trim()) return;
-                try {
-                    await setDoc(doc(db, SYSTEM_DOC_PATH), {
-                        message: msg,
-                        timestamp: Date.now()
-                    });
-                    document.getElementById('broadcast-modal').classList.add('hidden');
-                    document.getElementById('broadcast-input').value = '';
-                } catch(e) {
-                    console.error(e);
-                }
-            };
-
-            router.goto('home');
-        };
-
-        window.onload = init;
+        function deleteOrder(i) {
+            orders.splice(i, 1);
+            localStorage.setItem('yahia_orders', JSON.stringify(orders));
+            renderAdmin();
+        }
     </script>
 </body>
 </html>
