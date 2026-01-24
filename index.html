@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAHIA SHOP | LUXE</title>
+    <title>YAHIA SHOP | VIBRANT</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -15,8 +15,11 @@
         .gold-plate { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important; border: 10px double #8a6d3b !important; }
         .glass { background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-radius: 2.5rem; }
         .hidden { display: none !important; }
-        .dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .dot.active { border-color: black; transform: scale(1.1); }
+        
+        /* Color Swatches */
+        .dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s; }
+        .dot:hover { transform: scale(1.1); }
+        .dot.active { outline: 2px solid black; transform: scale(1.1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -32,32 +35,44 @@
     <main class="flex-grow flex items-center justify-center p-6">
         <div id="home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div class="space-y-10">
-                <h1 class="text-8xl serif font-black leading-none uppercase tracking-tighter">Choose<br><span class="text-[#c5a059]">Sigil</span></h1>
+                <h1 class="text-8xl serif font-black leading-none uppercase tracking-tighter">Color<br><span class="text-[#c5a059]">Sigil</span></h1>
                 <div class="glass p-10 space-y-8">
                     <input type="text" id="cust-name" placeholder="Student Name" class="w-full p-5 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-100 text-lg">
-                    <div class="grid grid-cols-2 gap-6">
-                        <select id="letter" class="p-5 rounded-2xl bg-gray-50 ring-1 ring-gray-100 font-bold uppercase text-sm"></select>
-                        <div class="flex gap-4 items-center justify-center bg-gray-50 rounded-2xl p-2">
-                            <div id="dot-yellow" class="dot bg-yellow-400 active" onclick="setCol('#facc15', 'Yellow')"></div>
-                            <div id="dot-brown" class="dot bg-amber-800" onclick="setCol('#92400e', 'Light Brown')"></div>
+                    
+                    <div class="space-y-4">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">1. Choose Letter & Color</label>
+                        <div class="flex flex-wrap gap-6 items-center">
+                            <select id="letter" class="p-4 rounded-xl bg-gray-50 ring-1 ring-gray-100 font-bold uppercase text-sm w-32"></select>
+                            <div class="flex flex-wrap gap-3 p-2">
+                                <div class="dot bg-red-500 active" onclick="setCol('#ef4444', 'Red', this)"></div>
+                                <div class="dot bg-blue-500" onclick="setCol('#3b82f6', 'Blue', this)"></div>
+                                <div class="dot bg-green-500" onclick="setCol('#22c55e', 'Green', this)"></div>
+                                <div class="dot bg-purple-500" onclick="setCol('#a855f7', 'Purple', this)"></div>
+                                <div class="dot bg-pink-500" onclick="setCol('#ec4899', 'Pink', this)"></div>
+                                <div class="dot bg-orange-500" onclick="setCol('#f97316', 'Orange', this)"></div>
+                                <div class="dot bg-yellow-400" onclick="setCol('#facc15', 'Yellow', this)"></div>
+                            </div>
                         </div>
                     </div>
+
                     <div class="flex items-center gap-4 p-5 bg-black/5 rounded-2xl cursor-pointer" onclick="toggleR()">
                         <div id="rBox" class="w-6 h-6 border-2 border-black rounded flex items-center justify-center text-[10px] font-bold"></div>
                         <span class="font-black serif text-[#c5a059] italic uppercase text-sm tracking-widest">Imperial Gold Plate</span>
                     </div>
+
                     <button id="btn-text" onclick="placeOrder()" class="w-full bg-black text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em]">Submit Commission</button>
                 </div>
             </div>
+
             <div id="preview-cont" class="w-full max-w-md aspect-[4/5] glass flex items-center justify-center relative transition-all duration-700">
                 <div id="preview-box" class="text-[18rem] serif font-black">Y</div>
             </div>
         </div>
 
         <div id="login" class="hidden glass p-12 w-full max-w-sm text-center">
-            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Security Check</h2>
+            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Gatekeeper</h2>
             <input type="password" id="pass" placeholder="PASSWORD" class="w-full p-5 rounded-2xl text-center tracking-[1em] mb-6 ring-1 ring-gray-200 border-none outline-none">
-            <button onclick="auth()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs">Unlock Ledger</button>
+            <button onclick="auth()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs">Unlock</button>
         </div>
 
         <div id="admin" class="hidden w-full max-w-4xl space-y-8">
@@ -67,7 +82,7 @@
             </div>
             <div class="glass overflow-hidden">
                 <table class="w-full text-left">
-                    <thead><tr class="border-b"><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Patron</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Sigil</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Style</th><th class="p-8"></th></tr></thead>
+                    <thead><tr class="border-b"><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Patron</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Sigil</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Color</th><th class="p-8"></th></tr></thead>
                     <tbody id="admin-list" class="divide-y divide-gray-50"></tbody>
                 </table>
             </div>
@@ -87,17 +102,17 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let curCol = '#facc15', curColName = 'Yellow', isR = false;
+        let curCol = '#ef4444', curColName = 'Red', isR = false;
 
         function go(id) {
             ['home', 'login', 'admin'].forEach(v => document.getElementById(v).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
 
-        function setCol(hex, name) {
+        function setCol(hex, name, el) {
             curCol = hex; curColName = name;
             document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-            document.getElementById(name === 'Yellow' ? 'dot-yellow' : 'dot-brown').classList.add('active');
+            el.classList.add('active');
             update();
         }
 
@@ -136,7 +151,7 @@
                 document.getElementById('cust-name').value = '';
                 document.getElementById('btn-text').innerText = "Submit Commission";
             }).catch(e => {
-                alert("Database Error! Check your Firebase Rules.");
+                alert("Database Error! Update Rules in Firebase.");
                 document.getElementById('btn-text').innerText = "Submit Commission";
             });
         }
@@ -155,7 +170,7 @@
                     <td class="p-8 font-black serif text-xl">${o.name}</td>
                     <td class="p-8 font-black text-[#c5a059] text-2xl">${o.item}</td>
                     <td class="p-8 text-[10px] font-black uppercase tracking-widest">${o.style}</td>
-                    <td class="p-8 text-right"><button onclick="deleteDoc('${doc.id}')" class="text-red-500 font-black text-[10px] uppercase underline">Mark Paid</button></td>
+                    <td class="p-8 text-right"><button onclick="deleteDoc('${doc.id}')" class="text-red-500 font-black text-[10px] uppercase underline">Paid</button></td>
                 </tr>`;
             });
         });
