@@ -175,4 +175,27 @@
         window.setColor = (hex, name) => {
             activeColor = hex; activeColorName = name;
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active-color'));
-            document.
+            document.getElementById('color-' + (name === 'Yellow' ? 'yellow' : 'brown')).classList.add('active-color');
+            updatePreview();
+        };
+        window.toggleRoyal = () => {
+            document.getElementById('royalCheck').checked = !document.getElementById('royalCheck').checked;
+            updatePreview();
+        };
+        window.updatePreview = () => {
+            const isR = document.getElementById('royalCheck').checked;
+            const pBox = document.getElementById('preview-box');
+            const pCont = document.getElementById('preview-container');
+            pBox.innerText = document.getElementById('char-select').value;
+            if(isR) {
+                pCont.classList.add('gold-paper-plate');
+                pBox.style.color = "#8a6d3b";
+            } else {
+                pCont.classList.remove('gold-paper-plate');
+                pBox.style.color = activeColor;
+            }
+        };
+        document.getElementById('char-select').onchange = updatePreview;
+    </script>
+</body>
+</html>
