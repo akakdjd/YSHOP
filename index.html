@@ -4,52 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAHIA SHOP | 3D ALPHABETS</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,900;1,400&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
-
     <style>
-        :root { 
-            --royal-purple: #1a1a1a; 
-            --accent-gold: #c5a059; 
-            --canvas-bg: #f3f4f6;
-            --yahia-yellow: #fde047;
-            --yahia-brown: #92400e;
-        }
-
-        body { font-family: 'Inter', sans-serif; background-color: var(--canvas-bg); color: var(--royal-purple); overflow-x: hidden; }
+        :root { --royal-purple: #1a1a1a; --accent-gold: #c5a059; --canvas-bg: #f3f4f6; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--canvas-bg); color: var(--royal-purple); }
         .serif { font-family: 'Bodoni Moda', serif; }
-
-        /* 3D EFFECT */
-        #preview-box {
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 1px 0 #bbb, 0 2px 0 #b9b9b9, 0 3px 0 #aaa, 0 4px 0 #a9a9a9, 0 5px 15px rgba(0,0,0,.3);
-        }
-
-        .gold-paper-plate {
-            background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important;
-            border: 8px double #8a6d3b !important;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.2), 0 20px 40px rgba(0,0,0,0.3) !important;
-        }
-
+        #preview-box { transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-shadow: 0 1px 0 #bbb, 0 2px 0 #b9b9b9, 0 3px 0 #aaa, 0 5px 15px rgba(0,0,0,.3); }
+        .gold-paper-plate { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important; border: 8px double #8a6d3b !important; box-shadow: inset 0 0 50px rgba(0,0,0,0.2), 0 20px 40px rgba(0,0,0,0.3) !important; }
         .broadcast-ticker { background: #000; color: var(--accent-gold); height: 32px; display: flex; align-items: center; font-size: 10px; font-weight: 900; overflow: hidden; }
         .ticker-content { display: inline-block; white-space: nowrap; padding-left: 100%; animation: ticker 20s linear infinite; }
         @keyframes ticker { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-
         .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .hidden { display: none !important; }
-
         .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; transition: 0.2s; }
-        .color-dot:hover { transform: scale(1.2); }
-        .active-color { ring: 2px solid black; transform: scale(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+        .active-color { outline: 2px solid black; transform: scale(1.1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <div class="broadcast-ticker">
         <div class="ticker-content uppercase tracking-widest">
-            ALL ALPHABETS A-Z AVAILABLE — CHOOSE YELLOW OR LIGHT BROWN — THE ROYAL PLATE SPECIAL EDITION — PAY CASH AT SCHOOL
+            LIVE CLOUD SYNC ACTIVE — ALL ORDERS GO TO YAHIA'S MASTER LEDGER — PAY CASH AT SCHOOL
         </div>
     </div>
 
@@ -58,47 +35,31 @@
             <div class="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center serif font-bold text-xl">Y</div>
             <span class="font-black uppercase tracking-tighter">Yahia <span class="text-[#c5a059]">Shop</span></span>
         </div>
-        <button onclick="showView('login')" class="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent hover:border-[#c5a059] transition-all">Portal Access</button>
+        <button onclick="showView('login')" class="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent hover:border-[#c5a059]">Portal Access</button>
     </nav>
 
     <main class="flex-grow flex items-center justify-center p-6">
         
         <div id="view-home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-8">
-                <h1 class="text-7xl serif font-black leading-none uppercase">The 3D <br><span class="text-[#c5a059]">Alpha</span></h1>
-                
+                <h1 class="text-7xl serif font-black leading-none uppercase">3D <br><span class="text-[#c5a059]">Store</span></h1>
                 <div class="glass-card p-8 rounded-3xl shadow-xl space-y-6">
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Patron Identity</label>
-                        <input type="text" id="cust-name" placeholder="Enter Your Name" class="w-full p-4 rounded-xl ring-1 ring-gray-200">
-                        
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Select Letter</label>
-                                <select id="char-select" class="w-full p-4 rounded-xl ring-1 ring-gray-200 font-bold bg-white"></select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Signature Color</label>
-                                <div class="flex gap-4 p-3 bg-white rounded-xl ring-1 ring-gray-100 justify-center">
-                                    <div id="color-yellow" class="color-dot bg-yellow-400" onclick="setColor('#facc15', 'Yellow')"></div>
-                                    <div id="color-brown" class="color-dot bg-amber-800" onclick="setColor('#92400e', 'Light Brown')"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3 p-4 bg-black/5 rounded-xl cursor-pointer" onclick="toggleRoyal()">
-                            <input type="checkbox" id="royalCheck" class="w-5 h-5 accent-yellow-600">
-                            <span class="font-black serif text-[#c5a059] text-sm italic">THE ROYAL PLATE (Imperial Gold)</span>
+                    <input type="text" id="cust-name" placeholder="Your Name" class="w-full p-4 rounded-xl ring-1 ring-gray-200">
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="char-select" class="w-full p-4 rounded-xl ring-1 ring-gray-200 font-bold bg-white"></select>
+                        <div class="flex gap-4 p-3 bg-white rounded-xl ring-1 ring-gray-100 justify-center">
+                            <div id="color-yellow" class="color-dot bg-yellow-400 active-color" onclick="setColor('#facc15', 'Yellow')"></div>
+                            <div id="color-brown" class="color-dot bg-amber-800" onclick="setColor('#92400e', 'Light Brown')"></div>
                         </div>
                     </div>
-
-                    <button onclick="placeOrder()" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#c5a059] transition-all">Submit Commission</button>
-                    <p class="text-[10px] text-center text-red-500 font-bold uppercase">⚠️ PAY IN SCHOOL TO YAHIA</p>
+                    <div class="flex items-center gap-3 p-4 bg-black/5 rounded-xl cursor-pointer" onclick="toggleRoyal()">
+                        <input type="checkbox" id="royalCheck" class="w-5 h-5 accent-yellow-600">
+                        <span class="font-black serif text-[#c5a059] text-sm italic">THE ROYAL PLATE (Imperial Gold)</span>
+                    </div>
+                    <button onclick="placeOrder()" id="order-btn" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs tracking-widest">Submit to Yahia</button>
                 </div>
             </div>
-
             <div id="preview-container" class="w-full max-w-sm aspect-[3/4] glass-card rounded-[3rem] shadow-2xl flex items-center justify-center relative transition-all duration-500 overflow-hidden">
-                <div class="absolute top-8 text-[10px] font-black text-gray-300 tracking-[0.4em]">AUTHENTICATED 3D</div>
                 <div id="preview-box" class="text-[15rem] serif font-black">Y</div>
             </div>
         </div>
@@ -109,16 +70,16 @@
             <button onclick="checkAdmin()" class="w-full bg-black text-white py-4 rounded-xl font-bold uppercase text-xs">Unlock Ledger</button>
         </div>
 
-        <div id="view-admin" class="hidden w-full max-w-4xl space-y-6">
+        <div id="view-admin" class="hidden w-full max-w-4xl space-y-6 h-[80vh] flex flex-col">
             <div class="flex justify-between items-center">
-                <h2 class="text-4xl serif font-black">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
+                <h2 class="text-4xl serif font-black">Global <span class="text-[#c5a059]">Ledger</span></h2>
                 <button onclick="showView('home')" class="bg-black text-white px-6 py-2 rounded-lg text-xs font-bold">Logout</button>
             </div>
-            <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+            <div class="glass-card rounded-2xl overflow-auto flex-grow shadow-2xl">
                 <table class="w-full text-left">
-                    <thead class="bg-white border-b">
+                    <thead class="bg-white sticky top-0 border-b z-10">
                         <tr>
-                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Name</th>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Patron</th>
                             <th class="p-6 text-[10px] uppercase font-black text-gray-400">Item</th>
                             <th class="p-6 text-[10px] uppercase font-black text-gray-400">Color</th>
                             <th class="p-6 text-[10px] uppercase font-black text-gray-400">Action</th>
@@ -128,109 +89,90 @@
                 </table>
             </div>
         </div>
-
     </main>
 
-    <script>
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        const select = document.getElementById('char-select');
-        let activeColor = '#facc15';
-        let activeColorName = 'Yellow';
-        let isRoyal = false;
+    <script type="module">
+        // THIS IS THE BRAIN - CONNECTS TO THE CLOUD
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Populate Alphabet
-        alphabet.forEach(letter => {
-            const opt = document.createElement('option');
-            opt.value = letter;
-            opt.innerText = "Letter " + letter;
-            select.appendChild(opt);
+        const firebaseConfig = {
+            apiKey: "AIzaSyAs-FakeKeyForDisplay",
+            authDomain: "yahiashop.firebaseapp.com",
+            projectId: "yahiashop-388e4", // This is a public placeholder
+            storageBucket: "yahiashop.appspot.com",
+            messagingSenderId: "123456",
+            appId: "1:123456:web:123"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const colRef = collection(db, "orders");
+
+        // UI LOGIC
+        window.showView = (id) => {
+            ['home', 'login', 'admin'].forEach(v => document.getElementById('view-'+v).classList.add('hidden'));
+            document.getElementById('view-'+id).classList.remove('hidden');
+        };
+
+        window.placeOrder = async () => {
+            const name = document.getElementById('cust-name').value;
+            if(!name) return alert("Enter your name!");
+            const btn = document.getElementById('order-btn');
+            btn.innerText = "SENDING...";
+            
+            await addDoc(colRef, {
+                name: name,
+                item: document.getElementById('royalCheck').checked ? "ROYAL " + document.getElementById('char-select').value : document.getElementById('char-select').value,
+                color: document.getElementById('royalCheck').checked ? "Gold" : activeColorName,
+                time: Date.now()
+            });
+            
+            btn.innerText = "SUBMIT TO YAHIA";
+            alert("Order sent to Yahia's phone! Pay at school.");
+            document.getElementById('cust-name').value = '';
+        };
+
+        // Real-time Sync: This makes all phones see the same list
+        onSnapshot(colRef, (snapshot) => {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            snapshot.docs.forEach(d => {
+                const o = d.data();
+                list.innerHTML += `<tr class="bg-white/50">
+                    <td class="p-6 font-bold serif">${o.name}</td>
+                    <td class="p-6 font-black text-gray-600">${o.item}</td>
+                    <td class="p-6"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase" style="background:${o.color==='Yellow'?'#fef08a':'#fed7aa'}">${o.color}</span></td>
+                    <td class="p-6"><button onclick="deleteOrder('${d.id}')" class="text-red-500 font-black text-[10px]">MARK PAID</button></td>
+                </tr>`;
+            });
         });
 
-        const views = ['home', 'login', 'admin'];
-        const orders = JSON.parse(localStorage.getItem('yahia_orders') || '[]');
-
-        function showView(id) {
-            views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
-            document.getElementById('view-' + id).classList.remove('hidden');
-            if(id === 'admin') renderAdmin();
-        }
-
-        function setColor(hex, name) {
-            activeColor = hex;
-            activeColorName = name;
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active-color'));
-            if(name === 'Yellow') document.getElementById('color-yellow').classList.add('active-color');
-            else document.getElementById('color-brown').classList.add('active-color');
-            updatePreview();
-        }
-
-        function toggleRoyal() {
-            isRoyal = !isRoyal;
-            document.getElementById('royalCheck').checked = isRoyal;
-            updatePreview();
-        }
-
-        function updatePreview() {
-            const pBox = document.getElementById('preview-box');
-            const pCont = document.getElementById('preview-container');
-            const char = document.getElementById('char-select').value;
-
-            pBox.innerText = char;
-            
-            if(isRoyal) {
-                pCont.classList.add('gold-paper-plate');
-                pBox.style.color = "#8a6d3b";
-                pBox.style.fontFamily = "'Bodoni Moda', serif";
-            } else {
-                pCont.classList.remove('gold-paper-plate');
-                pBox.style.color = activeColor;
-                pBox.style.fontFamily = "'Inter', sans-serif";
+        window.deleteOrder = async (id) => {
+            if(confirm("Mark this order as paid and remove it?")) {
+                await deleteDoc(doc(db, "orders", id));
             }
-        }
+        };
 
-        document.getElementById('char-select').onchange = updatePreview;
-
-        function checkAdmin() {
+        window.checkAdmin = () => {
             if(document.getElementById('admin-pass').value === 'MADMIN') {
                 showView('admin');
                 document.getElementById('admin-pass').value = '';
             } else { alert("Access Denied"); }
-        }
+        };
 
-        function placeOrder() {
-            const name = document.getElementById('cust-name').value;
-            if(!name) return alert("Enter your name!");
-            
-            const item = document.getElementById('char-select').value;
-            orders.push({ 
-                name, 
-                item: isRoyal ? "ROYAL " + item : item, 
-                color: isRoyal ? "Gold" : activeColorName 
-            });
-            localStorage.setItem('yahia_orders', JSON.stringify(orders));
-            alert("Success! Show this to Yahia at school.");
-            document.getElementById('cust-name').value = '';
-        }
+        // Alphabet Loader
+        const select = document.getElementById('char-select');
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+            const opt = document.createElement('option');
+            opt.value = l; opt.innerText = "Letter " + l;
+            select.appendChild(opt);
+        });
 
-        function renderAdmin() {
-            const list = document.getElementById('admin-list');
-            list.innerHTML = orders.map((o, i) => `
-                <tr class="bg-white/50">
-                    <td class="p-6 font-bold serif">${o.name}</td>
-                    <td class="p-6 font-black text-gray-600">${o.item}</td>
-                    <td class="p-6"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase" style="background:${o.color === 'Yellow' ? '#fef08a' : '#fed7aa'}">${o.color}</span></td>
-                    <td class="p-6"><button onclick="deleteOrder(${i})" class="text-red-500 font-bold text-[10px] uppercase hover:underline">Mark Paid</button></td>
-                </tr>
-            `).join('') || '<td colspan="4" class="p-10 text-center uppercase text-gray-400 text-xs">No orders yet</td>';
-        }
-
-        function deleteOrder(i) {
-            orders.splice(i, 1);
-            localStorage.setItem('yahia_orders', JSON.stringify(orders));
-            renderAdmin();
-        }
-
-        setColor('#facc15', 'Yellow'); // Init default
-    </script>
-</body>
-</html>
+        // Global Variables for Color/Royal
+        window.activeColor = '#facc15';
+        window.activeColorName = 'Yellow';
+        window.setColor = (hex, name) => {
+            activeColor = hex; activeColorName = name;
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active-color'));
+            document.
