@@ -14,6 +14,8 @@
             --royal-purple: #1a1a1a; 
             --accent-gold: #c5a059; 
             --canvas-bg: #f3f4f6;
+            --yahia-yellow: #fde047;
+            --yahia-brown: #92400e;
         }
 
         body { font-family: 'Inter', sans-serif; background-color: var(--canvas-bg); color: var(--royal-purple); overflow-x: hidden; }
@@ -22,7 +24,7 @@
         /* 3D EFFECT */
         #preview-box {
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 1px 0 #bbb, 0 2px 0 #b9b9b9, 0 3px 0 #aaa, 0 4px 0 #a9a9a9, 0 5px 10px rgba(0,0,0,.25);
+            text-shadow: 0 1px 0 #bbb, 0 2px 0 #b9b9b9, 0 3px 0 #aaa, 0 4px 0 #a9a9a9, 0 5px 15px rgba(0,0,0,.3);
         }
 
         .gold-paper-plate {
@@ -37,13 +39,17 @@
 
         .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .hidden { display: none !important; }
+
+        .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; transition: 0.2s; }
+        .color-dot:hover { transform: scale(1.2); }
+        .active-color { ring: 2px solid black; transform: scale(1.2); box-shadow: 0 0 10px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <div class="broadcast-ticker">
         <div class="ticker-content uppercase tracking-widest">
-            Welcome to Yahia Shop — Order 3D Letters Online — Pay Cash at School — Imperial Editions Available Now
+            ALL ALPHABETS A-Z AVAILABLE — CHOOSE YELLOW OR LIGHT BROWN — THE ROYAL PLATE SPECIAL EDITION — PAY CASH AT SCHOOL
         </div>
     </div>
 
@@ -59,49 +65,66 @@
         
         <div id="view-home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="space-y-8">
-                <h1 class="text-7xl serif font-black leading-none">The 3D <br><span class="text-[#c5a059]">Sigil</span></h1>
+                <h1 class="text-7xl serif font-black leading-none uppercase">The 3D <br><span class="text-[#c5a059]">Alpha</span></h1>
+                
                 <div class="glass-card p-8 rounded-3xl shadow-xl space-y-6">
                     <div class="space-y-4">
-                        <input type="text" id="cust-name" placeholder="Student Name" class="w-full p-4 rounded-xl ring-1 ring-gray-200">
-                        <select id="char-select" class="w-full p-4 rounded-xl ring-1 ring-gray-200 font-bold">
-                            <option value="Y">Letter Y</option>
-                            <option value="A">Letter A</option>
-                            <option value="B">Letter B</option>
-                            <option value="C">Letter C</option>
-                            <option value="PLATE">THE ROYAL PLATE (GOLD)</option>
-                        </select>
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Patron Identity</label>
+                        <input type="text" id="cust-name" placeholder="Enter Your Name" class="w-full p-4 rounded-xl ring-1 ring-gray-200">
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Select Letter</label>
+                                <select id="char-select" class="w-full p-4 rounded-xl ring-1 ring-gray-200 font-bold bg-white"></select>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Signature Color</label>
+                                <div class="flex gap-4 p-3 bg-white rounded-xl ring-1 ring-gray-100 justify-center">
+                                    <div id="color-yellow" class="color-dot bg-yellow-400" onclick="setColor('#facc15', 'Yellow')"></div>
+                                    <div id="color-brown" class="color-dot bg-amber-800" onclick="setColor('#92400e', 'Light Brown')"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 p-4 bg-black/5 rounded-xl cursor-pointer" onclick="toggleRoyal()">
+                            <input type="checkbox" id="royalCheck" class="w-5 h-5 accent-yellow-600">
+                            <span class="font-black serif text-[#c5a059] text-sm italic">THE ROYAL PLATE (Imperial Gold)</span>
+                        </div>
                     </div>
+
                     <button onclick="placeOrder()" class="w-full bg-black text-white py-5 rounded-xl font-black uppercase text-xs tracking-widest hover:bg-[#c5a059] transition-all">Submit Commission</button>
-                    <p class="text-[10px] text-center text-red-500 font-bold uppercase mt-4">⚠️ PAY AT SCHOOL TO COLLECT</p>
+                    <p class="text-[10px] text-center text-red-500 font-bold uppercase">⚠️ PAY IN SCHOOL TO YAHIA</p>
                 </div>
             </div>
 
-            <div id="preview-container" class="w-full max-w-sm aspect-[3/4] glass-card rounded-[3rem] shadow-2xl flex items-center justify-center relative transition-all duration-500">
+            <div id="preview-container" class="w-full max-w-sm aspect-[3/4] glass-card rounded-[3rem] shadow-2xl flex items-center justify-center relative transition-all duration-500 overflow-hidden">
+                <div class="absolute top-8 text-[10px] font-black text-gray-300 tracking-[0.4em]">AUTHENTICATED 3D</div>
                 <div id="preview-box" class="text-[15rem] serif font-black">Y</div>
             </div>
         </div>
 
         <div id="view-login" class="hidden w-full max-w-md glass-card p-10 rounded-[2rem] text-center">
             <h2 class="text-2xl font-black serif uppercase mb-6">Gatekeeper</h2>
-            <input type="password" id="admin-pass" placeholder="ENTER KEY" class="w-full p-4 rounded-xl text-center tracking-[1em] mb-4 border">
+            <input type="password" id="admin-pass" placeholder="PASSWORD" class="w-full p-4 rounded-xl text-center tracking-[1em] mb-4 border">
             <button onclick="checkAdmin()" class="w-full bg-black text-white py-4 rounded-xl font-bold uppercase text-xs">Unlock Ledger</button>
         </div>
 
         <div id="view-admin" class="hidden w-full max-w-4xl space-y-6">
             <div class="flex justify-between items-center">
                 <h2 class="text-4xl serif font-black">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
-                <button onclick="showView('home')" class="bg-black text-white px-6 py-2 rounded-lg text-xs font-bold uppercase">Logout</button>
+                <button onclick="showView('home')" class="bg-black text-white px-6 py-2 rounded-lg text-xs font-bold">Logout</button>
             </div>
-            <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
                 <table class="w-full text-left">
-                    <thead class="bg-gray-50 border-b">
+                    <thead class="bg-white border-b">
                         <tr>
                             <th class="p-6 text-[10px] uppercase font-black text-gray-400">Name</th>
-                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Selection</th>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Item</th>
+                            <th class="p-6 text-[10px] uppercase font-black text-gray-400">Color</th>
                             <th class="p-6 text-[10px] uppercase font-black text-gray-400">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="admin-list"></tbody>
+                    <tbody id="admin-list" class="divide-y divide-gray-100"></tbody>
                 </table>
             </div>
         </div>
@@ -109,6 +132,20 @@
     </main>
 
     <script>
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        const select = document.getElementById('char-select');
+        let activeColor = '#facc15';
+        let activeColorName = 'Yellow';
+        let isRoyal = false;
+
+        // Populate Alphabet
+        alphabet.forEach(letter => {
+            const opt = document.createElement('option');
+            opt.value = letter;
+            opt.innerText = "Letter " + letter;
+            select.appendChild(opt);
+        });
+
         const views = ['home', 'login', 'admin'];
         const orders = JSON.parse(localStorage.getItem('yahia_orders') || '[]');
 
@@ -118,53 +155,73 @@
             if(id === 'admin') renderAdmin();
         }
 
-        // PREVIEW LOGIC
-        document.getElementById('char-select').onchange = (e) => {
+        function setColor(hex, name) {
+            activeColor = hex;
+            activeColorName = name;
+            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active-color'));
+            if(name === 'Yellow') document.getElementById('color-yellow').classList.add('active-color');
+            else document.getElementById('color-brown').classList.add('active-color');
+            updatePreview();
+        }
+
+        function toggleRoyal() {
+            isRoyal = !isRoyal;
+            document.getElementById('royalCheck').checked = isRoyal;
+            updatePreview();
+        }
+
+        function updatePreview() {
             const pBox = document.getElementById('preview-box');
             const pCont = document.getElementById('preview-container');
-            if(e.target.value === 'PLATE') {
-                pBox.innerText = "★";
-                pBox.style.color = "#8a6d3b";
-                pCont.classList.add('gold-paper-plate');
-            } else {
-                pBox.innerText = e.target.value;
-                pBox.style.color = "#1a1a1a";
-                pCont.classList.remove('gold-paper-plate');
-            }
-        };
+            const char = document.getElementById('char-select').value;
 
-        // ADMIN LOGIC
-        function checkAdmin() {
-            const pass = document.getElementById('admin-pass').value;
-            if(pass === 'MADMIN') {
-                showView('admin');
-                document.getElementById('admin-pass').value = '';
+            pBox.innerText = char;
+            
+            if(isRoyal) {
+                pCont.classList.add('gold-paper-plate');
+                pBox.style.color = "#8a6d3b";
+                pBox.style.fontFamily = "'Bodoni Moda', serif";
             } else {
-                alert("Incorrect Access Key");
+                pCont.classList.remove('gold-paper-plate');
+                pBox.style.color = activeColor;
+                pBox.style.fontFamily = "'Inter', sans-serif";
             }
         }
 
-        // ORDER LOGIC
+        document.getElementById('char-select').onchange = updatePreview;
+
+        function checkAdmin() {
+            if(document.getElementById('admin-pass').value === 'MADMIN') {
+                showView('admin');
+                document.getElementById('admin-pass').value = '';
+            } else { alert("Access Denied"); }
+        }
+
         function placeOrder() {
             const name = document.getElementById('cust-name').value;
-            const item = document.getElementById('char-select').value;
-            if(!name) return alert("Enter Student Name");
+            if(!name) return alert("Enter your name!");
             
-            orders.push({ name, item, date: new Date().toLocaleTimeString() });
+            const item = document.getElementById('char-select').value;
+            orders.push({ 
+                name, 
+                item: isRoyal ? "ROYAL " + item : item, 
+                color: isRoyal ? "Gold" : activeColorName 
+            });
             localStorage.setItem('yahia_orders', JSON.stringify(orders));
-            alert("Order Logged! Pay at school.");
+            alert("Success! Show this to Yahia at school.");
             document.getElementById('cust-name').value = '';
         }
 
         function renderAdmin() {
             const list = document.getElementById('admin-list');
             list.innerHTML = orders.map((o, i) => `
-                <tr class="border-b">
+                <tr class="bg-white/50">
                     <td class="p-6 font-bold serif">${o.name}</td>
-                    <td class="p-6 text-[#c5a059] font-black">${o.item}</td>
-                    <td class="p-6"><button onclick="deleteOrder(${i})" class="text-red-500 font-bold text-[10px] uppercase">Mark Paid</button></td>
+                    <td class="p-6 font-black text-gray-600">${o.item}</td>
+                    <td class="p-6"><span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase" style="background:${o.color === 'Yellow' ? '#fef08a' : '#fed7aa'}">${o.color}</span></td>
+                    <td class="p-6"><button onclick="deleteOrder(${i})" class="text-red-500 font-bold text-[10px] uppercase hover:underline">Mark Paid</button></td>
                 </tr>
-            `).join('') || '<tr><td colspan="3" class="p-10 text-center text-gray-400 uppercase text-xs">Ledger is Empty</td></tr>';
+            `).join('') || '<td colspan="4" class="p-10 text-center uppercase text-gray-400 text-xs">No orders yet</td>';
         }
 
         function deleteOrder(i) {
@@ -172,6 +229,8 @@
             localStorage.setItem('yahia_orders', JSON.stringify(orders));
             renderAdmin();
         }
+
+        setColor('#facc15', 'Yellow'); // Init default
     </script>
 </body>
 </html>
