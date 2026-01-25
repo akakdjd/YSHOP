@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAHIA SHOP | VIBRANT</title>
+    <title>YAHIA SHOP | OFFICIAL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
@@ -11,15 +11,13 @@
     <style>
         body { font-family: 'Inter', sans-serif; background: #faf9f6; color: #1a1a1a; }
         .serif { font-family: 'Bodoni Moda', serif; }
-        #preview-box { transition: 0.4s; text-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         .gold-plate { background: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728) !important; border: 10px double #8a6d3b !important; }
         .glass { background: white; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.05); border-radius: 2.5rem; }
         .hidden { display: none !important; }
-        
-        /* Color Swatches */
         .dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: 0.2s; }
-        .dot:hover { transform: scale(1.1); }
         .dot.active { outline: 2px solid black; transform: scale(1.1); }
+        .nav-link { font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; border-bottom: 2px solid transparent; transition: 0.3s; }
+        .nav-link:hover { border-color: #c5a059; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -29,56 +27,68 @@
             <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center serif font-black text-2xl">Y</div>
             <span class="font-black uppercase tracking-widest text-sm">Yahia <span class="text-[#c5a059]">Shop</span></span>
         </div>
-        <button onclick="go('login')" class="text-[10px] font-black uppercase tracking-widest border-b-2 border-black">Portal Access</button>
+        <div class="flex gap-8 items-center">
+            <button onclick="go('home')" class="nav-link">Shop</button>
+            <button onclick="go('app')" class="nav-link">App</button>
+            <button onclick="go('login')" class="nav-link">Portal</button>
+        </div>
     </nav>
 
     <main class="flex-grow flex items-center justify-center p-6">
+        
         <div id="home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div class="space-y-10">
-                <h1 class="text-8xl serif font-black leading-none uppercase tracking-tighter">Color<br><span class="text-[#c5a059]">Sigil</span></h1>
+                <h1 class="text-8xl serif font-black leading-none uppercase tracking-tighter">Bespoke<br><span class="text-[#c5a059]">Sigil</span></h1>
                 <div class="glass p-10 space-y-8">
                     <input type="text" id="cust-name" placeholder="Student Name" class="w-full p-5 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-100 text-lg">
-                    
-                    <div class="space-y-4">
-                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">1. Choose Letter & Color</label>
-                        <div class="flex flex-wrap gap-6 items-center">
-                            <select id="letter" class="p-4 rounded-xl bg-gray-50 ring-1 ring-gray-100 font-bold uppercase text-sm w-32"></select>
-                            <div class="flex flex-wrap gap-3 p-2">
-                                <div class="dot bg-red-500 active" onclick="setCol('#ef4444', 'Red', this)"></div>
-                                <div class="dot bg-blue-500" onclick="setCol('#3b82f6', 'Blue', this)"></div>
-                                <div class="dot bg-green-500" onclick="setCol('#22c55e', 'Green', this)"></div>
-                                <div class="dot bg-purple-500" onclick="setCol('#a855f7', 'Purple', this)"></div>
-                                <div class="dot bg-pink-500" onclick="setCol('#ec4899', 'Pink', this)"></div>
-                                <div class="dot bg-orange-500" onclick="setCol('#f97316', 'Orange', this)"></div>
-                                <div class="dot bg-yellow-400" onclick="setCol('#facc15', 'Yellow', this)"></div>
-                            </div>
+                    <div class="flex flex-wrap gap-6 items-center">
+                        <select id="letter" class="p-4 rounded-xl bg-gray-50 ring-1 ring-gray-100 font-bold uppercase text-sm w-32"></select>
+                        <div class="flex flex-wrap gap-3 p-2">
+                            <div class="dot bg-red-500 active" onclick="setCol('#ef4444', 'Red', this)"></div>
+                            <div class="dot bg-blue-500" onclick="setCol('#3b82f6', 'Blue', this)"></div>
+                            <div class="dot bg-green-500" onclick="setCol('#22c55e', 'Green', this)"></div>
+                            <div class="dot bg-purple-500" onclick="setCol('#a855f7', 'Purple', this)"></div>
+                            <div class="dot bg-pink-500" onclick="setCol('#ec4899', 'Pink', this)"></div>
+                            <div class="dot bg-orange-500" onclick="setCol('#f97316', 'Orange', this)"></div>
+                            <div class="dot bg-yellow-400" onclick="setCol('#facc15', 'Yellow', this)"></div>
                         </div>
                     </div>
-
                     <div class="flex items-center gap-4 p-5 bg-black/5 rounded-2xl cursor-pointer" onclick="toggleR()">
-                        <div id="rBox" class="w-6 h-6 border-2 border-black rounded flex items-center justify-center text-[10px] font-bold"></div>
+                        <div id="rBox" class="w-6 h-6 border-2 border-black rounded flex items-center justify-center font-bold"></div>
                         <span class="font-black serif text-[#c5a059] italic uppercase text-sm tracking-widest">Imperial Gold Plate</span>
                     </div>
-
                     <button id="btn-text" onclick="placeOrder()" class="w-full bg-black text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em]">Submit Commission</button>
                 </div>
             </div>
-
-            <div id="preview-cont" class="w-full max-w-md aspect-[4/5] glass flex items-center justify-center relative transition-all duration-700">
+            <div id="preview-cont" class="w-full max-w-md aspect-[4/5] glass flex items-center justify-center transition-all duration-700">
                 <div id="preview-box" class="text-[18rem] serif font-black">Y</div>
             </div>
         </div>
 
+        <div id="app" class="hidden w-full max-w-md text-center space-y-8">
+            <div class="glass p-12 space-y-6">
+                <div class="w-20 h-20 bg-black text-white rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-xl">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h2 class="text-4xl serif font-black uppercase">Yahia <span class="text-[#c5a059]">Mobile</span></h2>
+                <p class="text-gray-500 text-sm leading-relaxed">Download the official Android APK to order 3D sigils directly from your home screen.</p>
+                <a href="app-release.apk" download="YahiaShop.apk" class="block w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-lg hover:bg-[#c5a059] transition-all">
+                    Download APK
+                </a>
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Version 1.0.0 • Android Only</p>
+            </div>
+        </div>
+
         <div id="login" class="hidden glass p-12 w-full max-w-sm text-center">
-            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Gatekeeper</h2>
-            <input type="password" id="pass" placeholder="PASSWORD" class="w-full p-5 rounded-2xl text-center tracking-[1em] mb-6 ring-1 ring-gray-200 border-none outline-none">
+            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Security</h2>
+            <input type="password" id="pass" placeholder="KEY" class="w-full p-5 rounded-2xl text-center mb-6 ring-1 ring-gray-200 border-none outline-none">
             <button onclick="auth()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs">Unlock</button>
         </div>
 
         <div id="admin" class="hidden w-full max-w-4xl space-y-8">
             <div class="flex justify-between items-end">
                 <h2 class="text-5xl serif font-black">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
-                <button onclick="go('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase">Sign Out</button>
+                <button onclick="go('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase">Exit</button>
             </div>
             <div class="glass overflow-hidden">
                 <table class="w-full text-left">
@@ -90,6 +100,7 @@
     </main>
 
     <script>
+        // FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBiSjTQ0lRDwccIxzVb24V8j5ThR8boqJA",
             authDomain: "yahuashopcloud.firebaseapp.com",
@@ -98,14 +109,14 @@
             messagingSenderId: "439516384242",
             appId: "1:439516384242:web:77a3f41653c8d01988b96b"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // UI
         let curCol = '#ef4444', curColName = 'Red', isR = false;
 
         function go(id) {
-            ['home', 'login', 'admin'].forEach(v => document.getElementById(v).classList.add('hidden'));
+            ['home', 'app', 'login', 'admin'].forEach(v => document.getElementById(v).classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
 
@@ -150,9 +161,6 @@
                 alert("Order Successful!");
                 document.getElementById('cust-name').value = '';
                 document.getElementById('btn-text').innerText = "Submit Commission";
-            }).catch(e => {
-                alert("Database Error! Update Rules in Firebase.");
-                document.getElementById('btn-text').innerText = "Submit Commission";
             });
         }
 
@@ -175,8 +183,9 @@
             });
         });
 
-        window.deleteDoc = (id) => { if(confirm("Remove order?")) db.collection("orders").doc(id).delete(); }
+        window.deleteDoc = (id) => { if(confirm("Remove?")) db.collection("orders").doc(id).delete(); }
         update();
     </script>
+    <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
 </body>
 </html>
