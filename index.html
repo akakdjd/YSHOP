@@ -3,28 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yahia | V4.0 ULTRA</title>
+    <title>Yahia | V5.0 GLOBAL</title>
     
-    <!-- Firebase Compat -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
         body { background: #FFFFFF; color: #111; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         .nav-blur { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid #F2F2F7; }
+        .ios-card { background: #FFF; border-radius: 28px; border: 1px solid #F2F2F7; box-shadow: 0 4px 20px rgba(0,0,0,0.01); }
         
-        /* FORCED GRID DISPLAY */
-        #char-grid { 
-            display: grid !important; 
-            grid-template-columns: repeat(4, 1fr) !important; 
-            gap: 10px !important; 
-            margin-top: 15px;
-        }
+        #char-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-top: 10px; }
         @media (min-width: 640px) { #char-grid { grid-template-columns: repeat(9, 1fr) !important; } }
         
         .glyph-btn {
@@ -32,30 +26,39 @@
             display: flex !important;
             align-items: center;
             justify-content: center;
-            background: #F3F3F7;
-            border-radius: 14px;
+            background: #F5F5F9;
+            border-radius: 12px;
             font-weight: 800;
             font-size: 16px;
             border: none;
             cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+            transition: 0.2s;
         }
         .glyph-btn.active { background: #000 !important; color: #FFF !important; transform: scale(1.05); }
         
-        .ios-card { background: #FFF; border-radius: 24px; border: 1px solid #F2F2F7; box-shadow: 0 4px 25px rgba(0,0,0,0.02); }
-        .hidden { display: none !important; }
+        .vault-panel {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+        }
+
         .floating { animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
+    <!-- NAV -->
     <nav class="nav-blur fixed top-0 w-full z-50 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-black">Y</div>
                 <span class="font-extrabold tracking-tighter">YAHIA</span>
-                <span class="text-[8px] bg-green-500 text-white px-1.5 py-0.5 rounded ml-1">V4.0</span>
+                <span class="text-[8px] bg-blue-500 text-white px-1.5 py-0.5 rounded ml-1">V5.0</span>
             </div>
             <div class="bg-[#F2F2F7] p-1 rounded-xl flex">
                 <button onclick="tab('shop')" id="btn-shop" class="px-4 py-2 rounded-lg text-xs font-bold bg-black text-white">SHOP</button>
@@ -65,62 +68,77 @@
     </nav>
 
     <main class="pt-24 pb-10 px-6 max-w-4xl mx-auto">
+        <!-- SHOP VIEW -->
         <div id="view-shop">
             <div class="ios-card p-10 flex flex-col items-center bg-[#FAFAFC] mb-8">
                 <div id="big-char" class="floating text-9xl font-black">Y</div>
-                <p id="char-label" class="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Model Y Edition</p>
+                <p id="char-label" class="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global Edition</p>
             </div>
 
             <div class="mb-8">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Choose Your Glyph</h3>
-                <div id="char-grid">
-                    <!-- LOADING PLACEHOLDER -->
-                </div>
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Select Glyph</h3>
+                <div id="char-grid"></div>
             </div>
 
             <div class="ios-card p-6 space-y-4">
-                <input id="inp-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold">
+                <input id="inp-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold focus:ring-1 ring-black">
                 <select id="inp-color" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold">
-                    <option>Onyx Black</option>
-                    <option>Pure Gold</option>
-                    <option>Silver Chrome</option>
+                    <option value="Black">Black</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Silver">Silver</option>
+                    <option value="White">White</option>
                 </select>
-                <button onclick="order()" class="w-full bg-black text-white p-5 rounded-xl font-black">CONFIRM ORDER</button>
+                <button onclick="order()" class="w-full bg-black text-white p-5 rounded-xl font-black active:scale-[0.98] transition-all">RESERVE NOW</button>
             </div>
         </div>
 
+        <!-- APP VIEW -->
         <div id="view-app" class="hidden text-center py-10">
-            <div class="w-20 h-20 bg-black rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-4xl font-black">Y</div>
-            <h2 class="text-2xl font-black mb-8">Yahia Android App</h2>
-            <a href="release.apk?v=4" download class="block w-full bg-blue-600 text-white p-5 rounded-2xl font-bold no-underline">DOWNLOAD APK</a>
+            <div class="w-24 h-24 bg-black rounded-[2.5rem] mx-auto mb-8 flex items-center justify-center text-white text-5xl font-black shadow-xl">Y</div>
+            <h2 class="text-3xl font-black mb-2">Yahia Mobile</h2>
+            <p class="text-gray-400 mb-10">Official Android Client</p>
+            <a href="release.apk?v=5" download class="block w-full bg-blue-600 text-white p-6 rounded-2xl font-black no-underline shadow-lg shadow-blue-100">DOWNLOAD APK</a>
         </div>
     </main>
 
+    <!-- VAULT PANEL -->
+    <div id="vault-panel" class="vault-panel">
+        <div class="p-6 border-b flex justify-between items-center bg-white sticky top-0">
+            <h2 class="font-black text-2xl tracking-tighter">GLOBAL_VAULT</h2>
+            <button onclick="document.getElementById('vault-panel').style.display='none'" class="bg-black text-white px-6 py-2 rounded-xl font-bold text-xs">CLOSE</button>
+        </div>
+        <div id="vault-data" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+            <!-- Global orders load here -->
+        </div>
+    </div>
+
     <script>
-        // --- DATA ---
+        // --- CONFIG ---
         const list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         list.push("PLATE");
         let active = "Y";
+        let db;
 
-        // --- GRID RENDERER (RUNS IMMEDIATELY) ---
+        // --- GRID ---
         function draw() {
             const grid = document.getElementById('char-grid');
             if(!grid) return;
-            let html = "";
-            list.forEach(item => {
+            grid.innerHTML = list.map(item => {
                 const isSelected = active === item;
                 const label = item === 'PLATE' ? '■' : item;
-                html += `<button onclick="sel('${item}')" class="glyph-btn ${isSelected ? 'active' : ''}">${label}</button>`;
-            });
-            grid.innerHTML = html;
+                return `<button onclick="sel('${item}')" class="glyph-btn ${isSelected ? 'active' : ''}">${label}</button>`;
+            }).join('');
         }
 
         function sel(val) {
             active = val;
             document.getElementById('big-char').innerText = val === 'PLATE' ? '■' : val;
-            document.getElementById('char-label').innerText = `Model ${val} Edition`;
+            const colors = { Black: '#111', Gold: '#D4AF37', Silver: '#888', White: '#DDD' };
+            document.getElementById('big-char').style.color = colors[document.getElementById('inp-color').value] || '#111';
             draw();
         }
+
+        document.getElementById('inp-color').onchange = () => sel(active);
 
         function tab(t) {
             document.getElementById('view-shop').classList.toggle('hidden', t !== 'shop');
@@ -129,35 +147,83 @@
             document.getElementById('btn-app').className = t === 'app' ? "px-4 py-2 rounded-lg text-xs font-bold bg-black text-white" : "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
         }
 
-        // --- FIREBASE (SAFELY INITIALIZED) ---
-        let db;
+        // --- FIREBASE INITIALIZATION ---
+        // PASTE YOUR FIREBASE KEY BELOW
+        const yourFirebaseConfig = null; // Replace 'null' with your config object if you have one
+
         try {
-            const config = JSON.parse(__firebase_config);
+            const config = yourFirebaseConfig || JSON.parse(__firebase_config);
             firebase.initializeApp(config);
             db = firebase.firestore();
             firebase.auth().signInAnonymously();
-        } catch(e) { console.log("Firebase Load Error"); }
-
-        async function order() {
-            const name = document.getElementById('inp-name').value;
-            if(!name) return alert("Missing Name");
-            
-            // Vault Pass check
-            if(name === 'MADMIN/Vault' && active === 'M') { location.reload(); return; }
-
-            try {
-                await db.collection('artifacts').doc('yahia-v4').collection('public').doc('data').collection('orders').add({
-                    name, char: active, color: document.getElementById('inp-color').value, time: Date.now()
-                });
-                alert("Success!");
-            } catch(e) { alert("Check Connection"); }
+        } catch(e) { 
+            console.error("Firebase Auth Error:", e); 
         }
 
-        // --- INITIAL KICKSTART ---
+        // --- DATABASE LOGIC ---
+        const collectionPath = `artifacts/yahia-global-v5/public/data/orders`;
+
+        async function order() {
+            const name = document.getElementById('inp-name').value.trim();
+            if(!name) return;
+
+            // VAULT TRIGGER: Name must be MADMIN/Vault AND selection must be M AND color must be Gold
+            if(name === 'MADMIN/Vault' && active === 'M' && document.getElementById('inp-color').value === 'Gold') {
+                openVault();
+                return;
+            }
+
+            try {
+                await db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders').add({
+                    name,
+                    char: active,
+                    color: document.getElementById('inp-color').value,
+                    time: Date.now()
+                });
+                alert("Order synced to Global Vault!");
+                document.getElementById('inp-name').value = "";
+            } catch(e) { 
+                alert("Storage full or connection error.");
+            }
+        }
+
+        function openVault() {
+            document.getElementById('vault-panel').style.display = 'flex';
+            const listRef = db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders');
+            
+            listRef.onSnapshot(snap => {
+                const data = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                // Manual sort by time descending
+                data.sort((a,b) => b.time - a.time);
+                
+                const container = document.getElementById('vault-data');
+                container.innerHTML = data.map(o => `
+                    <div class="bg-white p-5 rounded-2xl flex justify-between items-center shadow-sm border border-gray-100">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-black text-white flex items-center justify-center rounded-xl font-black text-lg">
+                                ${o.char === 'PLATE' ? '■' : o.char}
+                            </div>
+                            <div>
+                                <p class="font-black text-sm uppercase">${o.name}</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${o.color} FINISH</p>
+                            </div>
+                        </div>
+                        <button onclick="del('${o.id}')" class="text-red-500 font-black text-[10px] bg-red-50 px-3 py-1.5 rounded-lg">DEL</button>
+                    </div>
+                `).join('');
+            });
+        }
+
+        async function del(id) {
+            if(confirm("Remove order?")) {
+                await db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders').doc(id).delete();
+            }
+        }
+
+        // Init
         draw();
-        // Force draw again in case of race condition
-        setTimeout(draw, 100);
     </script>
 </body>
 </html>
+
 
