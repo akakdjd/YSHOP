@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- CACHE BUSTER HEADERS -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yahia | Official Store v2.0.0</title>
+    <title>Yahia | V3.0 STABLE</title>
     
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -15,30 +20,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { background: #FFFFFF; color: #111; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+        body { background: #FFFFFF; color: #111; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
         .nav-blur { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid #F2F2F7; }
-        .ios-card { background: #FFF; border-radius: 30px; border: 1px solid #F2F2F7; box-shadow: 0 4px 30px rgba(0,0,0,0.02); }
-        .tab-btn { padding: 10px 20px; border-radius: 12px; font-weight: 700; color: #8E8E93; transition: 0.2s; }
-        .tab-btn.active { background: #000; color: #FFF; }
         
-        /* THE GRID ITEMS */
-        #char-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        @media (min-width: 640px) { #char-grid { grid-template-columns: repeat(8, 1fr); } }
+        /* GRID STYLING - FORCED DISPLAY */
+        #char-grid { 
+            display: grid !important; 
+            grid-template-columns: repeat(4, 1fr) !important; 
+            gap: 12px !important; 
+            width: 100% !important;
+            margin-top: 20px;
+        }
+        @media (min-width: 640px) { #char-grid { grid-template-columns: repeat(9, 1fr) !important; } }
         
         .glyph-box {
             aspect-ratio: 1/1;
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
-            background: #F8F8F8;
-            border-radius: 18px;
+            background: #F2F2F7;
+            border-radius: 16px;
             font-weight: 800;
             font-size: 18px;
             cursor: pointer;
-            border: 2px solid transparent;
+            transition: all 0.2s ease;
         }
-        .glyph-box.active { background: #000; color: #FFF; transform: scale(1.1); }
+        .glyph-box.active { background: #000 !important; color: #FFF !important; transform: scale(1.1); }
         
+        .ios-card { background: #FFF; border-radius: 24px; border: 1px solid #F2F2F7; box-shadow: 0 4px 30px rgba(0,0,0,0.02); }
         .floating { animation: float 4s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .hidden { display: none !important; }
@@ -46,122 +55,128 @@
 </head>
 <body>
 
+    <!-- NAV -->
     <nav class="nav-blur fixed top-0 w-full z-50 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-9 h-9 bg-black rounded-lg flex items-center justify-center text-white font-black">Y</div>
+                <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-black">Y</div>
                 <span class="font-extrabold tracking-tighter">YAHIA</span>
+                <span class="text-[8px] bg-red-500 text-white px-1.5 py-0.5 rounded ml-1">V3.0</span>
             </div>
             <div class="bg-[#F2F2F7] p-1 rounded-xl flex">
-                <button onclick="tab('shop')" id="t-shop" class="tab-btn active text-xs">SHOP</button>
-                <button onclick="tab('app')" id="t-app" class="tab-btn text-xs">APP</button>
+                <button onclick="tab('shop')" id="t-shop" class="px-4 py-2 rounded-lg text-xs font-bold active bg-black text-white transition-all">SHOP</button>
+                <button onclick="tab('app')" id="t-app" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400 transition-all">APP</button>
             </div>
         </div>
     </nav>
 
-    <main class="pt-24 pb-10 px-6 max-w-5xl mx-auto">
+    <main class="pt-24 pb-10 px-6 max-w-4xl mx-auto">
         
-        <div id="view-shop" class="space-y-8">
-            <!-- 3D PREVIEW -->
-            <div class="ios-card p-10 flex flex-col items-center bg-[#FAFAFC]">
-                <div id="big-char" class="floating text-9xl font-black transition-all duration-300">Y</div>
-                <p id="char-label" class="mt-6 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Model Y - Original</p>
+        <!-- SHOP VIEW -->
+        <div id="view-shop">
+            <div class="ios-card p-12 flex flex-col items-center bg-[#FAFAFC] mb-8">
+                <div id="big-char" class="floating text-9xl font-black">Y</div>
+                <p id="char-label" class="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Model Y Edition</p>
             </div>
 
-            <!-- THE GRID -->
-            <div>
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase mb-4 tracking-widest">Select Character</h3>
+            <div class="mb-10">
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Select Glyph</h3>
                 <div id="char-grid">
-                    <!-- JS will force-inject buttons here -->
+                    <!-- JS INJECTS HERE -->
                 </div>
             </div>
 
-            <!-- ORDER FORM -->
             <div class="ios-card p-6 space-y-4">
-                <input id="inp-name" type="text" placeholder="Your Name" class="w-full bg-[#F2F2F7] p-4 rounded-2xl outline-none font-bold">
-                <select id="inp-color" class="w-full bg-[#F2F2F7] p-4 rounded-2xl outline-none font-bold">
-                    <option value="Black">Black Finish</option>
-                    <option value="Gold">Gold Finish</option>
-                    <option value="Silver">Silver Finish</option>
+                <input id="inp-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold focus:ring-2 ring-black">
+                <select id="inp-color" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold">
+                    <option>Onyx Black</option>
+                    <option>Pure Gold</option>
+                    <option>Silver Chrome</option>
                 </select>
-                <button onclick="order()" class="w-full bg-black text-white p-5 rounded-2xl font-black">Complete Reservation</button>
+                <button onclick="order()" class="w-full bg-black text-white p-5 rounded-xl font-black tracking-wide">CONFIRM RESERVATION</button>
             </div>
         </div>
 
-        <!-- APP SECTION -->
+        <!-- APP VIEW -->
         <div id="view-app" class="hidden text-center py-10">
-            <div class="w-20 h-20 bg-black rounded-3xl mx-auto mb-6 flex items-center justify-center text-white text-4xl font-black">Y</div>
-            <h2 class="text-2xl font-black mb-2">Yahia Mobile</h2>
-            <p class="text-gray-400 text-sm mb-8">Official Android Release</p>
-            <a href="release.apk?v=2" download class="block w-full bg-blue-600 text-white p-5 rounded-2xl font-bold no-underline">Download APK</a>
+            <div class="w-24 h-24 bg-black rounded-[2rem] mx-auto mb-8 flex items-center justify-center text-white text-5xl font-black shadow-xl">Y</div>
+            <h2 class="text-3xl font-black mb-2">Yahia Mobile</h2>
+            <p class="text-gray-400 font-medium mb-12">Install the official APK for Android</p>
+            <a href="release.apk?nocache=3" download class="block w-full bg-blue-600 text-white p-6 rounded-2xl font-black no-underline shadow-lg shadow-blue-100">DOWNLOAD (.APK)</a>
         </div>
     </main>
 
     <script>
-        // --- EMERGENCY CACHE BUSTER ---
-        console.log("CRITICAL UPDATE V2.0.0 LOADED");
+        // --- EMERGENCY INITIALIZATION ---
+        console.log("INITIALIZING YAHIA V3.0");
 
-        let currentLetter = "Y";
         const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
         alphabet.push("PLATE");
+        let currentLetter = "Y";
 
         // --- FIREBASE ---
         const firebaseConfig = JSON.parse(__firebase_config);
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-v2-stable';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-v3-final';
 
-        // --- FORCE RENDER GRID ---
-        function drawGrid() {
+        // --- GRID RENDERING ---
+        function render() {
             const grid = document.getElementById('char-grid');
             if (!grid) return;
             
-            grid.innerHTML = ""; // Clear everything
-            alphabet.forEach(letter => {
-                const btn = document.createElement('div');
-                btn.className = `glyph-box ${currentLetter === letter ? 'active' : ''}`;
-                btn.innerText = letter === 'PLATE' ? '■' : letter;
-                btn.onclick = () => select(letter);
-                grid.appendChild(btn);
+            grid.innerHTML = "";
+            alphabet.forEach(l => {
+                const box = document.createElement('div');
+                box.innerText = l === 'PLATE' ? '■' : l;
+                box.className = `glyph-box ${currentLetter === l ? 'active' : ''}`;
+                box.onclick = () => {
+                    currentLetter = l;
+                    document.getElementById('big-char').innerText = l === 'PLATE' ? '■' : l;
+                    document.getElementById('char-label').innerText = `Model ${l} Edition`;
+                    render();
+                };
+                grid.appendChild(box);
             });
         }
 
-        function select(l) {
-            currentLetter = l;
-            document.getElementById('big-char').innerText = l === 'PLATE' ? '■' : l;
-            document.getElementById('char-label').innerText = `Model ${l} - Limited Edition`;
-            drawGrid();
-        }
-
+        // --- TABS ---
         function tab(t) {
             document.getElementById('view-shop').classList.toggle('hidden', t !== 'shop');
             document.getElementById('view-app').classList.toggle('hidden', t !== 'app');
-            document.getElementById('t-shop').classList.toggle('active', t === 'shop');
-            document.getElementById('t-app').classList.toggle('active', t === 'app');
+            
+            const btnShop = document.getElementById('t-shop');
+            const btnApp = document.getElementById('t-app');
+            
+            if(t === 'shop') {
+                btnShop.className = "px-4 py-2 rounded-lg text-xs font-bold bg-black text-white";
+                btnApp.className = "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
+            } else {
+                btnApp.className = "px-4 py-2 rounded-lg text-xs font-bold bg-black text-white";
+                btnShop.className = "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
+            }
         }
 
+        // --- FIREBASE ORDER ---
         async function order() {
             const name = document.getElementById('inp-name').value;
             const color = document.getElementById('inp-color').value;
-            if(!name) return;
+            if(!name) return alert("Enter Name");
 
             try {
                 await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add({
                     name, char: currentLetter, color, time: Date.now()
                 });
-                alert("Order Saved!");
+                alert("Reservation Logged!");
                 document.getElementById('inp-name').value = "";
-            } catch(e) { alert("Error"); }
+            } catch(e) { alert("Offline - Try again"); }
         }
 
-        // --- STARTUP ---
-        window.addEventListener('DOMContentLoaded', () => {
-            drawGrid();
-            firebase.auth().signInAnonymously();
-        });
-
-        // Backup call
-        drawGrid();
+        // --- AUTO START ---
+        window.onload = render;
+        // Immediate fallback
+        setTimeout(render, 500);
+        firebase.auth().signInAnonymously();
     </script>
 </body>
 </html>
