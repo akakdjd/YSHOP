@@ -3,351 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yahia Shop | Premium 3D Alpha</title>
-    <!-- Core Libraries -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <title>Yahia | Official Store</title>
     
-    <!-- Firebase SDKs -->
+    <!-- Stable Firebase Compat Libraries -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <!-- UI Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --gold: #D4AF37;
-            --gold-light: #F5E6BE;
-        }
         body {
-            background-color: #F8F9FA;
-            color: #1A1A1A;
+            background-color: #FFFFFF;
+            color: #111111;
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .white-glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+
+        .nav-blur {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
-        
-        .glitch-white {
-            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
-            background: white !important;
-            color: black !important;
+
+        .ios-card {
+            background: #FFFFFF;
+            border-radius: 24px;
+            border: 1px solid #F2F2F7;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+
+        .tab-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            color: #8E8E93;
         }
-        #loading-screen {
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 9999;
+
+        .tab-btn.active {
+            background: #F2F2F7;
+            color: #000000;
+        }
+
+        .glyph-item {
+            aspect-ratio: 1/1;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease;
+            background: #F9F9FB;
+            border-radius: 18px;
+            font-weight: 800;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
         }
-        .loader-bar {
-            width: 200px;
-            height: 2px;
-            background: #eee;
-            margin-top: 20px;
-            position: relative;
-            overflow: hidden;
+
+        .glyph-item.selected {
+            background: #FFFFFF;
+            border-color: #000000;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
         }
-        .loader-progress {
-            width: 40%;
-            height: 100%;
-            background: #D4AF37;
-            position: absolute;
-            animation: load 1.5s infinite ease-in-out;
+
+        .install-gradient {
+            background: linear-gradient(135deg, #007AFF 0%, #0051FF 100%);
         }
-        @keyframes load {
-            0% { left: -40%; }
-            100% { left: 100%; }
+
+        .floating-preview {
+            animation: float 6s ease-in-out infinite;
         }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .hidden { display: none !important; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E5EA; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div id="loading-screen">
-        <div style="font-weight: 800; font-size: 24px; letter-spacing: -1px;">YAHIA SHOP</div>
-        <div class="loader-bar"><div class="loader-progress"></div></div>
-        <button id="force-start" style="margin-top: 30px; font-size: 10px; color: #999; text-decoration: underline; cursor: pointer;">
-            Click here if stuck
-        </button>
+
+    <!-- Navigation -->
+    <nav class="nav-blur fixed top-0 w-full z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-extrabold tracking-tight">YAHIA</span>
+                <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold">COLLECTION</span>
+            </div>
+            <div class="flex bg-[#F2F2F7] p-1 rounded-14">
+                <button onclick="switchTab('shop')" id="tab-shop" class="tab-btn active">Shop</button>
+                <button onclick="switchTab('app')" id="tab-app" class="tab-btn">App</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-20 px-6 max-w-6xl mx-auto">
+        
+        <!-- SHOP TAB -->
+        <div id="section-shop" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <!-- 3D Visualization -->
+            <div class="lg:col-span-5">
+                <div class="sticky top-28">
+                    <div class="ios-card p-8 aspect-square flex flex-col items-center justify-center relative overflow-hidden bg-[#FAFAFC]">
+                        <div id="preview-char" class="floating-preview text-[140px] font-black leading-none tracking-tighter transition-colors duration-500">Y</div>
+                        <div class="mt-8 text-center">
+                            <h2 class="text-2xl font-bold" id="preview-label">Classic Y</h2>
+                            <p class="text-sm text-gray-400 font-medium">Limited Edition 3D Mold</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex gap-4 overflow-x-auto pb-2">
+                        <div class="ios-card p-4 min-w-[120px] text-center">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Finish</span>
+                            <span id="stat-color" class="font-bold text-sm">Gold</span>
+                        </div>
+                        <div class="ios-card p-4 min-w-[120px] text-center">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Status</span>
+                            <span class="font-bold text-sm text-green-500">Available</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selection and Order -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Choose Your Character</h3>
+                    <div id="glyph-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <div class="ios-card p-8">
+                    <h3 class="text-lg font-bold mb-6">Order Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Your Name</label>
+                            <input id="input-name" type="text" placeholder="John Doe" class="w-full bg-[#F2F2F7] border-none rounded-xl px-4 py-3 focus:ring-2 ring-black outline-none transition-all font-semibold">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Select Finish</label>
+                            <select id="input-color" class="w-full bg-[#F2F2F7] border-none rounded-xl px-4 py-3 outline-none font-semibold cursor-pointer">
+                                <option>Gold</option>
+                                <option>Silver</option>
+                                <option>Matte Black</option>
+                                <option>Ceramic White</option>
+                                <option>Crimson</option>
+                                <option>Royal Blue</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="btn-submit" class="w-full mt-8 bg-black text-white py-4 rounded-xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all">
+                        Complete Order
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- APP TAB -->
+        <div id="section-app" class="hidden max-w-2xl mx-auto pt-10">
+            <div class="ios-card p-10 text-center">
+                <div class="w-24 h-24 bg-black text-white flex items-center justify-center text-4xl font-black rounded-[28px] mx-auto mb-8 shadow-xl">Y</div>
+                <h2 class="text-3xl font-extrabold mb-2">Yahia Mobile</h2>
+                <p class="text-gray-500 font-medium mb-10">Manage your orders and track new drops directly from your Android device.</p>
+                
+                <div class="space-y-4">
+                    <a id="download-apk" href="#" class="install-gradient block w-full py-5 rounded-2xl text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Install App
+                    </a>
+                    <p class="text-xs text-gray-400 font-medium italic">Version 1.0.4 • 14.2 MB • release.apk</p>
+                </div>
+
+                <div class="mt-12 pt-12 border-t border-gray-100 grid grid-cols-3 gap-4">
+                    <div>
+                        <div class="font-bold text-xl">4.9</div>
+                        <div class="text-[10px] text-gray-400 font-bold uppercase">Rating</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl">10k+</div>
+                        <div class="text-[10px] text-gray-400 font-bold uppercase">Users</div>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl">PRO</div>
+                        <div class="text-[10px] text-gray-400 font-bold uppercase">Secure</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="modal-success" class="fixed inset-0 z-[100] bg-white/80 backdrop-blur-md hidden items-center justify-center p-6">
+        <div class="ios-card p-10 max-w-sm w-full text-center">
+            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
+            <h3 class="text-xl font-bold mb-2">Order Confirmed</h3>
+            <p class="text-gray-500 text-sm mb-8">Your piece is now being crafted. Check the Vault for updates.</p>
+            <button onclick="closeModal()" class="w-full bg-black text-white py-3 rounded-xl font-bold text-sm">Great</button>
+        </div>
     </div>
 
-    <div id="root"></div>
+    <script>
+        // State
+        let currentLetter = "Y";
+        let currentColor = "Gold";
+        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+        alphabet.push("PLATE");
 
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-        const { motion, AnimatePresence } = FramerMotion;
-
-        // Configuration Injected via env
+        // Firebase Config
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-premium-shop';
-
-        // Initialize Firebase Compat Mode (More stable for single HTML)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-lifestyle-store';
+        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const auth = firebase.auth();
 
-        const PerspectiveView = ({ label, char, color, rotation }) => {
-            const colorMap = {
-                Yellow: '#D4AF37', Red: '#DC2626', Blue: '#2563EB', Green: '#16A34A',
-                Purple: '#9333EA', Pink: '#DB2777', White: '#6B7280', Black: '#000000',
-                Gold: '#B8860B', Silver: '#71717A'
-            };
+        // UI Handlers
+        function switchTab(tab) {
+            document.getElementById('section-shop').classList.toggle('hidden', tab !== 'shop');
+            document.getElementById('section-app').classList.toggle('hidden', tab !== 'app');
+            document.getElementById('tab-shop').classList.toggle('active', tab === 'shop');
+            document.getElementById('tab-app').classList.toggle('active', tab === 'app');
+        }
 
-            return (
-                <div className="flex flex-col items-center gap-2">
-                    <span className="text-[9px] mono text-gray-400 font-bold uppercase tracking-widest">{label}</span>
-                    <div className="w-full aspect-square bg-white border border-gray-100 rounded-3xl flex items-center justify-center relative shadow-sm">
-                        <motion.div 
-                            animate={{ rotateY: rotation, scale: [1, 1.05, 1] }}
-                            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                            style={{ color: colorMap[color] || '#D4AF37' }}
-                            className="text-5xl font-black drop-shadow-md"
-                        >
-                            {char === "PLATE" ? "■" : char}
-                        </motion.div>
-                        <div className="absolute bottom-4 w-8 h-1 bg-gray-100 blur-[2px] rounded-full" />
-                    </div>
+        function renderGrid() {
+            const grid = document.getElementById('glyph-grid');
+            grid.innerHTML = alphabet.map(char => `
+                <div onclick="selectChar('${char}')" class="glyph-item ${currentLetter === char ? 'selected' : ''}">
+                    ${char === 'PLATE' ? '<span class="text-[10px] opacity-50">PLATE</span>' : char}
                 </div>
-            );
+            `).join('');
+        }
+
+        function selectChar(char) {
+            currentLetter = char;
+            document.getElementById('preview-char').innerText = char === 'PLATE' ? '■' : char;
+            document.getElementById('preview-label').innerText = char === 'PLATE' ? 'Custom Plate' : `Classic ${char}`;
+            renderGrid();
+        }
+
+        document.getElementById('input-color').onchange = (e) => {
+            currentColor = e.target.value;
+            document.getElementById('stat-color').innerText = currentColor;
+            const colors = {
+                'Gold': '#D4AF37', 'Silver': '#A0A0A0', 'Matte Black': '#111111',
+                'Ceramic White': '#E5E5E5', 'Crimson': '#DC2626', 'Royal Blue': '#2563EB'
+            };
+            document.getElementById('preview-char').style.color = colors[currentColor] || '#000000';
         };
 
-        const App = () => {
-            const [user, setUser] = useState(null);
-            const [name, setName] = useState('');
-            const [selectedLetter, setSelectedLetter] = useState('Y');
-            const [selectedColor, setSelectedColor] = useState('Yellow');
-            const [globalOrders, setGlobalOrders] = useState([]);
-            const [showVault, setShowVault] = useState(false);
-            const [isOrdering, setIsOrdering] = useState(false);
-            const [easterEgg, setEasterEgg] = useState(false);
+        // App Link Setup
+        // Replace '#' with the actual link to your APK file hosted on Netlify or elsewhere
+        document.getElementById('download-apk').onclick = (e) => {
+            // e.preventDefault();
+            // window.location.href = "YOUR_DIRECT_APK_LINK_HERE";
+            // For now, it will look for release.apk in your root folder
+            document.getElementById('download-apk').setAttribute('href', 'release.apk');
+            document.getElementById('download-apk').setAttribute('download', 'yahia-release.apk');
+        };
 
-            const alphabet = useMemo(() => [...("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")), "PLATE"], []);
-            const colors = ["Yellow", "Red", "Blue", "Green", "Purple", "Pink", "White", "Black", "Gold", "Silver"];
+        // Order Logic
+        document.getElementById('btn-submit').onclick = async () => {
+            const name = document.getElementById('input-name').value.trim();
+            if(!name) return;
 
-            useEffect(() => {
-                // Auth & Clear Loader
-                auth.signInAnonymously().then(cred => {
-                    setUser(cred.user);
-                    document.getElementById('loading-screen').style.opacity = '0';
-                    setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
-                });
-
-                // Global Force Start Handler
-                document.getElementById('force-start').onclick = () => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                };
-            }, []);
-
-            useEffect(() => {
-                if (!user) return;
-                const unsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders')
-                    .onSnapshot(snap => {
-                        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                        setGlobalOrders(data.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)));
-                    });
-                return () => unsub();
-            }, [user]);
-
-            const handleOrder = async (e) => {
-                e.preventDefault();
-                if (!name.trim()) return;
-
-                if (name === "MADMIN/Vault" && selectedLetter === "M" && selectedColor === "Yellow") {
-                    setShowVault(true);
-                    return;
-                }
-
-                if (name.toLowerCase() === "yahiashop.netlify.app") {
-                    setEasterEgg(true);
-                    setTimeout(() => { setEasterEgg(false); setName(''); }, 2500);
-                    return;
-                }
-
-                setIsOrdering(true);
-                try {
-                    await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add({
-                        customerName: name,
-                        item: selectedLetter,
-                        color: selectedColor,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        userId: user.uid
-                    });
-                    setName('');
-                    setTimeout(() => setIsOrdering(false), 1000);
-                } catch (err) {
-                    setIsOrdering(false);
-                }
-            };
-
-            if (easterEgg) {
-                return (
-                    <div className="fixed inset-0 bg-white flex flex-col items-center justify-center z-[200] glitch-white">
-                        <h1 className="text-black text-4xl md:text-6xl font-black italic">YAHIASHOP.NETLIFY.APP</h1>
-                        <div className="w-12 h-1 bg-black mt-4 animate-pulse" />
-                    </div>
-                );
+            // Easter Egg
+            if(name.toLowerCase() === 'yahiashop.netlify.app') {
+                switchTab('app');
+                document.getElementById('input-name').value = '';
+                return;
             }
 
-            return (
-                <div className="min-h-screen bg-[#F8F9FA] text-[#1A1A1A] px-4 py-8 md:p-12">
-                    {/* Soft Background Detail */}
-                    <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-yellow-100/30 blur-[100px] rounded-full -z-10" />
-                    
-                    <header className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-16 gap-4">
-                        <div className="flex items-center gap-4">
-                            <div className="w-14 h-14 bg-black text-white flex items-center justify-center font-black text-2xl rounded-2xl shadow-xl shadow-black/10">Y</div>
-                            <div>
-                                <h1 className="text-2xl font-extrabold tracking-tight leading-none uppercase">Yahia Shop</h1>
-                                <p className="text-[10px] mono text-gray-400 font-bold tracking-[0.3em] mt-1">Limited 3D Collection</p>
-                            </div>
-                        </div>
-                        <div className="flex gap-4">
-                            <div className="px-4 py-2 bg-white rounded-xl border border-gray-100 shadow-sm text-[10px] font-bold text-green-600 flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                                CLOUD SECURE
-                            </div>
-                        </div>
-                    </header>
+            const btn = document.getElementById('btn-submit');
+            btn.innerText = "Processing...";
+            btn.disabled = true;
 
-                    <main className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
-                        {/* 3D Previews */}
-                        <div className="lg:col-span-4">
-                            <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="white-glass p-8 rounded-[2.5rem] border border-white">
-                                <h3 className="text-[10px] mono font-bold text-gray-400 mb-8 uppercase tracking-widest">Render Output</h3>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <PerspectiveView label="FR_00" char={selectedLetter} color={selectedColor} rotation={0} />
-                                    <PerspectiveView label="BK_18" char={selectedLetter} color={selectedColor} rotation={180} />
-                                    <PerspectiveView label="L_90" char={selectedLetter} color={selectedColor} rotation={-90} />
-                                    <PerspectiveView label="R_90" char={selectedLetter} color={selectedColor} rotation={90} />
-                                </div>
-                            </motion.div>
-                        </div>
-
-                        {/* Grid */}
-                        <div className="lg:col-span-5">
-                            <motion.div initial={{opacity:0}} animate={{opacity:1}} className="white-glass p-8 rounded-[2.5rem] h-full border border-white">
-                                <h3 className="text-[10px] mono font-bold text-gray-400 mb-8 uppercase tracking-widest">Inventory List</h3>
-                                <div className="grid grid-cols-5 md:grid-cols-6 gap-3">
-                                    {alphabet.map((l) => (
-                                        <button
-                                            key={l}
-                                            onClick={() => setSelectedLetter(l)}
-                                            className={`aspect-square flex items-center justify-center rounded-2xl transition-all font-bold border ${
-                                                selectedLetter === l 
-                                                ? 'bg-black text-white border-black shadow-lg scale-105' 
-                                                : 'bg-white border-gray-100 text-gray-400 hover:border-black hover:text-black'
-                                            }`}
-                                        >
-                                            <span className={l === 'PLATE' ? 'text-[8px]' : 'text-xl'}>{l}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        </div>
-
-                        {/* Order */}
-                        <div className="lg:col-span-3">
-                            <motion.div initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} className="white-glass p-8 rounded-[2.5rem] border border-white sticky top-10">
-                                <h3 className="text-[10px] mono font-bold text-gray-400 mb-8 uppercase tracking-widest">Shipment Log</h3>
-                                <form onSubmit={handleOrder} className="space-y-6">
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="text-[10px] font-bold text-gray-400 mb-2 block uppercase">Customer</label>
-                                            <input 
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                                placeholder="ENTER NAME"
-                                                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-black outline-none transition-all font-bold text-sm"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="text-[10px] font-bold text-gray-400 mb-2 block uppercase">Coating</label>
-                                            <select 
-                                                value={selectedColor}
-                                                onChange={(e) => setSelectedColor(e.target.value)}
-                                                className="w-full bg-gray-50 border border-gray-100 rounded-2xl px-5 py-4 focus:bg-white focus:border-black outline-none appearance-none cursor-pointer font-bold text-sm"
-                                            >
-                                                {colors.map(c => <option key={c} value={c}>{c}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        disabled={isOrdering}
-                                        className="w-full bg-black text-white py-5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50"
-                                    >
-                                        {isOrdering ? 'Processing...' : 'Place Order'}
-                                    </button>
-                                </form>
-                            </motion.div>
-                        </div>
-                    </main>
-
-                    {/* Secret Vault */}
-                    <AnimatePresence>
-                        {showVault && (
-                            <motion.div 
-                                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                className="fixed inset-0 z-[150] bg-white/95 backdrop-blur-xl p-6 flex items-center justify-center"
-                            >
-                                <div className="w-full max-w-4xl h-[80vh] white-glass rounded-[4rem] p-12 flex flex-col border border-gray-100">
-                                    <div className="flex justify-between items-start mb-12">
-                                        <div>
-                                            <h2 className="text-5xl font-black text-black tracking-tighter italic uppercase">Vault Feed</h2>
-                                            <p className="text-[10px] mono text-gray-400 font-bold uppercase tracking-widest mt-2">Active Database: {globalOrders.length} Entries</p>
-                                        </div>
-                                        <button onClick={() => setShowVault(false)} className="bg-black text-white px-8 py-3 rounded-2xl font-bold text-[10px] uppercase">Exit</button>
-                                    </div>
-                                    <div className="flex-1 overflow-y-auto space-y-3 pr-4 custom-scrollbar">
-                                        {globalOrders.map((o) => (
-                                            <div key={o.id} className="bg-white border border-gray-100 p-6 rounded-3xl flex justify-between items-center hover:border-black transition-all">
-                                                <div className="flex items-center gap-6">
-                                                    <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center font-black text-xl">
-                                                        {o.item === 'PLATE' ? '■' : o.item}
-                                                    </div>
-                                                    <div>
-                                                        <p className="font-bold text-lg uppercase tracking-tight">{o.customerName}</p>
-                                                        <p className="text-[10px] mono text-gray-400 font-bold uppercase">{o.color}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="text-right mono text-[10px] text-gray-300 font-bold">
-                                                    {o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleTimeString() : '...'}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            );
+            try {
+                await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add({
+                    customerName: name,
+                    item: currentLetter,
+                    color: currentColor,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                document.getElementById('modal-success').style.display = 'flex';
+                document.getElementById('input-name').value = '';
+            } catch (e) {
+                console.error(e);
+            }
+            
+            btn.innerText = "Complete Order";
+            btn.disabled = false;
         };
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        function closeModal() {
+            document.getElementById('modal-success').style.display = 'none';
+        }
+
+        // Init
+        auth.signInAnonymously();
+        renderGrid();
     </script>
 </body>
 </html>
