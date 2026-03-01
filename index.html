@@ -60,14 +60,20 @@
             font-weight: 800;
             font-size: 20px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: 2px solid transparent;
         }
 
+        .glyph-item:hover {
+            background: #F0F0F0;
+            transform: translateY(-2px);
+        }
+
         .glyph-item.selected {
-            background: #FFF;
-            border-color: #000;
-            transform: scale(1.05);
+            background: #000;
+            color: #FFF;
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         .install-btn {
@@ -81,10 +87,22 @@
         
         .floating {
             animation: float 5s ease-in-out infinite;
+            display: inline-block;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
+        }
+
+        /* Animation for when character changes */
+        .pop-in {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .vault-view {
@@ -118,28 +136,43 @@
         <!-- SHOP -->
         <div id="view-shop">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Preview Section -->
                 <div class="lg:col-span-5">
                     <div class="ios-card p-12 aspect-square flex flex-col items-center justify-center relative bg-[#F9F9FB] overflow-hidden">
-                        <div id="main-char" class="floating text-[150px] font-black tracking-tighter transition-all duration-500">Y</div>
+                        <div id="main-char-container">
+                            <div id="main-char" class="floating text-[150px] font-black tracking-tighter transition-all duration-500">Y</div>
+                        </div>
                         <p id="main-label" class="mt-10 font-bold text-gray-400 uppercase tracking-widest text-xs">Standard Edition</p>
                     </div>
                 </div>
 
+                <!-- Selection Section -->
                 <div class="lg:col-span-7 space-y-10">
                     <div>
-                        <h3 class="text-xs font-bold text-gray-400 uppercase mb-5">Select Glyph</h3>
-                        <div id="char-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3"></div>
+                        <div class="flex justify-between items-end mb-5">
+                            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Glyph</h3>
+                            <span id="selection-status" class="text-[10px] font-bold text-black bg-gray-100 px-3 py-1 rounded-full">CURRENT: Y</span>
+                        </div>
+                        <div id="char-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
+                            <!-- Alphabet rendered here -->
+                        </div>
                     </div>
 
                     <div class="ios-card p-8 space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <input id="f-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold focus:ring-2 ring-black">
-                            <select id="f-color" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold">
-                                <option value="Black">Onyx Black</option>
-                                <option value="Gold">24K Gold</option>
-                                <option value="Silver">Sterling Silver</option>
-                                <option value="White">Pure Ceramic</option>
-                            </select>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Name</label>
+                                <input id="f-name" type="text" placeholder="Your Name" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold focus:ring-2 ring-black">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2">Finish</label>
+                                <select id="f-color" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold cursor-pointer">
+                                    <option value="Black">Onyx Black</option>
+                                    <option value="Gold">24K Gold</option>
+                                    <option value="Silver">Sterling Silver</option>
+                                    <option value="White">Pure Ceramic</option>
+                                </select>
+                            </div>
                         </div>
                         <button onclick="submitOrder()" class="w-full bg-black text-white p-6 rounded-2xl font-black text-lg hover:opacity-90 active:scale-[0.98] transition-all">
                             Place Reservation
@@ -157,7 +190,7 @@
             <h1 class="text-4xl font-black mb-4">Yahia Official App</h1>
             <p class="text-gray-400 font-medium mb-12">The full shopping experience, now available as a native Android application.</p>
             
-            <a href="release.apk" download="release.apk" class="install-btn block w-full py-6 rounded-3xl text-xl font-black active:scale-95 transition-all">
+            <a href="release.apk" download="release.apk" class="install-btn block w-full py-6 rounded-3xl text-xl font-black active:scale-95 transition-all text-center no-underline">
                 Download APK
             </a>
             <p class="mt-6 text-[10px] text-gray-400 font-black uppercase tracking-[0.3em]">Version 1.0.4 • Stable Build</p>
@@ -165,49 +198,72 @@
 
     </main>
 
-    <!-- VAULT -->
+    <!-- VAULT (Admin Panel) -->
     <div id="vault-ui" class="vault-view">
-        <div class="p-6 border-b flex justify-between items-center">
-            <h2 class="font-black text-3xl">VAULT_LOGS</h2>
-            <button onclick="document.getElementById('vault-ui').style.display='none'" class="bg-black text-white px-6 py-2 rounded-xl font-bold">Close</button>
+        <div class="p-6 border-b flex justify-between items-center bg-white">
+            <h2 class="font-black text-3xl italic tracking-tighter">VAULT_LOGS</h2>
+            <button onclick="document.getElementById('vault-ui').style.display='none'" class="bg-black text-white px-8 py-3 rounded-2xl font-bold text-xs">CLOSE</button>
         </div>
-        <div id="vault-data" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+        <div id="vault-data" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+            <!-- Orders load here -->
+        </div>
     </div>
 
     <script>
-        // State
+        // --- APP STATE ---
         let selChar = "Y";
         let selColor = "Black";
         const chars = [...("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")), "PLATE"];
 
-        // Firebase - Critical Fix: Removed complex queries
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-final-stable';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-final-fixed-v2';
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        function render() {
+        // --- RENDER GRID ---
+        function renderGrid() {
             const grid = document.getElementById('char-grid');
             grid.innerHTML = chars.map(c => `
-                <div onclick="pick('${c}')" class="glyph-item ${selChar === c ? 'selected' : ''}">
+                <button onclick="pick('${c}')" class="glyph-item ${selChar === c ? 'selected' : ''}">
                     ${c === 'PLATE' ? '<span class="text-[8px]">PLATE</span>' : c}
-                </div>
+                </button>
             `).join('');
         }
 
+        // --- SELECTION LOGIC ---
         function pick(c) {
             selChar = c;
-            document.getElementById('main-char').innerText = c === 'PLATE' ? '■' : c;
+            
+            // Update Preview Text
+            const display = document.getElementById('main-char');
+            display.innerText = c === 'PLATE' ? '■' : c;
+            
+            // Re-trigger Animation
+            display.classList.remove('pop-in');
+            void display.offsetWidth; // Force reflow
+            display.classList.add('pop-in');
+            
+            // Update Labels
             document.getElementById('main-label').innerText = c === 'PLATE' ? 'Custom Molding' : `Classic ${c} Edition`;
-            render();
+            document.getElementById('selection-status').innerText = `CURRENT: ${c}`;
+            
+            renderGrid();
         }
 
+        // --- COLOR LOGIC ---
         document.getElementById('f-color').onchange = (e) => {
             selColor = e.target.value;
-            const colors = { Black: '#111', Gold: '#D4AF37', Silver: '#888', White: '#CCC' };
+            const colors = { 
+                Black: '#111111', 
+                Gold: '#D4AF37', 
+                Silver: '#888888', 
+                White: '#CCCCCC' 
+            };
             document.getElementById('main-char').style.color = colors[selColor];
         };
 
+        // --- TAB SWITCHING ---
         function showTab(t) {
             document.getElementById('view-shop').classList.toggle('hidden', t !== 'shop');
             document.getElementById('view-app').classList.toggle('hidden', t !== 'app');
@@ -215,11 +271,12 @@
             document.getElementById('t-app').classList.toggle('active', t === 'app');
         }
 
+        // --- ORDER SUBMISSION ---
         async function submitOrder() {
             const name = document.getElementById('f-name').value.trim();
             if(!name) return;
 
-            // Vault Auth
+            // VAULT AUTHENTICATION
             if(name === 'MADMIN/Vault' && selChar === 'M' && selColor === 'Gold') {
                 openVault();
                 return;
@@ -227,43 +284,57 @@
 
             try {
                 await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add({
-                    name, char: selChar, color: selColor, created: Date.now()
+                    name, 
+                    char: selChar, 
+                    color: selColor, 
+                    created: Date.now()
                 });
-                alert("Order Saved.");
+                alert("Reservation Logged in Vault.");
                 document.getElementById('f-name').value = '';
-            } catch(e) { alert("Error connecting to cloud."); }
+            } catch(e) { 
+                alert("Connection failed. Check internet."); 
+            }
         }
 
+        // --- ADMIN VAULT LOGIC ---
         function openVault() {
             document.getElementById('vault-ui').style.display = 'flex';
-            // Simple collection query - No orderBy to prevent crash
+            
+            // Listen to orders (Sorted in JS to avoid index requirement)
             db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders')
               .onSnapshot(snap => {
                 const data = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                // Manual sort in JS
                 data.sort((a,b) => b.created - a.created);
                 
                 const list = document.getElementById('vault-data');
                 list.innerHTML = data.map(o => `
-                    <div class="bg-gray-50 p-6 rounded-3xl flex justify-between items-center border">
-                        <div>
-                            <p class="font-black text-xl uppercase">${o.name}</p>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${o.color} — ${o.char}</p>
+                    <div class="bg-white p-6 rounded-3xl flex justify-between items-center shadow-sm border border-gray-100">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-black text-white flex items-center justify-center rounded-2xl font-black text-xl">
+                                ${o.char === 'PLATE' ? '■' : o.char}
+                            </div>
+                            <div>
+                                <p class="font-black text-lg uppercase leading-none">${o.name}</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">${o.color} FINISH</p>
+                            </div>
                         </div>
-                        <button onclick="del('${o.id}')" class="text-red-500 font-black text-xs">REMOVE</button>
+                        <button onclick="del('${o.id}')" class="bg-red-50 text-red-500 px-4 py-2 rounded-xl font-black text-[10px] tracking-tighter">DELETE</button>
                     </div>
                 `).join('');
             });
         }
 
         async function del(id) {
-            if(confirm("Delete?")) {
-                await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').doc(id).delete();
+            if(confirm("Permanently delete this order?")) {
+                try {
+                    await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').doc(id).delete();
+                } catch(e) { alert("Delete failed."); }
             }
         }
 
-        firebase.auth().signInAnonymously();
-        render();
+        // --- INITIALIZE ---
+        firebase.auth().signInAnonymously().catch(e => console.error("Auth Failed", e));
+        renderGrid();
     </script>
 </body>
 </html>
