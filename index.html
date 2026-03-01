@@ -12,7 +12,7 @@
 
     <!-- UI Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         body {
@@ -20,35 +20,34 @@
             color: #111111;
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
         .nav-blur {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid #F2F2F7;
         }
 
         .ios-card {
             background: #FFFFFF;
-            border-radius: 24px;
+            border-radius: 32px;
             border: 1px solid #F2F2F7;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 40px rgba(0,0,0,0.02);
         }
 
         .tab-btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 14px;
+            font-weight: 700;
             font-size: 14px;
-            transition: all 0.2s ease;
+            transition: 0.2s;
             color: #8E8E93;
         }
 
         .tab-btn.active {
-            background: #F2F2F7;
-            color: #000000;
+            background: #000;
+            color: #FFF;
         }
 
         .glyph-item {
@@ -56,41 +55,46 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F9F9FB;
-            border-radius: 18px;
+            background: #F8F8F8;
+            border-radius: 20px;
             font-weight: 800;
             font-size: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: 0.2s;
             border: 2px solid transparent;
         }
 
         .glyph-item.selected {
-            background: #FFFFFF;
-            border-color: #000000;
+            background: #FFF;
+            border-color: #000;
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
         }
 
-        .install-gradient {
-            background: linear-gradient(135deg, #007AFF 0%, #0051FF 100%);
-        }
-
-        .floating-preview {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+        .install-btn {
+            background: linear-gradient(135deg, #007AFF 0%, #00C6FF 100%);
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(0,122,255,0.3);
         }
 
         .hidden { display: none !important; }
+        
+        .floating {
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #E5E5EA; border-radius: 10px; }
+        .vault-view {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -98,223 +102,170 @@
     <!-- Navigation -->
     <nav class="nav-blur fixed top-0 w-full z-50 px-6 py-4">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="text-xl font-extrabold tracking-tight">YAHIA</span>
-                <span class="bg-black text-white text-[10px] px-2 py-0.5 rounded-full font-bold">COLLECTION</span>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white font-black">Y</div>
+                <span class="font-extrabold text-xl tracking-tight">YAHIA</span>
             </div>
-            <div class="flex bg-[#F2F2F7] p-1 rounded-14">
-                <button onclick="switchTab('shop')" id="tab-shop" class="tab-btn active">Shop</button>
-                <button onclick="switchTab('app')" id="tab-app" class="tab-btn">App</button>
+            <div class="bg-[#F2F2F7] p-1 rounded-2xl flex">
+                <button onclick="showTab('shop')" id="t-shop" class="tab-btn active">Shop</button>
+                <button onclick="showTab('app')" id="t-app" class="tab-btn">App</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="pt-28 pb-20 px-6 max-w-6xl mx-auto">
         
-        <!-- SHOP TAB -->
-        <div id="section-shop" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            <!-- 3D Visualization -->
-            <div class="lg:col-span-5">
-                <div class="sticky top-28">
-                    <div class="ios-card p-8 aspect-square flex flex-col items-center justify-center relative overflow-hidden bg-[#FAFAFC]">
-                        <div id="preview-char" class="floating-preview text-[140px] font-black leading-none tracking-tighter transition-colors duration-500">Y</div>
-                        <div class="mt-8 text-center">
-                            <h2 class="text-2xl font-bold" id="preview-label">Classic Y</h2>
-                            <p class="text-sm text-gray-400 font-medium">Limited Edition 3D Mold</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 flex gap-4 overflow-x-auto pb-2">
-                        <div class="ios-card p-4 min-w-[120px] text-center">
-                            <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Finish</span>
-                            <span id="stat-color" class="font-bold text-sm">Gold</span>
-                        </div>
-                        <div class="ios-card p-4 min-w-[120px] text-center">
-                            <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Status</span>
-                            <span class="font-bold text-sm text-green-500">Available</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Selection and Order -->
-            <div class="lg:col-span-7 space-y-8">
-                <div>
-                    <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Choose Your Character</h3>
-                    <div id="glyph-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-                        <!-- Rendered by JS -->
+        <!-- SHOP -->
+        <div id="view-shop">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div class="lg:col-span-5">
+                    <div class="ios-card p-12 aspect-square flex flex-col items-center justify-center relative bg-[#F9F9FB] overflow-hidden">
+                        <div id="main-char" class="floating text-[150px] font-black tracking-tighter transition-all duration-500">Y</div>
+                        <p id="main-label" class="mt-10 font-bold text-gray-400 uppercase tracking-widest text-xs">Standard Edition</p>
                     </div>
                 </div>
 
-                <div class="ios-card p-8">
-                    <h3 class="text-lg font-bold mb-6">Order Information</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Your Name</label>
-                            <input id="input-name" type="text" placeholder="John Doe" class="w-full bg-[#F2F2F7] border-none rounded-xl px-4 py-3 focus:ring-2 ring-black outline-none transition-all font-semibold">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-xs font-bold text-gray-400 uppercase ml-1">Select Finish</label>
-                            <select id="input-color" class="w-full bg-[#F2F2F7] border-none rounded-xl px-4 py-3 outline-none font-semibold cursor-pointer">
-                                <option>Gold</option>
-                                <option>Silver</option>
-                                <option>Matte Black</option>
-                                <option>Ceramic White</option>
-                                <option>Crimson</option>
-                                <option>Royal Blue</option>
+                <div class="lg:col-span-7 space-y-10">
+                    <div>
+                        <h3 class="text-xs font-bold text-gray-400 uppercase mb-5">Select Glyph</h3>
+                        <div id="char-grid" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3"></div>
+                    </div>
+
+                    <div class="ios-card p-8 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <input id="f-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold focus:ring-2 ring-black">
+                            <select id="f-color" class="w-full bg-[#F2F2F7] p-5 rounded-2xl outline-none font-bold">
+                                <option value="Black">Onyx Black</option>
+                                <option value="Gold">24K Gold</option>
+                                <option value="Silver">Sterling Silver</option>
+                                <option value="White">Pure Ceramic</option>
                             </select>
                         </div>
-                    </div>
-                    <button id="btn-submit" class="w-full mt-8 bg-black text-white py-4 rounded-xl font-bold text-sm hover:opacity-90 active:scale-[0.98] transition-all">
-                        Complete Order
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- APP TAB -->
-        <div id="section-app" class="hidden max-w-2xl mx-auto pt-10">
-            <div class="ios-card p-10 text-center">
-                <div class="w-24 h-24 bg-black text-white flex items-center justify-center text-4xl font-black rounded-[28px] mx-auto mb-8 shadow-xl">Y</div>
-                <h2 class="text-3xl font-extrabold mb-2">Yahia Mobile</h2>
-                <p class="text-gray-500 font-medium mb-10">Manage your orders and track new drops directly from your Android device.</p>
-                
-                <div class="space-y-4">
-                    <a id="download-apk" href="#" class="install-gradient block w-full py-5 rounded-2xl text-white font-bold text-lg shadow-lg shadow-blue-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                        Install App
-                    </a>
-                    <p class="text-xs text-gray-400 font-medium italic">Version 1.0.4 • 14.2 MB • release.apk</p>
-                </div>
-
-                <div class="mt-12 pt-12 border-t border-gray-100 grid grid-cols-3 gap-4">
-                    <div>
-                        <div class="font-bold text-xl">4.9</div>
-                        <div class="text-[10px] text-gray-400 font-bold uppercase">Rating</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-xl">10k+</div>
-                        <div class="text-[10px] text-gray-400 font-bold uppercase">Users</div>
-                    </div>
-                    <div>
-                        <div class="font-bold text-xl">PRO</div>
-                        <div class="text-[10px] text-gray-400 font-bold uppercase">Secure</div>
+                        <button onclick="submitOrder()" class="w-full bg-black text-white p-6 rounded-2xl font-black text-lg hover:opacity-90 active:scale-[0.98] transition-all">
+                            Place Reservation
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- APP -->
+        <div id="view-app" class="hidden text-center max-w-lg mx-auto pt-10">
+            <div class="w-28 h-28 bg-black rounded-[40px] shadow-2xl flex items-center justify-center mx-auto mb-10">
+                <span class="text-white text-6xl font-black">Y</span>
+            </div>
+            <h1 class="text-4xl font-black mb-4">Yahia Official App</h1>
+            <p class="text-gray-400 font-medium mb-12">The full shopping experience, now available as a native Android application.</p>
+            
+            <a href="release.apk" download="release.apk" class="install-btn block w-full py-6 rounded-3xl text-xl font-black active:scale-95 transition-all">
+                Download APK
+            </a>
+            <p class="mt-6 text-[10px] text-gray-400 font-black uppercase tracking-[0.3em]">Version 1.0.4 • Stable Build</p>
+        </div>
+
     </main>
 
-    <!-- Success Modal -->
-    <div id="modal-success" class="fixed inset-0 z-[100] bg-white/80 backdrop-blur-md hidden items-center justify-center p-6">
-        <div class="ios-card p-10 max-w-sm w-full text-center">
-            <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">✓</div>
-            <h3 class="text-xl font-bold mb-2">Order Confirmed</h3>
-            <p class="text-gray-500 text-sm mb-8">Your piece is now being crafted. Check the Vault for updates.</p>
-            <button onclick="closeModal()" class="w-full bg-black text-white py-3 rounded-xl font-bold text-sm">Great</button>
+    <!-- VAULT -->
+    <div id="vault-ui" class="vault-view">
+        <div class="p-6 border-b flex justify-between items-center">
+            <h2 class="font-black text-3xl">VAULT_LOGS</h2>
+            <button onclick="document.getElementById('vault-ui').style.display='none'" class="bg-black text-white px-6 py-2 rounded-xl font-bold">Close</button>
         </div>
+        <div id="vault-data" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
     </div>
 
     <script>
         // State
-        let currentLetter = "Y";
-        let currentColor = "Gold";
-        const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        alphabet.push("PLATE");
+        let selChar = "Y";
+        let selColor = "Black";
+        const chars = [...("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")), "PLATE"];
 
-        // Firebase Config
+        // Firebase - Critical Fix: Removed complex queries
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-lifestyle-store';
-        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'yahia-final-stable';
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const auth = firebase.auth();
 
-        // UI Handlers
-        function switchTab(tab) {
-            document.getElementById('section-shop').classList.toggle('hidden', tab !== 'shop');
-            document.getElementById('section-app').classList.toggle('hidden', tab !== 'app');
-            document.getElementById('tab-shop').classList.toggle('active', tab === 'shop');
-            document.getElementById('tab-app').classList.toggle('active', tab === 'app');
-        }
-
-        function renderGrid() {
-            const grid = document.getElementById('glyph-grid');
-            grid.innerHTML = alphabet.map(char => `
-                <div onclick="selectChar('${char}')" class="glyph-item ${currentLetter === char ? 'selected' : ''}">
-                    ${char === 'PLATE' ? '<span class="text-[10px] opacity-50">PLATE</span>' : char}
+        function render() {
+            const grid = document.getElementById('char-grid');
+            grid.innerHTML = chars.map(c => `
+                <div onclick="pick('${c}')" class="glyph-item ${selChar === c ? 'selected' : ''}">
+                    ${c === 'PLATE' ? '<span class="text-[8px]">PLATE</span>' : c}
                 </div>
             `).join('');
         }
 
-        function selectChar(char) {
-            currentLetter = char;
-            document.getElementById('preview-char').innerText = char === 'PLATE' ? '■' : char;
-            document.getElementById('preview-label').innerText = char === 'PLATE' ? 'Custom Plate' : `Classic ${char}`;
-            renderGrid();
+        function pick(c) {
+            selChar = c;
+            document.getElementById('main-char').innerText = c === 'PLATE' ? '■' : c;
+            document.getElementById('main-label').innerText = c === 'PLATE' ? 'Custom Molding' : `Classic ${c} Edition`;
+            render();
         }
 
-        document.getElementById('input-color').onchange = (e) => {
-            currentColor = e.target.value;
-            document.getElementById('stat-color').innerText = currentColor;
-            const colors = {
-                'Gold': '#D4AF37', 'Silver': '#A0A0A0', 'Matte Black': '#111111',
-                'Ceramic White': '#E5E5E5', 'Crimson': '#DC2626', 'Royal Blue': '#2563EB'
-            };
-            document.getElementById('preview-char').style.color = colors[currentColor] || '#000000';
+        document.getElementById('f-color').onchange = (e) => {
+            selColor = e.target.value;
+            const colors = { Black: '#111', Gold: '#D4AF37', Silver: '#888', White: '#CCC' };
+            document.getElementById('main-char').style.color = colors[selColor];
         };
 
-        // App Link Setup
-        // Replace '#' with the actual link to your APK file hosted on Netlify or elsewhere
-        document.getElementById('download-apk').onclick = (e) => {
-            // e.preventDefault();
-            // window.location.href = "YOUR_DIRECT_APK_LINK_HERE";
-            // For now, it will look for release.apk in your root folder
-            document.getElementById('download-apk').setAttribute('href', 'release.apk');
-            document.getElementById('download-apk').setAttribute('download', 'yahia-release.apk');
-        };
+        function showTab(t) {
+            document.getElementById('view-shop').classList.toggle('hidden', t !== 'shop');
+            document.getElementById('view-app').classList.toggle('hidden', t !== 'app');
+            document.getElementById('t-shop').classList.toggle('active', t === 'shop');
+            document.getElementById('t-app').classList.toggle('active', t === 'app');
+        }
 
-        // Order Logic
-        document.getElementById('btn-submit').onclick = async () => {
-            const name = document.getElementById('input-name').value.trim();
+        async function submitOrder() {
+            const name = document.getElementById('f-name').value.trim();
             if(!name) return;
 
-            // Easter Egg
-            if(name.toLowerCase() === 'yahiashop.netlify.app') {
-                switchTab('app');
-                document.getElementById('input-name').value = '';
+            // Vault Auth
+            if(name === 'MADMIN/Vault' && selChar === 'M' && selColor === 'Gold') {
+                openVault();
                 return;
             }
 
-            const btn = document.getElementById('btn-submit');
-            btn.innerText = "Processing...";
-            btn.disabled = true;
-
             try {
                 await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add({
-                    customerName: name,
-                    item: currentLetter,
-                    color: currentColor,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    name, char: selChar, color: selColor, created: Date.now()
                 });
-                document.getElementById('modal-success').style.display = 'flex';
-                document.getElementById('input-name').value = '';
-            } catch (e) {
-                console.error(e);
-            }
-            
-            btn.innerText = "Complete Order";
-            btn.disabled = false;
-        };
-
-        function closeModal() {
-            document.getElementById('modal-success').style.display = 'none';
+                alert("Order Saved.");
+                document.getElementById('f-name').value = '';
+            } catch(e) { alert("Error connecting to cloud."); }
         }
 
-        // Init
-        auth.signInAnonymously();
-        renderGrid();
+        function openVault() {
+            document.getElementById('vault-ui').style.display = 'flex';
+            // Simple collection query - No orderBy to prevent crash
+            db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders')
+              .onSnapshot(snap => {
+                const data = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                // Manual sort in JS
+                data.sort((a,b) => b.created - a.created);
+                
+                const list = document.getElementById('vault-data');
+                list.innerHTML = data.map(o => `
+                    <div class="bg-gray-50 p-6 rounded-3xl flex justify-between items-center border">
+                        <div>
+                            <p class="font-black text-xl uppercase">${o.name}</p>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${o.color} — ${o.char}</p>
+                        </div>
+                        <button onclick="del('${o.id}')" class="text-red-500 font-black text-xs">REMOVE</button>
+                    </div>
+                `).join('');
+            });
+        }
+
+        async function del(id) {
+            if(confirm("Delete?")) {
+                await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').doc(id).delete();
+            }
+        }
+
+        firebase.auth().signInAnonymously();
+        render();
     </script>
 </body>
 </html>
+
 
