@@ -1,229 +1,342 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yahia | V5.0 GLOBAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAHIA SHOP | OFFICIAL</title>
     
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
+    <!-- External Style & Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,900;1,900&family=Inter:wght@400;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body { background: #FFFFFF; color: #111; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        .nav-blur { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-bottom: 1px solid #F2F2F7; }
-        .ios-card { background: #FFF; border-radius: 28px; border: 1px solid #F2F2F7; box-shadow: 0 4px 20px rgba(0,0,0,0.01); }
-        
-        #char-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; margin-top: 10px; }
-        @media (min-width: 640px) { #char-grid { grid-template-columns: repeat(9, 1fr) !important; } }
-        
-        .glyph-btn {
-            aspect-ratio: 1/1;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            background: #F5F5F9;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            transition: 0.2s;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #faf9f6; 
+            color: #1a1a1a; 
+            margin: 0;
+            overflow-x: hidden;
         }
-        .glyph-btn.active { background: #000 !important; color: #FFF !important; transform: scale(1.05); }
+        .serif { font-family: 'Bodoni Moda', serif; }
         
-        .vault-panel {
-            position: fixed;
-            inset: 0;
-            background: white;
-            z-index: 2000;
-            display: none;
-            flex-direction: column;
+        /* The Plate Design */
+        .plate-style { 
+            background: #d4af37 !important; 
+            border: 12px double #8a6d3b !important; 
+            color: #fff !important;
+            box-shadow: 0 15px 35px rgba(138, 109, 59, 0.2);
+            border-radius: 15% !important;
+        }
+        
+        .glass { 
+            background: white; 
+            border: 1px solid rgba(0,0,0,0.05); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.02); 
+            border-radius: 2rem; 
         }
 
-        .floating { animation: float 4s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         .hidden { display: none !important; }
+
+        .dot { 
+            width: 28px; 
+            height: 28px; 
+            border-radius: 50%; 
+            cursor: pointer; 
+            border: 2px solid white; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            transition: 0.2s; 
+        }
+        .dot.active { 
+            outline: 2px solid black; 
+            transform: scale(1.25); 
+        }
+
+        .nav-link { 
+            font-size: 10px; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            letter-spacing: 0.15em; 
+            border-bottom: 2px solid transparent; 
+            transition: 0.3s; 
+            cursor: pointer;
+        }
+        .nav-link:hover { border-color: #c5a059; }
+
+        .product-tab {
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            transition: 0.2s;
+            background: rgba(0,0,0,0.03);
+        }
+        .product-tab.active {
+            background: black;
+            color: white;
+        }
+
+        /* Custom Scrollbar for Color Grid */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-    <!-- NAV -->
-    <nav class="nav-blur fixed top-0 w-full z-50 px-6 py-4">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-black">Y</div>
-                <span class="font-extrabold tracking-tighter">YAHIA</span>
-                <span class="text-[8px] bg-blue-500 text-white px-1.5 py-0.5 rounded ml-1">V5.0</span>
-            </div>
-            <div class="bg-[#F2F2F7] p-1 rounded-xl flex">
-                <button onclick="tab('shop')" id="btn-shop" class="px-4 py-2 rounded-lg text-xs font-bold bg-black text-white">SHOP</button>
-                <button onclick="tab('app')" id="btn-app" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400">APP</button>
-            </div>
+    <nav class="p-8 flex justify-between items-center max-w-7xl mx-auto w-full">
+        <div class="flex items-center gap-4 cursor-pointer" onclick="go('home')">
+            <div class="w-12 h-12 bg-black text-white rounded-full flex items-center justify-center serif font-black text-2xl">Y</div>
+            <span class="font-black uppercase tracking-widest text-sm">Yahia <span class="text-[#c5a059]">Shop</span></span>
+        </div>
+        <div class="flex gap-8 items-center">
+            <button onclick="go('home')" class="nav-link">Shop</button>
+            <button onclick="go('app')" class="nav-link">App</button>
+            <button onclick="go('login')" class="nav-link">Portal</button>
         </div>
     </nav>
 
-    <main class="pt-24 pb-10 px-6 max-w-4xl mx-auto">
-        <!-- SHOP VIEW -->
-        <div id="view-shop">
-            <div class="ios-card p-10 flex flex-col items-center bg-[#FAFAFC] mb-8">
-                <div id="big-char" class="floating text-9xl font-black">Y</div>
-                <p id="char-label" class="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Global Edition</p>
+    <main class="flex-grow flex items-center justify-center p-6">
+        
+        <!-- MAIN SHOP VIEW -->
+        <div id="home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div class="space-y-10">
+                <div class="space-y-6">
+                    <h1 class="text-7xl serif font-black leading-none uppercase tracking-tighter">Imperial<br><span id="display-title" class="text-[#c5a059]">Sigil</span></h1>
+                    <div class="flex flex-wrap gap-2">
+                        <div id="tab-sigil" onclick="setProduct('Sigil')" class="product-tab active">Sigils</div>
+                        <div id="tab-pen" onclick="setProduct('Pen')" class="product-tab">Pens</div>
+                        <div id="tab-plate" onclick="setProduct('Plate')" class="product-tab">The Plate</div>
+                    </div>
+                </div>
+
+                <div class="glass p-10 space-y-8">
+                    <input type="text" id="cust-name" placeholder="Patron Name" class="w-full p-5 rounded-2xl bg-gray-50 border-none ring-1 ring-gray-100 text-lg outline-none focus:ring-black">
+                    
+                    <div id="sigil-controls" class="space-y-6">
+                        <div class="flex flex-col gap-6">
+                            <select id="letter" onchange="updatePreview()" class="p-4 rounded-xl bg-gray-50 ring-1 ring-gray-100 font-black uppercase text-sm w-full outline-none">
+                            </select>
+                            
+                            <div class="color-grid p-4 bg-gray-50 rounded-2xl">
+                                <div class="dot bg-red-500 active" onclick="setCol('#ef4444', 'Red', this)"></div>
+                                <div class="dot bg-blue-500" onclick="setCol('#3b82f6', 'Blue', this)"></div>
+                                <div class="dot bg-green-500" onclick="setCol('#22c55e', 'Green', this)"></div>
+                                <div class="dot bg-purple-500" onclick="setCol('#a855f7', 'Purple', this)"></div>
+                                <div class="dot bg-pink-500" onclick="setCol('#ec4899', 'Pink', this)"></div>
+                                <div class="dot bg-orange-500" onclick="setCol('#f97316', 'Orange', this)"></div>
+                                <div class="dot bg-yellow-400" onclick="setCol('#facc15', 'Yellow', this)"></div>
+                                <div class="dot bg-black" onclick="setCol('#1a1a1a', 'Black', this)"></div>
+                                <div class="dot bg-gray-400" onclick="setCol('#9ca3af', 'Silver', this)"></div>
+                                <div class="dot bg-cyan-400" onclick="setCol('#22d3ee', 'Cyan', this)"></div>
+                                <div class="dot bg-amber-800" onclick="setCol('#78350f', 'Amber', this)"></div>
+                                <div class="dot bg-rose-300" onclick="setCol('#fda4af', 'Rose', this)"></div>
+                                <div class="dot bg-indigo-600" onclick="setCol('#4f46e5', 'Indigo', this)"></div>
+                                <div class="dot bg-emerald-500" onclick="setCol('#10b981', 'Emerald', this)"></div>
+                                <div class="dot bg-stone-500" onclick="setCol('#78716c', 'Slate', this)"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="pen-controls" class="hidden p-6 bg-[#4a2c6a]/5 rounded-2xl border border-[#4a2c6a]/10">
+                        <p class="text-xs font-bold text-[#4a2c6a] uppercase tracking-widest"><i class="fa-solid fa-pen-nib mr-2"></i> Imperial Scriptorium Pen</p>
+                        <p class="text-[10px] text-gray-500 mt-1">Matte Violet casing with custom gold trim nib. Heavyweight balanced feel.</p>
+                    </div>
+
+                    <div id="plate-controls" class="hidden p-6 bg-[#c5a059]/5 rounded-2xl border border-[#c5a059]/10">
+                        <p class="text-xs font-bold text-[#c5a059] uppercase tracking-widest"><i class="fa-solid fa-award mr-2"></i> The Plate</p>
+                        <p class="text-[10px] text-gray-500 mt-1">Solid 3D gold-finished plate engraved with the Imperial insignia.</p>
+                    </div>
+
+                    <button id="btn-text" onclick="placeOrder()" class="w-full bg-black text-white py-6 rounded-2xl font-black uppercase text-xs tracking-[0.3em] hover:bg-[#c5a059] transition-all">Submit Commission</button>
+                </div>
             </div>
 
-            <div class="mb-8">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Select Glyph</h3>
-                <div id="char-grid"></div>
-            </div>
-
-            <div class="ios-card p-6 space-y-4">
-                <input id="inp-name" type="text" placeholder="Full Name" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold focus:ring-1 ring-black">
-                <select id="inp-color" class="w-full bg-[#F2F2F7] p-4 rounded-xl outline-none font-bold">
-                    <option value="Black">Black</option>
-                    <option value="Gold">Gold</option>
-                    <option value="Silver">Silver</option>
-                    <option value="White">White</option>
-                </select>
-                <button onclick="order()" class="w-full bg-black text-white p-5 rounded-xl font-black active:scale-[0.98] transition-all">RESERVE NOW</button>
+            <!-- Visual Preview -->
+            <div id="preview-cont" class="w-full max-w-md aspect-[4/5] glass flex items-center justify-center transition-all duration-700 relative overflow-hidden">
+                <div id="preview-box" class="text-[18rem] serif font-black">Y</div>
+                <div class="absolute bottom-6 text-[9px] font-black uppercase tracking-[0.5em] opacity-20">Imperial Record</div>
             </div>
         </div>
 
         <!-- APP VIEW -->
-        <div id="view-app" class="hidden text-center py-10">
-            <div class="w-24 h-24 bg-black rounded-[2.5rem] mx-auto mb-8 flex items-center justify-center text-white text-5xl font-black shadow-xl">Y</div>
-            <h2 class="text-3xl font-black mb-2">Yahia Mobile</h2>
-            <p class="text-gray-400 mb-10">Official Android Client</p>
-            <a href="release.apk?v=5" download class="block w-full bg-blue-600 text-white p-6 rounded-2xl font-black no-underline shadow-lg shadow-blue-100">DOWNLOAD APK</a>
+        <div id="app" class="hidden w-full max-w-md text-center space-y-8">
+            <div class="glass p-12 space-y-6">
+                <div class="w-20 h-20 bg-black text-white rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-xl">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h2 class="text-4xl serif font-black uppercase">Yahia <span class="text-[#c5a059]">Mobile</span></h2>
+                <p class="text-gray-500 text-sm leading-relaxed">Download the official tool for your device.</p>
+                <button class="block w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-lg">Download APK</button>
+            </div>
+        </div>
+
+        <!-- PORTAL VIEW -->
+        <div id="login" class="hidden glass p-12 w-full max-w-sm text-center">
+            <h2 class="text-xl font-black uppercase tracking-widest mb-8">Security</h2>
+            <input type="password" id="pass" placeholder="KEY" class="w-full p-5 rounded-2xl text-center mb-6 ring-1 ring-gray-200 border-none outline-none focus:ring-black">
+            <button onclick="auth()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase text-xs">Unlock</button>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="admin" class="hidden w-full max-w-5xl space-y-8">
+            <div class="flex justify-between items-end">
+                <h2 class="text-5xl serif font-black">Merchant <span class="text-[#c5a059]">Ledger</span></h2>
+                <button onclick="go('home')" class="bg-black text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase">Exit</button>
+            </div>
+            <div class="glass overflow-hidden bg-white">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-gray-50 border-b"><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Patron</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Item</th><th class="p-8 text-[10px] font-black text-gray-400 uppercase">Style</th><th class="p-8"></th></tr></thead>
+                    <tbody id="admin-list" class="divide-y divide-gray-50"></tbody>
+                </table>
+            </div>
         </div>
     </main>
 
-    <!-- VAULT PANEL -->
-    <div id="vault-panel" class="vault-panel">
-        <div class="p-6 border-b flex justify-between items-center bg-white sticky top-0">
-            <h2 class="font-black text-2xl tracking-tighter">GLOBAL_VAULT</h2>
-            <button onclick="document.getElementById('vault-panel').style.display='none'" class="bg-black text-white px-6 py-2 rounded-xl font-bold text-xs">CLOSE</button>
-        </div>
-        <div id="vault-data" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
-            <!-- Global orders load here -->
-        </div>
-    </div>
+    <!-- FIREBASE INTEGRATION -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-        // --- CONFIG ---
-        const list = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-        list.push("PLATE");
-        let active = "Y";
-        let db;
+        // REPLACE WITH YOUR ACTUAL FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiSjTQ0lRDwccIxzVb24V8j5ThR8boqJA",
+            authDomain: "yahuashopcloud.firebaseapp.com",
+            projectId: "yahuashopcloud",
+            storageBucket: "yahuashopcloud.appspot.com",
+            messagingSenderId: "439516384242",
+            appId: "1:439516384242:web:77a3f41653c8d01988b96b"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // --- GRID ---
-        function draw() {
-            const grid = document.getElementById('char-grid');
-            if(!grid) return;
-            grid.innerHTML = list.map(item => {
-                const isSelected = active === item;
-                const label = item === 'PLATE' ? '■' : item;
-                return `<button onclick="sel('${item}')" class="glyph-btn ${isSelected ? 'active' : ''}">${label}</button>`;
-            }).join('');
+        // Application Logic
+        let activeProduct = 'Sigil';
+        let curCol = '#ef4444', curColName = 'Red';
+
+        function go(id) {
+            ['home', 'app', 'login', 'admin'].forEach(v => {
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
         }
 
-        function sel(val) {
-            active = val;
-            document.getElementById('big-char').innerText = val === 'PLATE' ? '■' : val;
-            const colors = { Black: '#111', Gold: '#D4AF37', Silver: '#888', White: '#DDD' };
-            document.getElementById('big-char').style.color = colors[document.getElementById('inp-color').value] || '#111';
-            draw();
+        function setProduct(type) {
+            activeProduct = type;
+            document.getElementById('display-title').innerText = type === 'Plate' ? 'The Plate' : type;
+            document.getElementById('sigil-controls').classList.toggle('hidden', type !== 'Sigil');
+            document.getElementById('pen-controls').classList.toggle('hidden', type !== 'Pen');
+            document.getElementById('plate-controls').classList.toggle('hidden', type !== 'Plate');
+            
+            document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + type.toLowerCase()).classList.add('active');
+            updatePreview();
         }
 
-        document.getElementById('inp-color').onchange = () => sel(active);
-
-        function tab(t) {
-            document.getElementById('view-shop').classList.toggle('hidden', t !== 'shop');
-            document.getElementById('view-app').classList.toggle('hidden', t !== 'app');
-            document.getElementById('btn-shop').className = t === 'shop' ? "px-4 py-2 rounded-lg text-xs font-bold bg-black text-white" : "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
-            document.getElementById('btn-app').className = t === 'app' ? "px-4 py-2 rounded-lg text-xs font-bold bg-black text-white" : "px-4 py-2 rounded-lg text-xs font-bold text-gray-400";
+        function setCol(hex, name, el) {
+            curCol = hex; curColName = name;
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+            updatePreview();
         }
 
-        // --- FIREBASE INITIALIZATION ---
-        // PASTE YOUR FIREBASE KEY BELOW
-        const yourFirebaseConfig = null; // Replace 'null' with your config object if you have one
-
-        try {
-            const config = yourFirebaseConfig || JSON.parse(__firebase_config);
-            firebase.initializeApp(config);
-            db = firebase.firestore();
-            firebase.auth().signInAnonymously();
-        } catch(e) { 
-            console.error("Firebase Auth Error:", e); 
-        }
-
-        // --- DATABASE LOGIC ---
-        const collectionPath = `artifacts/yahia-global-v5/public/data/orders`;
-
-        async function order() {
-            const name = document.getElementById('inp-name').value.trim();
-            if(!name) return;
-
-            // VAULT TRIGGER: Name must be MADMIN/Vault AND selection must be M AND color must be Gold
-            if(name === 'MADMIN/Vault' && active === 'M' && document.getElementById('inp-color').value === 'Gold') {
-                openVault();
-                return;
+        function updatePreview() {
+            const b = document.getElementById('preview-box');
+            const c = document.getElementById('preview-cont');
+            
+            if(activeProduct === 'Pen') {
+                b.innerHTML = '<i class="fa-solid fa-pen-nib"></i>';
+                b.style.color = '#4a2c6a';
+                c.classList.remove('plate-style');
+            } else if (activeProduct === 'Plate') {
+                b.innerText = 'Y';
+                b.style.color = 'white';
+                c.classList.add('plate-style');
+            } else {
+                b.innerText = document.getElementById('letter').value;
+                b.style.color = curCol;
+                c.classList.remove('plate-style');
             }
+        }
+
+        // Letter Generator
+        const sel = document.getElementById('letter');
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(l => {
+            const opt = document.createElement('option');
+            opt.value = l; opt.innerText = "Sigil: Letter " + l;
+            sel.appendChild(opt);
+        });
+        sel.value = 'Y';
+
+        // ORDER LOGIC
+        async function placeOrder() {
+            const name = document.getElementById('cust-name').value.trim();
+            if(!name) { alert("Enter Patron Name"); return; }
+            
+            const btn = document.getElementById('btn-text');
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
 
             try {
-                await db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders').add({
-                    name,
-                    char: active,
-                    color: document.getElementById('inp-color').value,
+                // Pointing back to standard 'orders' collection
+                await db.collection("orders").add({
+                    name: name,
+                    item: activeProduct === 'Sigil' ? sel.value : (activeProduct === 'Pen' ? 'PEN' : 'PLATE'),
+                    style: activeProduct === 'Sigil' ? curColName : (activeProduct === 'Pen' ? 'Matte Violet' : 'Imperial Gold'),
                     time: Date.now()
                 });
-                alert("Order synced to Global Vault!");
-                document.getElementById('inp-name').value = "";
-            } catch(e) { 
-                alert("Storage full or connection error.");
+                alert("Commission Successful!");
+                document.getElementById('cust-name').value = '';
+            } catch (e) {
+                console.error(e);
+                alert("Network error. Verify connection.");
+            } finally {
+                btn.innerText = "Submit Commission";
+                btn.disabled = false;
             }
         }
 
-        function openVault() {
-            document.getElementById('vault-panel').style.display = 'flex';
-            const listRef = db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders');
-            
-            listRef.onSnapshot(snap => {
-                const data = snap.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                // Manual sort by time descending
-                data.sort((a,b) => b.time - a.time);
-                
-                const container = document.getElementById('vault-data');
-                container.innerHTML = data.map(o => `
-                    <div class="bg-white p-5 rounded-2xl flex justify-between items-center shadow-sm border border-gray-100">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-black text-white flex items-center justify-center rounded-xl font-black text-lg">
-                                ${o.char === 'PLATE' ? '■' : o.char}
-                            </div>
-                            <div>
-                                <p class="font-black text-sm uppercase">${o.name}</p>
-                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">${o.color} FINISH</p>
-                            </div>
-                        </div>
-                        <button onclick="del('${o.id}')" class="text-red-500 font-black text-[10px] bg-red-50 px-3 py-1.5 rounded-lg">DEL</button>
-                    </div>
-                `).join('');
+        function auth() {
+            if(document.getElementById('pass').value === 'MADMIN') {
+                go('admin');
+                sync();
+            } else {
+                alert("Invalid Vault Key");
+            }
+        }
+
+        function sync() {
+            db.collection("orders").orderBy("time", "desc").onSnapshot((snap) => {
+                const list = document.getElementById('admin-list');
+                list.innerHTML = '';
+                snap.forEach(doc => {
+                    const o = doc.data();
+                    list.innerHTML += `<tr>
+                        <td class="p-8 font-black serif text-xl">${o.name}</td>
+                        <td class="p-8 font-black text-[#c5a059] text-2xl">${o.item}</td>
+                        <td class="p-8 text-[10px] font-black uppercase tracking-widest">${o.style}</td>
+                        <td class="p-8 text-right"><button onclick="delDoc('${doc.id}')" class="text-red-500 font-black text-[10px] underline">Paid</button></td>
+                    </tr>`;
+                });
             });
         }
 
-        async function del(id) {
-            if(confirm("Remove order?")) {
-                await db.collection('artifacts').doc('yahia-global-v5').collection('public').doc('data').collection('orders').doc(id).delete();
-            }
+        window.delDoc = (id) => {
+            if(confirm("Expunge Record?")) db.collection("orders").doc(id).delete();
         }
 
-        // Init
-        draw();
+        // Initialize
+        updatePreview();
     </script>
 </body>
 </html>
 
+```
 
