@@ -240,7 +240,7 @@
 
             <!-- Navigation Links -->
             <div class="flex gap-4 sm:gap-8 items-center">
-                <button onclick="go('home')" class="nav-link active-link" id="nav-shop">Shop</button>
+                <button onclick="go('home')" class="nav-link active-link" id="nav-home">Shop</button>
                 <button onclick="go('app')" class="nav-link" id="nav-app">App</button>
                 <button onclick="go('login')" class="nav-link" id="nav-login">Portal</button>
             </div>
@@ -487,4 +487,631 @@
                     <div class="space-y-3">
                         <div class="flex justify-between items-center">
                             <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Vault Event (4-Digit PIN)</label>
-                            <button id="admin-event-toggle-btn" onclick="toggleEventState()" class="px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-red-500/20 text-red-300 border border-red-50
+                            <button id="admin-event-toggle-btn" onclick="toggleEventState()" class="px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-red-500/20 text-red-300 border border-red-500/40">
+                                Event: OFF
+                            </button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="admin-secret-code" maxlength="4" placeholder="7429" class="w-full p-3.5 rounded-xl glass-input text-center font-mono font-black text-amber-300 text-base tracking-[0.3em]">
+                            <button onclick="randomizeSecretCode()" class="px-3 bg-amber-500/20 text-amber-300 rounded-xl text-[10px] font-bold uppercase border border-amber-500/30 cursor-pointer">
+                                Random
+                            </button>
+                            <button onclick="saveEventSettings()" class="px-4 bg-amber-500 text-black rounded-xl text-[10px] font-black uppercase cursor-pointer">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ledger Table Container -->
+            <div class="glass-panel overflow-hidden rounded-3xl border border-amber-500/20">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-black/60 border-b border-white/5">
+                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Patron</th>
+                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Item</th>
+                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Style</th>
+                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-list" class="divide-y divide-white/5">
+                            <tr>
+                                <td colspan="4" class="p-8 text-center text-xs text-gray-500 font-medium">Connecting to live merchant ledger...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER WITH UNDERCOVER 10-CLICK PORTAL UNLOCK -->
+    <footer class="p-6 sm:p-8 border-t border-white/5 mt-8 bg-black/60 backdrop-blur-md relative z-20">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium text-center sm:text-left">
+            <p>© 2026 YAHIA SHOP. Official Atelier All Rights Reserved.</p>
+            <div class="flex items-center gap-4 text-[11px]">
+                <!-- 10-Click Secret Portal Trigger -->
+                <span id="tos-secret-btn" onclick="handleSecretPortalClick()" class="hover:text-amber-400 transition-colors cursor-pointer select-none">Terms of Service</span>
+                <span>•</span>
+                <span class="hover:text-amber-400 transition-colors cursor-pointer">Imperial Charter</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CUSTOM TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full px-4"></div>
+
+    <!-- FIREBASE INTEGRATION -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // ================= CORE UI & STATE =================
+        var activeProduct = 'Sigil';
+        var curCol = '#ef4444';
+        var curColName = 'Red';
+        var eventActive = false;
+        var secretCode = '7429';
+        var hasWonEvent = false;
+
+        var tosClickCount = 0;
+        var tosClickTimer = null;
+
+        // Custom Toast Notification System
+        function showToast(message, type) {
+            type = type || 'info';
+            var container = document.getElementById('toast-container');
+            if(!container) return;
+
+            var toast = document.createElement('div');
+            
+            var bgClass = "bg-stone-900 border-amber-500/30 text-amber-300";
+            if (type === 'error') bgClass = "bg-red-950 border-red-500/40 text-red-200";
+            if (type === 'success') bgClass = "bg-emerald-950 border-emerald-500/40 text-emerald-200";
+            if (type === 'gold') bgClass = "bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-extrabold";
+
+            toast.className = "p-4 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs flex items-center gap-3 transition-all duration-300 pointer-events-auto transform translate-y-4 opacity-0 " + bgClass;
+            toast.innerHTML = 
+                '<i class="fa-solid ' + (type === 'error' ? 'fa-circle-xmark' : (type === 'success' || type === 'gold' ? 'fa-circle-check' : 'fa-circle-info')) + ' text-base"></i>' +
+                '<div class="flex-grow font-semibold">' + message + '</div>' +
+                '<button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>';
+
+            container.appendChild(toast);
+            setTimeout(function() {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            }, 10);
+
+            setTimeout(function() {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 4000);
+        }
+
+        // Navigation engine
+        function go(id) {
+            ['home', 'app', 'login', 'admin'].forEach(function(v) {
+                var el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
+            });
+            var target = document.getElementById(id);
+            if(target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active-link'); });
+            var activeNav = document.getElementById('nav-' + id);
+            if(activeNav) activeNav.classList.add('active-link');
+
+            if(id === 'admin') sync();
+        }
+
+        function setProduct(type) {
+            activeProduct = type;
+            var displayTitle = document.getElementById('display-title');
+            if(displayTitle) displayTitle.innerText = type === 'Plate' ? 'The Plate' : type;
+            
+            var sigilCtrl = document.getElementById('sigil-controls');
+            var penCtrl = document.getElementById('pen-controls');
+            var plateCtrl = document.getElementById('plate-controls');
+
+            if(sigilCtrl) sigilCtrl.classList.toggle('hidden', type !== 'Sigil');
+            if(penCtrl) penCtrl.classList.toggle('hidden', type !== 'Pen');
+            if(plateCtrl) plateCtrl.classList.toggle('hidden', type !== 'Plate');
+            
+            document.querySelectorAll('.product-tab').forEach(function(t) { t.classList.remove('active'); });
+            var activeTab = document.getElementById('tab-' + type.toLowerCase());
+            if(activeTab) activeTab.classList.add('active');
+            
+            updatePreview();
+        }
+
+        function setCol(hex, name, el) {
+            curCol = hex; 
+            curColName = name;
+            document.querySelectorAll('.dot').forEach(function(d) { d.classList.remove('active'); });
+            if(el) el.classList.add('active');
+            var colNameEl = document.getElementById('selected-color-name');
+            if(colNameEl) colNameEl.innerText = name;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            var b = document.getElementById('preview-box');
+            var c = document.getElementById('preview-cont');
+            if(!b || !c) return;
+            
+            if(activeProduct === 'Pen') {
+                b.innerHTML = '<i class="fa-solid fa-pen-nib"></i>';
+                b.style.color = '#a855f7';
+                c.classList.remove('plate-style');
+            } else if (activeProduct === 'Plate') {
+                b.innerText = 'Y';
+                b.style.color = '#fef08a';
+                c.classList.add('plate-style');
+            } else {
+                var letterEl = document.getElementById('letter');
+                b.innerText = letterEl ? letterEl.value : 'Y';
+                b.style.color = curCol;
+                c.classList.remove('plate-style');
+            }
+        }
+
+        function populateAlphabet() {
+            var sel = document.getElementById('letter');
+            if (!sel) return;
+            sel.innerHTML = '';
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function(l) {
+                var opt = document.createElement('option');
+                opt.value = l; 
+                opt.innerText = "Letter " + l;
+                sel.appendChild(opt);
+            });
+            sel.value = 'Y';
+        }
+
+        // Undercover Portal Secret Click Counter
+        function handleSecretPortalClick() {
+            tosClickCount++;
+            clearTimeout(tosClickTimer);
+
+            if (tosClickCount >= 10) {
+                tosClickCount = 0;
+                showToast("🔓 Secret Portal Unlocked!", "gold");
+                go('login');
+            } else if (tosClickCount >= 5) {
+                showToast("Keep clicking... " + (10 - tosClickCount) + " clicks remaining to unlock Portal", "info");
+            }
+
+            tosClickTimer = setTimeout(function() {
+                tosClickCount = 0;
+            }, 5000);
+        }
+
+        function dismissAnnouncement() {
+            var ann = document.getElementById('global-announcement');
+            if(ann) ann.classList.add('hidden');
+        }
+
+        function auth() {
+            var passEl = document.getElementById('pass');
+            if(!passEl) return;
+            if(passEl.value === 'MADMIN') {
+                go('admin');
+                showToast("Welcome to Merchant Ledger Portal", "gold");
+            } else {
+                showToast("Invalid Security Key", "error");
+            }
+            passEl.value = '';
+        }
+
+        // Offline Local Storage Fallback
+        function saveOfflineOrder(orderObj) {
+            try {
+                var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
+                orderObj.id = 'off_' + Date.now();
+                offlineOrders.unshift(orderObj);
+                localStorage.setItem('yahia_offline_orders', JSON.stringify(offlineOrders));
+            } catch(e) {
+                console.warn("Offline storage error:", e);
+            }
+        }
+
+        // ================= FIREBASE INITIALIZATION & SYNC =================
+        var db = null;
+        var authObj = null;
+
+        try {
+            var firebaseConfig = {
+                apiKey: "AIzaSyBiSjTQ0lRDwccIxzVb24V8j5ThR8boqJA",
+                authDomain: "yahuashopcloud.firebaseapp.com",
+                projectId: "yahuashopcloud",
+                storageBucket: "yahuashopcloud.appspot.com",
+                messagingSenderId: "439516384242",
+                appId: "1:439516384242:web:77a3f41653c8d01988b96b"
+            };
+
+            if (typeof firebase !== 'undefined') {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+                db = firebase.firestore();
+                authObj = firebase.auth();
+
+                authObj.signInAnonymously().catch(function(err) {
+                    console.warn("Firebase Auth Anonymous Notice:", err.message);
+                });
+            }
+        } catch (err) {
+            console.warn("Firebase Init Notice:", err);
+        }
+
+        function initEventSync() {
+            if (!db) return;
+
+            try {
+                // Live Site Release Listener
+                db.collection("settings").doc("site_release").onSnapshot(function(docSnap) {
+                    var badge = document.getElementById('site-release-badge');
+                    var tag = document.getElementById('current-release-status-tag');
+                    if (docSnap.exists && docSnap.data().released) {
+                        var data = docSnap.data();
+                        if (badge) badge.innerText = (data.version || 'v2.0') + ' LIVE';
+                        if (tag) {
+                            tag.innerText = 'Release Status: LIVE ON YAHIASHOP.NETLIFY.APP';
+                            tag.className = "px-3 py-1.5 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+                        }
+                    }
+                }, function(err) { console.log("Release sync notice:", err); });
+
+                // Vault Event Listener
+                db.collection("settings").doc("vault_event").onSnapshot(function(docSnap) {
+                    if (docSnap.exists) {
+                        var data = docSnap.data();
+                        eventActive = !!data.active;
+                        secretCode = data.code || '7429';
+                        
+                        var card = document.getElementById('event-banner-card');
+                        if(card) card.classList.toggle('hidden', !eventActive);
+
+                        var toggleBtn = document.getElementById('admin-event-toggle-btn');
+                        if(toggleBtn) {
+                            toggleBtn.innerText = eventActive ? "Event: ACTIVE" : "Event: OFF";
+                            toggleBtn.className = eventActive 
+                                ? "px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 shadow-lg shadow-emerald-500/20"
+                                : "px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30";
+                        }
+
+                        var codeInput = document.getElementById('admin-secret-code');
+                        if(codeInput && document.activeElement !== codeInput) {
+                            codeInput.value = secretCode;
+                        }
+                    }
+                }, function(err) { console.log("Vault event notice:", err); });
+
+                // Global Announcement Listener
+                db.collection("settings").doc("announcement").onSnapshot(function(docSnap) {
+                    var banner = document.getElementById('global-announcement');
+                    var textEl = document.getElementById('announcement-text');
+                    if (docSnap.exists && docSnap.data().message && docSnap.data().active) {
+                        textEl.innerText = docSnap.data().message;
+                        banner.classList.remove('hidden');
+                    } else {
+                        banner.classList.add('hidden');
+                    }
+                }, function(err) { console.log("Announcement sync notice:", err); });
+            } catch(e) {
+                console.warn("initEventSync error:", e);
+            }
+        }
+
+        /* RELEASE UPDATE TO YAHIASHOP.NETLIFY.APP */
+        async function releaseUpdateToNetlify() {
+            var webhookUrl = document.getElementById('netlify-webhook-url').value.trim();
+            var annMsg = "🚀 OFFICIAL UPDATE RELEASED: Yahia Shop v2.0 Gold Atelier is now LIVE on yahiashop.netlify.app!";
+
+            if (db) {
+                try {
+                    await db.collection("settings").doc("site_release").set({
+                        released: true,
+                        version: "v2.0 Gold Atelier",
+                        domain: "yahiashop.netlify.app",
+                        timestamp: Date.now()
+                    });
+
+                    await db.collection("settings").doc("announcement").set({
+                        message: annMsg,
+                        active: true,
+                        time: Date.now()
+                    });
+                } catch (err) {
+                    console.warn("Release error:", err);
+                }
+            }
+
+            if (webhookUrl) {
+                try {
+                    await fetch(webhookUrl, { method: 'POST' });
+                    showToast("🚀 Netlify Build Triggered & Release Published!", "gold");
+                } catch (netErr) {
+                    showToast("Release Published Live! (Webhook error)", "gold");
+                }
+            } else {
+                showToast("🚀 Update Release Published Live to yahiashop.netlify.app!", "gold");
+            }
+        }
+
+        /* Submit Patron PIN Guess */
+        async function submitGuess() {
+            if(!eventActive) {
+                showToast("The Imperial Vault Event is currently inactive.", "error");
+                return;
+            }
+            var guessInput = document.getElementById('guess-input');
+            var statusEl = document.getElementById('guess-status');
+            var guess = guessInput ? guessInput.value.trim() : '';
+
+            if(!/^\d{4}$/.test(guess)) {
+                showToast("Please enter a valid 4-digit PIN.", "error");
+                return;
+            }
+
+            if(guess === secretCode) {
+                hasWonEvent = true;
+                if(statusEl) {
+                    statusEl.innerText = "🎉 CORRECT PIN! Free Sigil + 50% Discount Applied!";
+                    statusEl.className = "mt-2 text-[11px] font-black text-emerald-400 block animate-pulse";
+                }
+                showToast("🎉 CONGRATULATIONS! You cracked the Imperial Code! Free Sigil + 50% Off applied!", "gold");
+                
+                var custNameEl = document.getElementById('cust-name');
+                var patronName = (custNameEl && custNameEl.value.trim()) ? custNameEl.value.trim() : 'A Lucky Patron';
+                var annMsg = "🎉 GLOBAL ANNOUNCEMENT: " + patronName + " cracked the secret PIN (" + secretCode + ") and won a FREE Sigil + 50% Off Everything!";
+
+                if(db) {
+                    try {
+                        await db.collection("settings").doc("announcement").set({
+                            message: annMsg,
+                            active: true,
+                            time: Date.now()
+                        });
+                    } catch(e) {
+                        console.error("Announcement error:", e);
+                    }
+                }
+            } else {
+                if(statusEl) {
+                    statusEl.innerText = "❌ Incorrect PIN combination. Try again!";
+                    statusEl.className = "mt-2 text-[11px] font-bold text-red-400 block";
+                }
+                showToast("Incorrect PIN combination. Try again!", "error");
+            }
+        }
+
+        /* Global Message Broadcast from Admin Portal */
+        async function broadcastCustomMsg() {
+            var msgEl = document.getElementById('admin-broadcast-msg');
+            var msg = msgEl ? msgEl.value.trim() : '';
+            if(!msg) {
+                showToast("Please enter text for the announcement.", "error");
+                return;
+            }
+            if(db) {
+                try {
+                    await db.collection("settings").doc("announcement").set({
+                        message: "📢 " + msg,
+                        active: true,
+                        time: Date.now()
+                    });
+                    showToast("Global Message broadcasted live on website!", "gold");
+                    if(msgEl) msgEl.value = '';
+                } catch(e) {
+                    console.error(e);
+                    showToast("Failed to broadcast message.", "error");
+                }
+            } else {
+                showToast("Global Message broadcasted locally!", "gold");
+            }
+        }
+
+        async function clearAnnouncement() {
+            if(db) {
+                try {
+                    await db.collection("settings").doc("announcement").set({
+                        message: "",
+                        active: false,
+                        time: Date.now()
+                    });
+                    showToast("Global announcement cleared from website.", "info");
+                } catch(e) {
+                    showToast("Failed to clear announcement.", "error");
+                }
+            } else {
+                dismissAnnouncement();
+            }
+        }
+
+        /* Event Admin Actions */
+        async function toggleEventState() {
+            var newState = !eventActive;
+            if(db) {
+                try {
+                    await db.collection("settings").doc("vault_event").set({
+                        active: newState,
+                        code: secretCode
+                    }, { merge: true });
+                    showToast(newState ? "Event Activated!" : "Event Deactivated.", newState ? "gold" : "info");
+                } catch(e) {
+                    showToast("Failed to update event state.", "error");
+                }
+            } else {
+                eventActive = newState;
+                showToast(newState ? "Event Activated!" : "Event Deactivated.", newState ? "gold" : "info");
+            }
+        }
+
+        async function saveEventSettings() {
+            var codeEl = document.getElementById('admin-secret-code');
+            var newCode = codeEl ? codeEl.value.trim() : '';
+            if(!/^\d{4}$/.test(newCode)) {
+                showToast("PIN must be 4 digits.", "error");
+                return;
+            }
+            if(db) {
+                try {
+                    await db.collection("settings").doc("vault_event").set({
+                        active: eventActive,
+                        code: newCode
+                    }, { merge: true });
+                    secretCode = newCode;
+                    showToast("Secret Code updated to " + newCode + "!", "success");
+                } catch(e) {
+                    showToast("Failed to save secret code.", "error");
+                }
+            } else {
+                secretCode = newCode;
+                showToast("Secret Code updated to " + newCode + "!", "success");
+            }
+        }
+
+        function randomizeSecretCode() {
+            var rand = Math.floor(1000 + Math.random() * 9000).toString();
+            var codeEl = document.getElementById('admin-secret-code');
+            if(codeEl) codeEl.value = rand;
+            showToast("Random code generated: " + rand + ". Click Save!", "info");
+        }
+
+        /* Order Submission Logic */
+        async function placeOrder() {
+            var nameEl = document.getElementById('cust-name');
+            var name = nameEl ? nameEl.value.trim() : '';
+            if(!name) { 
+                showToast("Please enter Patron Name.", "error"); 
+                return; 
+            }
+            
+            var btn = document.getElementById('btn-text');
+            if(btn) {
+                btn.innerText = "SENDING...";
+                btn.disabled = true;
+            }
+
+            var letterEl = document.getElementById('letter');
+            var selVal = letterEl ? letterEl.value : 'Y';
+            var itemStyle = activeProduct === 'Sigil' ? curColName : (activeProduct === 'Pen' ? 'Matte Violet' : 'Imperial Gold');
+            var bonusTag = hasWonEvent ? ' [50% OFF + FREE REWARD]' : '';
+
+            var orderObj = {
+                name: name,
+                item: (activeProduct === 'Sigil' ? selVal : (activeProduct === 'Pen' ? 'PEN' : 'PLATE')) + bonusTag,
+                style: itemStyle,
+                time: Date.now()
+            };
+
+            if(db) {
+                try {
+                    await db.collection("orders").add(orderObj);
+                    showToast(hasWonEvent ? "Commission Submitted with 50% Event Discount!" : "Commission Successful!", "success");
+                    if(nameEl) nameEl.value = '';
+                } catch (e) {
+                    console.error("Firestore Order Error:", e);
+                    saveOfflineOrder(orderObj);
+                    showToast("Commission Submitted Successfully!", "success");
+                    if(nameEl) nameEl.value = '';
+                } finally {
+                    if(btn) {
+                        btn.innerText = "Submit Commission";
+                        btn.disabled = false;
+                    }
+                }
+            } else {
+                saveOfflineOrder(orderObj);
+                showToast("Commission Submitted Successfully!", "success");
+                if(nameEl) nameEl.value = '';
+                if(btn) {
+                    btn.innerText = "Submit Commission";
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        /* Realtime Orders Sync */
+        function sync() {
+            var list = document.getElementById('admin-list');
+            if(!list) return;
+
+            if(!db) {
+                renderOfflineOrders(list);
+                return;
+            }
+
+            db.collection("orders").orderBy("time", "desc").onSnapshot(function(snap) {
+                list.innerHTML = '';
+                if(snap.empty) {
+                    renderOfflineOrders(list);
+                    return;
+                }
+                snap.forEach(function(docSnap) {
+                    var o = docSnap.data();
+                    list.innerHTML += '<tr class="hover:bg-white/5 transition-all">' +
+                        '<td class="p-5 font-bold text-sm text-white">' + (o.name || 'Anonymous') + '</td>' +
+                        '<td class="p-5 font-black text-amber-400 text-lg">' + (o.item || 'Sigil') + '</td>' +
+                        '<td class="p-5 text-xs font-bold uppercase tracking-widest text-gray-400">' + (o.style || 'Red') + '</td>' +
+                        '<td class="p-5 text-right">' +
+                            '<button onclick="delDoc(\'' + docSnap.id + '\')" class="text-red-400 hover:text-red-300 font-black text-xs uppercase underline cursor-pointer">Paid / Clear</button>' +
+                        '</td>' +
+                    '</tr>';
+                });
+            }, function(err) { 
+                console.log("Orders sync notice:", err);
+                renderOfflineOrders(list);
+            });
+        }
+
+        function renderOfflineOrders(list) {
+            var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
+            list.innerHTML = '';
+            if(!offlineOrders.length) {
+                list.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-xs text-gray-500">No orders found in ledger.</td></tr>';
+                return;
+            }
+            offlineOrders.forEach(function(o) {
+                list.innerHTML += '<tr class="hover:bg-white/5 transition-all">' +
+                    '<td class="p-5 font-bold text-sm text-white">' + (o.name || 'Anonymous') + '</td>' +
+                    '<td class="p-5 font-black text-amber-400 text-lg">' + (o.item || 'Sigil') + '</td>' +
+                    '<td class="p-5 text-xs font-bold uppercase tracking-widest text-gray-400">' + (o.style || 'Red') + '</td>' +
+                    '<td class="p-5 text-right">' +
+                        '<button onclick="delDoc(\'' + o.id + '\')" class="text-red-400 hover:text-red-300 font-black text-xs uppercase underline cursor-pointer">Clear</button>' +
+                    '</td>' +
+                '</tr>';
+            });
+        }
+
+        function delDoc(id) {
+            if(confirm("Expunge Record from Ledger?")) {
+                if(id && id.indexOf('off_') === 0) {
+                    var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
+                    offlineOrders = offlineOrders.filter(function(item) { return item.id !== id; });
+                    localStorage.setItem('yahia_offline_orders', JSON.stringify(offlineOrders));
+                    showToast("Offline record deleted.", "info");
+                    sync();
+                    return;
+                }
+
+                if(db) {
+                    db.collection("orders").doc(id).delete()
+                        .then(function() { showToast("Record deleted.", "info"); })
+                        .catch(function() { showToast("Failed to delete record.", "error"); });
+                }
+            }
+        }
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', function() {
+            populateAlphabet();
+            updatePreview();
+            initEventSync();
+        });
+    </script>
+</body>
+</html>
