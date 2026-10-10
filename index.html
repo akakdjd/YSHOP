@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>YAHIA SHOP | OFFICIAL</title>
+    <title>YAHIA SHOP | OFFICIAL ATELIER ARCHIVE</title>
     
     <!-- External Dependencies & Modern Typography -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -62,10 +62,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .gold-gradient-bg {
-            background: linear-gradient(135deg, #D4AF37 0%, #C5A059 50%, #AA771C 100%);
-        }
-
         /* Glassmorphism Panels */
         .glass-panel { 
             background: rgba(18, 19, 24, 0.75); 
@@ -80,11 +76,6 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             color: #ffffff;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-input:focus {
-            border-color: #D4AF37;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
-            background: rgba(15, 15, 20, 0.95);
         }
 
         /* Imperial Plate Custom Styling */
@@ -107,18 +98,6 @@
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
             position: relative;
             flex-shrink: 0;
-        }
-        @media (min-width: 640px) {
-            .dot { width: 34px; height: 34px; }
-        }
-        .dot:hover {
-            transform: scale(1.15);
-            border-color: rgba(255,255,255,0.6);
-        }
-        .dot.active { 
-            border-color: #D4AF37;
-            transform: scale(1.22); 
-            box-shadow: 0 0 18px rgba(212, 175, 55, 0.7);
         }
 
         /* Navigation Links */
@@ -153,11 +132,6 @@
             color: #94A3B8;
             user-select: none;
         }
-        .product-tab:hover {
-            background: rgba(212, 175, 55, 0.1);
-            color: #F5D77F;
-            border-color: rgba(212, 175, 55, 0.3);
-        }
         .product-tab.active {
             background: linear-gradient(135deg, #D4AF37 0%, #AA771C 100%);
             color: #070709;
@@ -171,21 +145,6 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
-        }
-
-        /* Marquee Scrolling Animation */
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-            width: 100%;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 20s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
         }
 
         /* Ambient Glow Background */
@@ -207,14 +166,20 @@
 
     <div class="ambient-bg"></div>
 
-    <!-- GLOBAL ANNOUNCEMENT BANNER -->
-    <div id="global-announcement" class="hidden bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 text-black py-2 px-4 font-black uppercase text-xs tracking-widest shadow-xl relative z-50 flex items-center justify-between">
-        <div class="marquee-container flex-grow mr-4">
-            <div id="announcement-text" class="marquee-content text-xs font-black">
-                📢 GLOBAL ANNOUNCEMENT
+    <!-- PERMANENT OFFICIAL CLOSURE BANNER -->
+    <div id="closure-banner" class="bg-gradient-to-r from-red-950 via-stone-900 to-red-950 border-b border-red-500/30 text-stone-200 py-3 px-4 shadow-2xl relative z-50">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="flex items-center gap-3">
+                <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse flex-shrink-0"></span>
+                <span class="text-xs font-bold tracking-wide">
+                    <strong class="text-red-400 uppercase tracking-widest mr-1">Official Notice:</strong> 
+                    Yahia Shop business is permanently closed due to undisclosed reasons. New commissions are disabled.
+                </span>
             </div>
+            <button onclick="openClosureModal()" class="px-3.5 py-1.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 font-bold text-[11px] uppercase tracking-wider transition-all flex-shrink-0">
+                Read Declaration
+            </button>
         </div>
-        <button onclick="dismissAnnouncement()" class="text-black/80 hover:text-black font-extrabold text-xs px-2 cursor-pointer flex-shrink-0">✕</button>
     </div>
 
     <!-- HEADER NAVIGATION -->
@@ -230,59 +195,42 @@
                 <div class="flex flex-col">
                     <div class="flex items-center gap-2">
                         <span class="font-cinzel font-bold text-base sm:text-lg tracking-widest text-white leading-none">YAHIA</span>
-                        <span id="site-release-badge" class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                            v2.0 Atelier
+                        <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-500/30">
+                            Closed
                         </span>
                     </div>
-                    <span class="text-[9px] font-black uppercase tracking-[0.3em] gold-gradient-text mt-1">OFFICIAL ATELIER</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.3em] gold-gradient-text mt-1">OFFICIAL ARCHIVE</span>
                 </div>
             </div>
 
             <!-- Navigation Links -->
             <div class="flex gap-4 sm:gap-8 items-center">
-                <button onclick="go('home')" class="nav-link active-link" id="nav-home">Shop</button>
-                <button onclick="go('app')" class="nav-link" id="nav-app">App</button>
-                <button onclick="go('login')" class="nav-link" id="nav-login">Portal</button>
+                <button onclick="go('home')" class="nav-link active-link" id="nav-home">Atelier</button>
+                <button onclick="go('app')" class="nav-link" id="nav-app">Vault</button>
+                <button onclick="go('login')" class="nav-link" id="nav-login">Ledger</button>
             </div>
         </nav>
     </header>
 
     <main class="flex-grow flex items-center justify-center p-4 sm:p-6 md:p-8 my-2 relative z-10">
         
-        <!-- ================= MAIN SHOP VIEW ================= -->
+        <!-- MAIN VIEW -->
         <div id="home" class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
-            <!-- Left Panel: Customization Form -->
+            <!-- Left Panel: Customization View & Closure Notice -->
             <div class="lg:col-span-7 space-y-6 sm:space-y-8">
                 <div class="space-y-3.5">
-                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase tracking-widest">
-                        <i class="fa-solid fa-gem text-amber-400"></i> Bespoke Commission Atelier
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-extrabold uppercase tracking-widest">
+                        <i class="fa-solid fa-lock text-red-400"></i> Atelier Operations Ceased
                     </div>
                     <h1 class="text-4xl sm:text-6xl font-cinzel font-black leading-none text-white uppercase tracking-tight">
                         Imperial <span id="display-title" class="gold-gradient-text">Sigil</span>
                     </h1>
+                    <p class="text-xs text-stone-400 leading-relaxed max-w-xl">
+                        The Yahia Atelier interactive customization tools remain accessible in read-only archive mode.
+                    </p>
 
-                    <!-- Live Event Challenge Banner -->
-                    <div id="event-banner-card" class="hidden glass-panel p-5 rounded-3xl border-2 border-amber-400/40 relative overflow-hidden bg-gradient-to-r from-amber-950/40 via-purple-950/20 to-black shadow-xl">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase tracking-widest border border-amber-400/30">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Vault Event
-                            </span>
-                            <span class="text-[10px] font-bold text-amber-400/90 uppercase tracking-widest">Free Letter + 50% Off</span>
-                        </div>
-                        <h3 class="text-base font-cinzel font-black text-white uppercase tracking-wider mb-1">Imperial Codebreaker</h3>
-                        <p class="text-xs text-gray-300 mb-3">Guess the secret 4-digit PIN to unlock a <strong>Free Sigil Letter</strong> and <strong>50% Discount</strong>!</p>
-                        
-                        <div class="flex flex-col sm:flex-row gap-2.5">
-                            <input type="text" id="guess-input" maxlength="4" placeholder="4-DIGIT PIN" class="flex-grow p-3 rounded-xl glass-input font-mono font-bold text-center tracking-[0.3em] text-amber-300 text-sm uppercase">
-                            <button onclick="submitGuess()" class="bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black px-6 py-3 rounded-xl font-black uppercase text-xs tracking-widest shadow-lg hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
-                                Crack PIN
-                            </button>
-                        </div>
-                        <div id="guess-status" class="mt-2 text-[11px] font-bold hidden"></div>
-                    </div>
-
-                    <!-- Product Selector Tabs -->
+                    <!-- Product Tabs -->
                     <div class="flex flex-wrap gap-2.5 pt-2">
                         <div id="tab-sigil" onclick="setProduct('Sigil')" class="product-tab active flex items-center gap-2">
                             <i class="fa-solid fa-stamp text-xs"></i> Sigils
@@ -297,10 +245,10 @@
                 </div>
 
                 <!-- Customization Input Card -->
-                <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border border-amber-500/20">
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-6 border border-amber-500/20 opacity-90">
                     <div>
                         <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-amber-400/80 mb-2">
-                            Patron Name
+                            Patron Name Preview
                         </label>
                         <input type="text" id="cust-name" placeholder="Enter Patron Full Name" class="w-full p-4 sm:p-4.5 rounded-xl glass-input text-sm font-semibold outline-none tracking-wide">
                     </div>
@@ -333,785 +281,245 @@
                                 <div class="dot bg-black" onclick="setCol('#1a1a1a', 'Black', this)" title="Black"></div>
                                 <div class="dot bg-gray-400" onclick="setCol('#9ca3af', 'Silver', this)" title="Silver"></div>
                                 <div class="dot bg-cyan-400" onclick="setCol('#22d3ee', 'Cyan', this)" title="Cyan"></div>
-                                <div class="dot bg-amber-800" onclick="setCol('#78350f', 'Amber', this)" title="Amber"></div>
-                                <div class="dot bg-rose-300" onclick="setCol('#fda4af', 'Rose', this)" title="Rose"></div>
-                                <div class="dot bg-indigo-600" onclick="setCol('#4f46e5', 'Indigo', this)" title="Indigo"></div>
-                                <div class="dot bg-emerald-500" onclick="setCol('#10b981', 'Emerald', this)" title="Emerald"></div>
-                                <div class="dot bg-stone-500" onclick="setCol('#78716c', 'Slate', this)" title="Slate"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Pen Details Block -->
-                    <div id="pen-controls" class="hidden p-5 bg-purple-950/20 rounded-2xl border border-purple-500/20 space-y-2">
-                        <p class="text-xs font-black text-purple-300 uppercase tracking-widest flex items-center gap-2">
-                            <i class="fa-solid fa-pen-nib text-purple-400"></i> Imperial Scriptorium Pen
-                        </p>
-                        <p class="text-xs text-gray-400 leading-relaxed">Matte Violet casing with custom gold trim nib. Heavyweight balanced feel engineered for official patron signatures.</p>
-                    </div>
-
-                    <!-- Plate Details Block -->
-                    <div id="plate-controls" class="hidden p-5 bg-amber-950/20 rounded-2xl border border-amber-500/20 space-y-2">
-                        <p class="text-xs font-black text-amber-300 uppercase tracking-widest flex items-center gap-2">
-                            <i class="fa-solid fa-award text-amber-400"></i> The Plate
-                        </p>
-                        <p class="text-xs text-gray-400 leading-relaxed">Solid 3D gold-finished display plate engraved with double-etched Imperial insignia borders.</p>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button id="btn-text" onclick="placeOrder()" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black py-4 sm:py-5 rounded-2xl font-black uppercase text-xs tracking-[0.25em] shadow-lg hover:scale-[1.01] transition-all duration-300 cursor-pointer">
-                        Submit Commission
+                    <!-- Disabled Commission Button -->
+                    <button onclick="openClosureModal()" class="w-full bg-stone-800 border border-stone-700 text-stone-400 p-4 sm:p-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-xl hover:bg-stone-700 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-ban text-red-400"></i> Atelier Closed — Commissions Inactive
                     </button>
                 </div>
             </div>
 
-            <!-- Right Panel: Live Visual Preview -->
-            <div class="lg:col-span-5 flex flex-col items-center">
-                <div id="preview-cont" class="w-full max-w-sm aspect-[4/5] glass-panel rounded-3xl flex flex-col items-center justify-center transition-all duration-700 relative overflow-hidden group shadow-2xl border border-amber-500/20">
-                    <div class="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-transparent to-black/50 pointer-events-none"></div>
-
-                    <div id="preview-box" class="text-[12rem] sm:text-[14rem] font-serif font-black transition-all duration-500 select-none drop-shadow-[0_20px_30px_rgba(0,0,0,0.9)]">
-                        Y
+            <!-- Right Panel: Live Preview Render Box -->
+            <div class="lg:col-span-5 flex flex-col items-center justify-center">
+                <div class="w-full max-w-md glass-panel p-8 rounded-3xl border border-amber-500/30 flex flex-col items-center text-center relative overflow-hidden space-y-6">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-amber-500 to-stone-600"></div>
+                    
+                    <div class="flex justify-between items-center w-full text-[10px] font-mono tracking-widest text-amber-400 uppercase">
+                        <span>Archive Preview</span>
+                        <span id="preview-badge" class="text-stone-400">Historical Item</span>
                     </div>
 
-                    <div class="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/10 text-[9px] font-black uppercase tracking-widest text-amber-400 backdrop-blur-md">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Live Preview
+                    <!-- Dynamic Render Container -->
+                    <div id="preview-box" class="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl flex flex-col items-center justify-center relative transition-all duration-500 shadow-2xl border border-white/10" style="background: radial-gradient(circle, #181a20 0%, #0a0a0d 100%);">
+                        <div class="absolute inset-0 rounded-3xl opacity-20 pointer-events-none" style="background: radial-gradient(circle, #d4af37 0%, transparent 70%);"></div>
+                        
+                        <div id="preview-icon-wrapper" class="text-6xl sm:text-7xl mb-3 text-amber-400 drop-shadow-lg transition-transform duration-300 transform hover:scale-110">
+                            <i id="preview-icon" class="fa-solid fa-stamp"></i>
+                        </div>
+
+                        <div id="preview-letter" class="font-cinzel font-black text-6xl sm:text-7xl tracking-wider text-white drop-shadow-xl">
+                            Y
+                        </div>
+
+                        <div id="preview-patron" class="mt-3 text-[10px] font-mono uppercase tracking-[0.25em] text-gray-400 max-w-[200px] truncate">
+                            Patron: Archive Only
+                        </div>
                     </div>
 
-                    <div class="absolute bottom-5 text-[9px] font-black uppercase tracking-[0.4em] text-gray-500">
-                        Imperial Record Seal
+                    <div class="w-full pt-4 border-t border-white/5 flex justify-between items-center text-xs">
+                        <span class="text-gray-400 font-semibold">Atelier Status:</span>
+                        <span class="text-red-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-red-400"></span> Ceased
+                        </span>
                     </div>
                 </div>
+            </div>
+
+        </div>
+
+        <!-- APP & ARCHIVE VIEW -->
+        <div id="app" class="w-full max-w-4xl hidden space-y-8">
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase tracking-widest">
+                    <i class="fa-solid fa-compass"></i> Archive Utilities
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-cinzel font-black text-white uppercase">Certificate Verification</h2>
+                <p class="text-xs sm:text-sm text-gray-400">Authenticate legacy certificates from active commission history.</p>
+            </div>
+
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4 max-w-xl mx-auto">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl border border-amber-500/20">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+                <h3 class="font-cinzel font-bold text-lg text-white">Certificate Authenticator</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Verify the seal and serial number of any issued Yahia Shop item.</p>
+                <div class="flex gap-2 pt-2">
+                    <input type="text" id="verify-serial" placeholder="Enter Serial (e.g. YHS-9042)" class="flex-grow p-3 rounded-xl glass-input text-xs font-mono">
+                    <button onclick="verifyCertificate()" class="bg-amber-500 hover:bg-amber-400 text-black px-4 rounded-xl font-black text-xs uppercase cursor-pointer">Verify</button>
+                </div>
+                <div id="verify-result" class="text-xs font-bold pt-1 hidden"></div>
             </div>
         </div>
 
-        <!-- ================= MOBILE APP VIEW ================= -->
-        <div id="app" class="hidden w-full max-w-md text-center space-y-8 my-6">
-            <div class="glass-panel p-10 rounded-3xl space-y-6 border border-amber-500/20">
-                <div class="w-20 h-20 bg-gradient-to-br from-amber-400 to-amber-600 text-black rounded-3xl mx-auto flex items-center justify-center text-4xl shadow-xl">
-                    <i class="fas fa-mobile-alt"></i>
+        <!-- MERCHANT PORTAL VIEW -->
+        <div id="login" class="w-full max-w-4xl hidden space-y-8">
+            <div class="text-center space-y-3">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase tracking-widest">
+                    <i class="fa-solid fa-box-archive"></i> Historical Ledger
                 </div>
-                <h2 class="text-4xl font-cinzel font-black uppercase">Yahia <span class="gold-gradient-text">Mobile</span></h2>
-                <p class="text-gray-400 text-sm leading-relaxed">Download the official Android APK to order 3D sigils directly from your mobile device.</p>
-                <button class="block w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black py-5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-lg hover:scale-[1.02] transition-all cursor-pointer">
-                    Download APK
-                </button>
+                <h2 class="text-3xl sm:text-4xl font-cinzel font-black text-white uppercase">Archived Ledger</h2>
+            </div>
+            <div class="glass-panel p-6 sm:p-8 rounded-3xl space-y-4 text-center">
+                <p class="text-xs text-stone-400">All historical commission ledgers and merchant administrative controls have been archived.</p>
             </div>
         </div>
 
-        <!-- ================= PORTAL LOGIN VIEW ================= -->
-        <div id="login" class="hidden glass-panel p-10 sm:p-12 w-full max-w-sm text-center rounded-3xl border border-amber-500/30">
-            <div class="w-16 h-16 bg-amber-500/10 text-amber-400 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-amber-500/20 mb-4">
-                <i class="fa-solid fa-vault"></i>
-            </div>
-            <h2 class="text-xl font-cinzel font-black uppercase tracking-widest text-white mb-2">Merchant Security</h2>
-            <p class="text-xs text-gray-400 mb-6">Enter key to access the merchant ledger, live broadcast center, and Netlify deployment engine.</p>
-            
-            <input type="password" id="pass" placeholder="KEY" class="w-full p-4 rounded-xl glass-input text-center font-bold tracking-[0.5em] text-amber-300 text-lg uppercase mb-6 outline-none">
-            <button onclick="auth()" class="w-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-black py-4 rounded-xl font-black uppercase text-xs tracking-widest cursor-pointer shadow-lg">
-                Unlock Portal
-            </button>
-        </div>
-
-        <!-- ================= MERCHANT LEDGER ADMIN VIEW ================= -->
-        <div id="admin" class="hidden w-full max-w-5xl space-y-8 my-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-amber-500/20 pb-6">
-                <div>
-                    <div class="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">
-                        Authorized Merchant Portal
-                    </div>
-                    <h2 class="text-3xl sm:text-5xl font-cinzel font-black text-white">Merchant <span class="gold-gradient-text">Ledger</span></h2>
-                </div>
-                <button onclick="go('home')" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer">
-                    <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Exit Portal
-                </button>
-            </div>
-
-            <!-- SPECIAL RELEASE UPDATE TO YAHIASHOP.NETLIFY.APP CONTROL -->
-            <div class="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-amber-400/40 bg-gradient-to-r from-amber-950/30 via-black to-amber-950/20 shadow-2xl space-y-5">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4">
-                    <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-black uppercase tracking-widest mb-1">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Target: yahiashop.netlify.app
-                        </div>
-                        <h3 class="text-2xl font-cinzel font-black text-white uppercase">🚀 System Release & Netlify Deployment Engine</h3>
-                    </div>
-                    <span id="current-release-status-tag" class="px-3 py-1.5 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                        Release Status: UNRELEASED (STAGING)
-                    </span>
-                </div>
-
-                <p class="text-xs text-gray-300 leading-relaxed">
-                    This build is currently in pre-release staging. Clicking <strong>Release Update</strong> will publish this version live to <strong>yahiashop.netlify.app</strong>, push the Firestore release flag, and broadcast a global release announcement to all visitors.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center pt-2">
-                    <div class="md:col-span-8">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1.5">
-                            Netlify Build Hook URL (Optional for Auto-Rebuild)
-                        </label>
-                        <input type="text" id="netlify-webhook-url" placeholder="https://api.netlify.com/build_hooks/..." class="w-full p-3.5 rounded-xl glass-input text-xs font-mono">
-                    </div>
-                    <div class="md:col-span-4 flex items-end h-full">
-                        <button onclick="releaseUpdateToNetlify()" class="w-full bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600 text-black py-4 px-6 rounded-xl font-black uppercase text-xs tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
-                            🚀 Release Update Live
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Global Announcement & Event Broadcast Control Panel -->
-            <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 space-y-6">
-                <div class="border-b border-white/10 pb-4">
-                    <h3 class="text-xl font-cinzel font-black uppercase text-amber-300">📢 Global Announcement & Event Controls</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Broadcast any custom message globally across all website visitors live in real-time.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Global Announcement Sender -->
-                    <div class="space-y-3">
-                        <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Broadcast Global Announcement Text</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="admin-broadcast-msg" placeholder="e.g. Free shipping on all Sigil commissions today!" class="w-full p-3.5 rounded-xl glass-input text-xs font-semibold">
-                            <button onclick="broadcastCustomMsg()" class="px-5 bg-gradient-to-r from-amber-400 to-amber-600 text-black rounded-xl text-xs font-black uppercase tracking-wider shadow-md hover:scale-[1.02] cursor-pointer flex-shrink-0">
-                                Broadcast
-                            </button>
-                        </div>
-                        <button onclick="clearAnnouncement()" class="text-[10px] font-bold text-red-400 hover:underline uppercase tracking-wider">
-                            Clear Active Global Announcement
-                        </button>
-                    </div>
-
-                    <!-- Vault Event Controls -->
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">Vault Event (4-Digit PIN)</label>
-                            <button id="admin-event-toggle-btn" onclick="toggleEventState()" class="px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-red-500/20 text-red-300 border border-red-500/40">
-                                Event: OFF
-                            </button>
-                        </div>
-                        <div class="flex gap-2">
-                            <input type="text" id="admin-secret-code" maxlength="4" placeholder="7429" class="w-full p-3.5 rounded-xl glass-input text-center font-mono font-black text-amber-300 text-base tracking-[0.3em]">
-                            <button onclick="randomizeSecretCode()" class="px-3 bg-amber-500/20 text-amber-300 rounded-xl text-[10px] font-bold uppercase border border-amber-500/30 cursor-pointer">
-                                Random
-                            </button>
-                            <button onclick="saveEventSettings()" class="px-4 bg-amber-500 text-black rounded-xl text-[10px] font-black uppercase cursor-pointer">
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ledger Table Container -->
-            <div class="glass-panel overflow-hidden rounded-3xl border border-amber-500/20">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-black/60 border-b border-white/5">
-                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Patron</th>
-                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Item</th>
-                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Style</th>
-                                <th class="p-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-list" class="divide-y divide-white/5">
-                            <tr>
-                                <td colspan="4" class="p-8 text-center text-xs text-gray-500 font-medium">Connecting to live merchant ledger...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </main>
 
-    <!-- FOOTER WITH UNDERCOVER 10-CLICK PORTAL UNLOCK -->
-    <footer class="p-6 sm:p-8 border-t border-white/5 mt-8 bg-black/60 backdrop-blur-md relative z-20">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500 font-medium text-center sm:text-left">
-            <p>© 2026 YAHIA SHOP. Official Atelier All Rights Reserved.</p>
-            <div class="flex items-center gap-4 text-[11px]">
-                <!-- 10-Click Secret Portal Trigger -->
-                <span id="tos-secret-btn" onclick="handleSecretPortalClick()" class="hover:text-amber-400 transition-colors cursor-pointer select-none">Terms of Service</span>
-                <span>•</span>
-                <span class="hover:text-amber-400 transition-colors cursor-pointer">Imperial Charter</span>
+    <!-- OFFICIAL CLOSURE DECLARATION MODAL -->
+    <div id="closure-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel p-6 sm:p-8 rounded-3xl max-w-lg w-full border border-red-500/30 text-center space-y-6 relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 via-amber-500 to-red-600"></div>
+
+            <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center text-2xl mx-auto shadow-inner">
+                <i class="fa-solid fa-store-slash"></i>
             </div>
+
+            <div class="space-y-2">
+                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-red-400">Official Declaration</span>
+                <h2 class="text-2xl sm:text-3xl font-cinzel font-black text-white">YAHIA SHOP IS CLOSED</h2>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-black/60 border border-white/5 text-left text-xs text-stone-300 space-y-3 leading-relaxed">
+                <p>
+                    <strong>Notice to all Patrons & Visitors:</strong>
+                </p>
+                <p>
+                    Please be advised that <strong>Yahia Shop</strong> operations have officially ceased and the business is permanently closed for undisclosed reasons.
+                </p>
+                <p class="text-stone-400 italic">
+                    We sincerely thank all patrons for their interest and support during our active service.
+                </p>
+            </div>
+
+            <button onclick="closeClosureModal()" class="w-full bg-gradient-to-r from-stone-800 to-stone-700 hover:from-stone-700 hover:to-stone-600 text-stone-200 border border-stone-600 p-4 rounded-xl font-black uppercase text-xs tracking-widest transition-all cursor-pointer shadow-lg">
+                Acknowledge Notice
+            </button>
         </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="p-6 border-t border-white/5 bg-black/60 backdrop-blur-md relative z-20 text-center text-xs text-stone-500 flex flex-col sm:flex-row justify-between items-center gap-2 max-w-7xl mx-auto w-full">
+        <p>© YAHIA SHOP. Official Archive Edition.</p>
+        <p class="text-red-400/80 font-bold">Business Operations Permanently Closed</p>
     </footer>
 
-    <!-- CUSTOM TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full px-4"></div>
-
-    <!-- FIREBASE INTEGRATION -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
     <script>
-        // ================= CORE UI & STATE =================
-        var activeProduct = 'Sigil';
-        var curCol = '#ef4444';
-        var curColName = 'Red';
-        var eventActive = false;
-        var secretCode = '7429';
-        var hasWonEvent = false;
+        var appState = {
+            currentView: 'home',
+            product: 'Sigil',
+            selectedColor: '#ef4444',
+            colorName: 'Red'
+        };
 
-        var tosClickCount = 0;
-        var tosClickTimer = null;
-
-        // Custom Toast Notification System
-        function showToast(message, type) {
-            type = type || 'info';
-            var container = document.getElementById('toast-container');
-            if(!container) return;
-
-            var toast = document.createElement('div');
-            
-            var bgClass = "bg-stone-900 border-amber-500/30 text-amber-300";
-            if (type === 'error') bgClass = "bg-red-950 border-red-500/40 text-red-200";
-            if (type === 'success') bgClass = "bg-emerald-950 border-emerald-500/40 text-emerald-200";
-            if (type === 'gold') bgClass = "bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-600 text-black font-extrabold";
-
-            toast.className = "p-4 rounded-2xl border shadow-2xl backdrop-blur-xl text-xs flex items-center gap-3 transition-all duration-300 pointer-events-auto transform translate-y-4 opacity-0 " + bgClass;
-            toast.innerHTML = 
-                '<i class="fa-solid ' + (type === 'error' ? 'fa-circle-xmark' : (type === 'success' || type === 'gold' ? 'fa-circle-check' : 'fa-circle-info')) + ' text-base"></i>' +
-                '<div class="flex-grow font-semibold">' + message + '</div>' +
-                '<button onclick="this.parentElement.remove()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>';
-
-            container.appendChild(toast);
-            setTimeout(function() {
-                toast.classList.remove('translate-y-4', 'opacity-0');
-            }, 10);
-
-            setTimeout(function() {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(function() { toast.remove(); }, 300);
-            }, 4000);
-        }
-
-        // Navigation engine
-        function go(id) {
-            ['home', 'app', 'login', 'admin'].forEach(function(v) {
-                var el = document.getElementById(v);
-                if(el) el.classList.add('hidden');
-            });
-            var target = document.getElementById(id);
-            if(target) target.classList.remove('hidden');
-
-            document.querySelectorAll('.nav-link').forEach(function(l) { l.classList.remove('active-link'); });
-            var activeNav = document.getElementById('nav-' + id);
-            if(activeNav) activeNav.classList.add('active-link');
-
-            if(id === 'admin') sync();
-        }
-
-        function setProduct(type) {
-            activeProduct = type;
-            var displayTitle = document.getElementById('display-title');
-            if(displayTitle) displayTitle.innerText = type === 'Plate' ? 'The Plate' : type;
-            
-            var sigilCtrl = document.getElementById('sigil-controls');
-            var penCtrl = document.getElementById('pen-controls');
-            var plateCtrl = document.getElementById('plate-controls');
-
-            if(sigilCtrl) sigilCtrl.classList.toggle('hidden', type !== 'Sigil');
-            if(penCtrl) penCtrl.classList.toggle('hidden', type !== 'Pen');
-            if(plateCtrl) plateCtrl.classList.toggle('hidden', type !== 'Plate');
-            
-            document.querySelectorAll('.product-tab').forEach(function(t) { t.classList.remove('active'); });
-            var activeTab = document.getElementById('tab-' + type.toLowerCase());
-            if(activeTab) activeTab.classList.add('active');
-            
+        window.addEventListener('DOMContentLoaded', function() {
+            var letterSelect = document.getElementById('letter');
+            if(letterSelect) {
+                var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+                letterSelect.innerHTML = alphabet.map(function(l) {
+                    return '<option value="' + l + '">' + l + ' - Imperial Glyph</option>';
+                }).join('');
+            }
             updatePreview();
+        });
+
+        function openClosureModal() {
+            var m = document.getElementById('closure-modal');
+            if(m) m.classList.remove('hidden');
+        }
+
+        function closeClosureModal() {
+            var m = document.getElementById('closure-modal');
+            if(m) m.classList.add('hidden');
+        }
+
+        function go(viewId) {
+            appState.currentView = viewId;
+            ['home', 'app', 'login'].forEach(function(v) {
+                var el = document.getElementById(v);
+                var link = document.getElementById('nav-' + v);
+                if(el) el.classList.add('hidden');
+                if(link) link.classList.remove('active-link');
+            });
+
+            var target = document.getElementById(viewId);
+            var targetLink = document.getElementById('nav-' + viewId);
+            if(target) target.classList.remove('hidden');
+            if(targetLink) targetLink.classList.add('active-link');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setProduct(prod) {
+            appState.product = prod;
+            ['sigil', 'pen', 'plate'].forEach(function(p) {
+                var tab = document.getElementById('tab-' + p);
+                if(tab) tab.classList.remove('active');
+            });
+
+            var activeTab = document.getElementById('tab-' + prod.toLowerCase());
+            if(activeTab) activeTab.classList.add('active');
+
+            document.getElementById('display-title').innerText = prod === 'Sigil' ? 'Sigil' : (prod === 'Pen' ? 'Scriptorium Pen' : 'Imperial Plate');
+            
+            var icon = document.getElementById('preview-icon');
+            var letterEl = document.getElementById('preview-letter');
+            var box = document.getElementById('preview-box');
+
+            if(prod === 'Sigil') {
+                icon.className = 'fa-solid fa-stamp';
+                letterEl.style.display = 'block';
+                box.className = "w-64 h-64 sm:w-72 sm:h-72 rounded-3xl flex flex-col items-center justify-center relative transition-all duration-500 shadow-2xl border border-white/10";
+            } else if(prod === 'Pen') {
+                icon.className = 'fa-solid fa-pen-nib';
+                letterEl.style.display = 'none';
+                box.className = "w-64 h-64 sm:w-72 sm:h-72 rounded-3xl flex flex-col items-center justify-center relative transition-all duration-500 shadow-2xl border border-purple-500/30 bg-purple-950/20";
+            } else if(prod === 'Plate') {
+                icon.className = 'fa-solid fa-award';
+                letterEl.style.display = 'none';
+                box.className = "w-64 h-64 sm:w-72 sm:h-72 rounded-3xl flex flex-col items-center justify-center relative transition-all duration-500 shadow-2xl plate-style";
+            }
         }
 
         function setCol(hex, name, el) {
-            curCol = hex; 
-            curColName = name;
+            appState.selectedColor = hex;
+            appState.colorName = name;
             document.querySelectorAll('.dot').forEach(function(d) { d.classList.remove('active'); });
             if(el) el.classList.add('active');
-            var colNameEl = document.getElementById('selected-color-name');
-            if(colNameEl) colNameEl.innerText = name;
-            updatePreview();
+            document.getElementById('selected-color-name').innerText = name;
+            document.getElementById('preview-letter').style.color = hex;
         }
 
         function updatePreview() {
-            var b = document.getElementById('preview-box');
-            var c = document.getElementById('preview-cont');
-            if(!b || !c) return;
-            
-            if(activeProduct === 'Pen') {
-                b.innerHTML = '<i class="fa-solid fa-pen-nib"></i>';
-                b.style.color = '#a855f7';
-                c.classList.remove('plate-style');
-            } else if (activeProduct === 'Plate') {
-                b.innerText = 'Y';
-                b.style.color = '#fef08a';
-                c.classList.add('plate-style');
+            var letterSel = document.getElementById('letter');
+            var nameInput = document.getElementById('cust-name');
+            var previewLetter = document.getElementById('preview-letter');
+            var previewPatron = document.getElementById('preview-patron');
+
+            if(letterSel && previewLetter) {
+                previewLetter.innerText = letterSel.value;
+            }
+            if(nameInput && previewPatron) {
+                previewPatron.innerText = "Patron: " + (nameInput.value || 'Archive Only');
+            }
+        }
+
+        function verifyCertificate() {
+            var serial = document.getElementById('verify-serial').value.trim();
+            var res = document.getElementById('verify-result');
+            if(!serial || !res) return;
+
+            res.classList.remove('hidden');
+            if(serial.toUpperCase().startsWith('YHS')) {
+                res.className = "text-xs font-bold pt-1 text-emerald-400";
+                res.innerText = "✔ Authentic Yahia Atelier Legacy Creation (" + serial.toUpperCase() + ")";
             } else {
-                var letterEl = document.getElementById('letter');
-                b.innerText = letterEl ? letterEl.value : 'Y';
-                b.style.color = curCol;
-                c.classList.remove('plate-style');
+                res.className = "text-xs font-bold pt-1 text-red-400";
+                res.innerText = "✖ Serial not found in Yahia Archives.";
             }
         }
-
-        function populateAlphabet() {
-            var sel = document.getElementById('letter');
-            if (!sel) return;
-            sel.innerHTML = '';
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(function(l) {
-                var opt = document.createElement('option');
-                opt.value = l; 
-                opt.innerText = "Letter " + l;
-                sel.appendChild(opt);
-            });
-            sel.value = 'Y';
-        }
-
-        // Undercover Portal Secret Click Counter
-        function handleSecretPortalClick() {
-            tosClickCount++;
-            clearTimeout(tosClickTimer);
-
-            if (tosClickCount >= 10) {
-                tosClickCount = 0;
-                showToast("🔓 Secret Portal Unlocked!", "gold");
-                go('login');
-            } else if (tosClickCount >= 5) {
-                showToast("Keep clicking... " + (10 - tosClickCount) + " clicks remaining to unlock Portal", "info");
-            }
-
-            tosClickTimer = setTimeout(function() {
-                tosClickCount = 0;
-            }, 5000);
-        }
-
-        function dismissAnnouncement() {
-            var ann = document.getElementById('global-announcement');
-            if(ann) ann.classList.add('hidden');
-        }
-
-        function auth() {
-            var passEl = document.getElementById('pass');
-            if(!passEl) return;
-            if(passEl.value === 'MADMIN') {
-                go('admin');
-                showToast("Welcome to Merchant Ledger Portal", "gold");
-            } else {
-                showToast("Invalid Security Key", "error");
-            }
-            passEl.value = '';
-        }
-
-        // Offline Local Storage Fallback
-        function saveOfflineOrder(orderObj) {
-            try {
-                var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
-                orderObj.id = 'off_' + Date.now();
-                offlineOrders.unshift(orderObj);
-                localStorage.setItem('yahia_offline_orders', JSON.stringify(offlineOrders));
-            } catch(e) {
-                console.warn("Offline storage error:", e);
-            }
-        }
-
-        // ================= FIREBASE INITIALIZATION & SYNC =================
-        var db = null;
-        var authObj = null;
-
-        try {
-            var firebaseConfig = {
-                apiKey: "AIzaSyBiSjTQ0lRDwccIxzVb24V8j5ThR8boqJA",
-                authDomain: "yahuashopcloud.firebaseapp.com",
-                projectId: "yahuashopcloud",
-                storageBucket: "yahuashopcloud.appspot.com",
-                messagingSenderId: "439516384242",
-                appId: "1:439516384242:web:77a3f41653c8d01988b96b"
-            };
-
-            if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                db = firebase.firestore();
-                authObj = firebase.auth();
-
-                authObj.signInAnonymously().catch(function(err) {
-                    console.warn("Firebase Auth Anonymous Notice:", err.message);
-                });
-            }
-        } catch (err) {
-            console.warn("Firebase Init Notice:", err);
-        }
-
-        function initEventSync() {
-            if (!db) return;
-
-            try {
-                // Live Site Release Listener
-                db.collection("settings").doc("site_release").onSnapshot(function(docSnap) {
-                    var badge = document.getElementById('site-release-badge');
-                    var tag = document.getElementById('current-release-status-tag');
-                    if (docSnap.exists && docSnap.data().released) {
-                        var data = docSnap.data();
-                        if (badge) badge.innerText = (data.version || 'v2.0') + ' LIVE';
-                        if (tag) {
-                            tag.innerText = 'Release Status: LIVE ON YAHIASHOP.NETLIFY.APP';
-                            tag.className = "px-3 py-1.5 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
-                        }
-                    }
-                }, function(err) { console.log("Release sync notice:", err); });
-
-                // Vault Event Listener
-                db.collection("settings").doc("vault_event").onSnapshot(function(docSnap) {
-                    if (docSnap.exists) {
-                        var data = docSnap.data();
-                        eventActive = !!data.active;
-                        secretCode = data.code || '7429';
-                        
-                        var card = document.getElementById('event-banner-card');
-                        if(card) card.classList.toggle('hidden', !eventActive);
-
-                        var toggleBtn = document.getElementById('admin-event-toggle-btn');
-                        if(toggleBtn) {
-                            toggleBtn.innerText = eventActive ? "Event: ACTIVE" : "Event: OFF";
-                            toggleBtn.className = eventActive 
-                                ? "px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 shadow-lg shadow-emerald-500/20"
-                                : "px-3 py-1 rounded-lg font-black uppercase text-[10px] tracking-widest transition-all cursor-pointer bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30";
-                        }
-
-                        var codeInput = document.getElementById('admin-secret-code');
-                        if(codeInput && document.activeElement !== codeInput) {
-                            codeInput.value = secretCode;
-                        }
-                    }
-                }, function(err) { console.log("Vault event notice:", err); });
-
-                // Global Announcement Listener
-                db.collection("settings").doc("announcement").onSnapshot(function(docSnap) {
-                    var banner = document.getElementById('global-announcement');
-                    var textEl = document.getElementById('announcement-text');
-                    if (docSnap.exists && docSnap.data().message && docSnap.data().active) {
-                        textEl.innerText = docSnap.data().message;
-                        banner.classList.remove('hidden');
-                    } else {
-                        banner.classList.add('hidden');
-                    }
-                }, function(err) { console.log("Announcement sync notice:", err); });
-            } catch(e) {
-                console.warn("initEventSync error:", e);
-            }
-        }
-
-        /* RELEASE UPDATE TO YAHIASHOP.NETLIFY.APP */
-        async function releaseUpdateToNetlify() {
-            var webhookUrl = document.getElementById('netlify-webhook-url').value.trim();
-            var annMsg = "🚀 OFFICIAL UPDATE RELEASED: Yahia Shop v2.0 Gold Atelier is now LIVE on yahiashop.netlify.app!";
-
-            if (db) {
-                try {
-                    await db.collection("settings").doc("site_release").set({
-                        released: true,
-                        version: "v2.0 Gold Atelier",
-                        domain: "yahiashop.netlify.app",
-                        timestamp: Date.now()
-                    });
-
-                    await db.collection("settings").doc("announcement").set({
-                        message: annMsg,
-                        active: true,
-                        time: Date.now()
-                    });
-                } catch (err) {
-                    console.warn("Release error:", err);
-                }
-            }
-
-            if (webhookUrl) {
-                try {
-                    await fetch(webhookUrl, { method: 'POST' });
-                    showToast("🚀 Netlify Build Triggered & Release Published!", "gold");
-                } catch (netErr) {
-                    showToast("Release Published Live! (Webhook error)", "gold");
-                }
-            } else {
-                showToast("🚀 Update Release Published Live to yahiashop.netlify.app!", "gold");
-            }
-        }
-
-        /* Submit Patron PIN Guess */
-        async function submitGuess() {
-            if(!eventActive) {
-                showToast("The Imperial Vault Event is currently inactive.", "error");
-                return;
-            }
-            var guessInput = document.getElementById('guess-input');
-            var statusEl = document.getElementById('guess-status');
-            var guess = guessInput ? guessInput.value.trim() : '';
-
-            if(!/^\d{4}$/.test(guess)) {
-                showToast("Please enter a valid 4-digit PIN.", "error");
-                return;
-            }
-
-            if(guess === secretCode) {
-                hasWonEvent = true;
-                if(statusEl) {
-                    statusEl.innerText = "🎉 CORRECT PIN! Free Sigil + 50% Discount Applied!";
-                    statusEl.className = "mt-2 text-[11px] font-black text-emerald-400 block animate-pulse";
-                }
-                showToast("🎉 CONGRATULATIONS! You cracked the Imperial Code! Free Sigil + 50% Off applied!", "gold");
-                
-                var custNameEl = document.getElementById('cust-name');
-                var patronName = (custNameEl && custNameEl.value.trim()) ? custNameEl.value.trim() : 'A Lucky Patron';
-                var annMsg = "🎉 GLOBAL ANNOUNCEMENT: " + patronName + " cracked the secret PIN (" + secretCode + ") and won a FREE Sigil + 50% Off Everything!";
-
-                if(db) {
-                    try {
-                        await db.collection("settings").doc("announcement").set({
-                            message: annMsg,
-                            active: true,
-                            time: Date.now()
-                        });
-                    } catch(e) {
-                        console.error("Announcement error:", e);
-                    }
-                }
-            } else {
-                if(statusEl) {
-                    statusEl.innerText = "❌ Incorrect PIN combination. Try again!";
-                    statusEl.className = "mt-2 text-[11px] font-bold text-red-400 block";
-                }
-                showToast("Incorrect PIN combination. Try again!", "error");
-            }
-        }
-
-        /* Global Message Broadcast from Admin Portal */
-        async function broadcastCustomMsg() {
-            var msgEl = document.getElementById('admin-broadcast-msg');
-            var msg = msgEl ? msgEl.value.trim() : '';
-            if(!msg) {
-                showToast("Please enter text for the announcement.", "error");
-                return;
-            }
-            if(db) {
-                try {
-                    await db.collection("settings").doc("announcement").set({
-                        message: "📢 " + msg,
-                        active: true,
-                        time: Date.now()
-                    });
-                    showToast("Global Message broadcasted live on website!", "gold");
-                    if(msgEl) msgEl.value = '';
-                } catch(e) {
-                    console.error(e);
-                    showToast("Failed to broadcast message.", "error");
-                }
-            } else {
-                showToast("Global Message broadcasted locally!", "gold");
-            }
-        }
-
-        async function clearAnnouncement() {
-            if(db) {
-                try {
-                    await db.collection("settings").doc("announcement").set({
-                        message: "",
-                        active: false,
-                        time: Date.now()
-                    });
-                    showToast("Global announcement cleared from website.", "info");
-                } catch(e) {
-                    showToast("Failed to clear announcement.", "error");
-                }
-            } else {
-                dismissAnnouncement();
-            }
-        }
-
-        /* Event Admin Actions */
-        async function toggleEventState() {
-            var newState = !eventActive;
-            if(db) {
-                try {
-                    await db.collection("settings").doc("vault_event").set({
-                        active: newState,
-                        code: secretCode
-                    }, { merge: true });
-                    showToast(newState ? "Event Activated!" : "Event Deactivated.", newState ? "gold" : "info");
-                } catch(e) {
-                    showToast("Failed to update event state.", "error");
-                }
-            } else {
-                eventActive = newState;
-                showToast(newState ? "Event Activated!" : "Event Deactivated.", newState ? "gold" : "info");
-            }
-        }
-
-        async function saveEventSettings() {
-            var codeEl = document.getElementById('admin-secret-code');
-            var newCode = codeEl ? codeEl.value.trim() : '';
-            if(!/^\d{4}$/.test(newCode)) {
-                showToast("PIN must be 4 digits.", "error");
-                return;
-            }
-            if(db) {
-                try {
-                    await db.collection("settings").doc("vault_event").set({
-                        active: eventActive,
-                        code: newCode
-                    }, { merge: true });
-                    secretCode = newCode;
-                    showToast("Secret Code updated to " + newCode + "!", "success");
-                } catch(e) {
-                    showToast("Failed to save secret code.", "error");
-                }
-            } else {
-                secretCode = newCode;
-                showToast("Secret Code updated to " + newCode + "!", "success");
-            }
-        }
-
-        function randomizeSecretCode() {
-            var rand = Math.floor(1000 + Math.random() * 9000).toString();
-            var codeEl = document.getElementById('admin-secret-code');
-            if(codeEl) codeEl.value = rand;
-            showToast("Random code generated: " + rand + ". Click Save!", "info");
-        }
-
-        /* Order Submission Logic */
-        async function placeOrder() {
-            var nameEl = document.getElementById('cust-name');
-            var name = nameEl ? nameEl.value.trim() : '';
-            if(!name) { 
-                showToast("Please enter Patron Name.", "error"); 
-                return; 
-            }
-            
-            var btn = document.getElementById('btn-text');
-            if(btn) {
-                btn.innerText = "SENDING...";
-                btn.disabled = true;
-            }
-
-            var letterEl = document.getElementById('letter');
-            var selVal = letterEl ? letterEl.value : 'Y';
-            var itemStyle = activeProduct === 'Sigil' ? curColName : (activeProduct === 'Pen' ? 'Matte Violet' : 'Imperial Gold');
-            var bonusTag = hasWonEvent ? ' [50% OFF + FREE REWARD]' : '';
-
-            var orderObj = {
-                name: name,
-                item: (activeProduct === 'Sigil' ? selVal : (activeProduct === 'Pen' ? 'PEN' : 'PLATE')) + bonusTag,
-                style: itemStyle,
-                time: Date.now()
-            };
-
-            if(db) {
-                try {
-                    await db.collection("orders").add(orderObj);
-                    showToast(hasWonEvent ? "Commission Submitted with 50% Event Discount!" : "Commission Successful!", "success");
-                    if(nameEl) nameEl.value = '';
-                } catch (e) {
-                    console.error("Firestore Order Error:", e);
-                    saveOfflineOrder(orderObj);
-                    showToast("Commission Submitted Successfully!", "success");
-                    if(nameEl) nameEl.value = '';
-                } finally {
-                    if(btn) {
-                        btn.innerText = "Submit Commission";
-                        btn.disabled = false;
-                    }
-                }
-            } else {
-                saveOfflineOrder(orderObj);
-                showToast("Commission Submitted Successfully!", "success");
-                if(nameEl) nameEl.value = '';
-                if(btn) {
-                    btn.innerText = "Submit Commission";
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        /* Realtime Orders Sync */
-        function sync() {
-            var list = document.getElementById('admin-list');
-            if(!list) return;
-
-            if(!db) {
-                renderOfflineOrders(list);
-                return;
-            }
-
-            db.collection("orders").orderBy("time", "desc").onSnapshot(function(snap) {
-                list.innerHTML = '';
-                if(snap.empty) {
-                    renderOfflineOrders(list);
-                    return;
-                }
-                snap.forEach(function(docSnap) {
-                    var o = docSnap.data();
-                    list.innerHTML += '<tr class="hover:bg-white/5 transition-all">' +
-                        '<td class="p-5 font-bold text-sm text-white">' + (o.name || 'Anonymous') + '</td>' +
-                        '<td class="p-5 font-black text-amber-400 text-lg">' + (o.item || 'Sigil') + '</td>' +
-                        '<td class="p-5 text-xs font-bold uppercase tracking-widest text-gray-400">' + (o.style || 'Red') + '</td>' +
-                        '<td class="p-5 text-right">' +
-                            '<button onclick="delDoc(\'' + docSnap.id + '\')" class="text-red-400 hover:text-red-300 font-black text-xs uppercase underline cursor-pointer">Paid / Clear</button>' +
-                        '</td>' +
-                    '</tr>';
-                });
-            }, function(err) { 
-                console.log("Orders sync notice:", err);
-                renderOfflineOrders(list);
-            });
-        }
-
-        function renderOfflineOrders(list) {
-            var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
-            list.innerHTML = '';
-            if(!offlineOrders.length) {
-                list.innerHTML = '<tr><td colspan="4" class="p-8 text-center text-xs text-gray-500">No orders found in ledger.</td></tr>';
-                return;
-            }
-            offlineOrders.forEach(function(o) {
-                list.innerHTML += '<tr class="hover:bg-white/5 transition-all">' +
-                    '<td class="p-5 font-bold text-sm text-white">' + (o.name || 'Anonymous') + '</td>' +
-                    '<td class="p-5 font-black text-amber-400 text-lg">' + (o.item || 'Sigil') + '</td>' +
-                    '<td class="p-5 text-xs font-bold uppercase tracking-widest text-gray-400">' + (o.style || 'Red') + '</td>' +
-                    '<td class="p-5 text-right">' +
-                        '<button onclick="delDoc(\'' + o.id + '\')" class="text-red-400 hover:text-red-300 font-black text-xs uppercase underline cursor-pointer">Clear</button>' +
-                    '</td>' +
-                '</tr>';
-            });
-        }
-
-        function delDoc(id) {
-            if(confirm("Expunge Record from Ledger?")) {
-                if(id && id.indexOf('off_') === 0) {
-                    var offlineOrders = JSON.parse(localStorage.getItem('yahia_offline_orders') || '[]');
-                    offlineOrders = offlineOrders.filter(function(item) { return item.id !== id; });
-                    localStorage.setItem('yahia_offline_orders', JSON.stringify(offlineOrders));
-                    showToast("Offline record deleted.", "info");
-                    sync();
-                    return;
-                }
-
-                if(db) {
-                    db.collection("orders").doc(id).delete()
-                        .then(function() { showToast("Record deleted.", "info"); })
-                        .catch(function() { showToast("Failed to delete record.", "error"); });
-                }
-            }
-        }
-
-        // Initialize on Load
-        window.addEventListener('DOMContentLoaded', function() {
-            populateAlphabet();
-            updatePreview();
-            initEventSync();
-        });
     </script>
 </body>
 </html>
